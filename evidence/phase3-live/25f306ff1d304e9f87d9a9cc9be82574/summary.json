@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "run_type": "live_discovery",
+  "live_discovery": true,
+  "session_id": "b09e4011f1a249ad99f5edb00e373f37",
+  "run_id": "73524844e43f447c9904b73ccdada11f",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 8.111,
+  "action_count": 1,
+  "provider_call_count": 3,
+  "planner_decision_count": 3,
+  "provider_records": [
+    {
+      "response_id": "resp_0d2204dc7282a1a3016aac8cb9f90887d29c118a0fd3ec0049",
+      "request_id": "req_a44536a6bf614a8cba9d5b2429abcee7",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 513,
+        "output_tokens": 75,
+        "total_tokens": 588
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_0d732df31733192d016aac8cbc424887d28f6288c0e6f5d9f0",
+      "request_id": "req_b93705539b064949b2792b0584836f0a",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 789,
+        "output_tokens": 75,
+        "total_tokens": 864
+      },
+      "status": "completed",
+      "decision_validated": false
+    },
+    {
+      "response_id": "resp_0486e4fb9dcb6455016aac8cbdd38887d29d0fd4269d163362",
+      "request_id": "req_ec6decfa089548e1aab2cc68c39c18fc",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 804,
+        "output_tokens": 75,
+        "total_tokens": 879
+      },
+      "status": "completed",
+      "decision_validated": false
+    }
+  ],
+  "result": {
+    "kind": "failure",
+    "step_index": 1,
+    "human_intervened": false,
+    "provider_call_count": 3,
+    "code": "INTERRUPTED"
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "workspace_masked",
+    "frame_count": 3,
+    "target_count": 6,
+    "mask_rects": [
+      {
+        "x": 215.5,
+        "y": 114.4375,
+        "width": 1064.5,
+        "height": 755
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 6,
+      "dialog": "none",
+      "controls": {
+        "input": 1,
+        "select": 0,
+        "button": 1,
+        "link": 1,
+        "text": 0
+      }
+    }
+  },
+  "fresh_replay": "not_run",
+  "artifact_status": "not_compiled"
+}

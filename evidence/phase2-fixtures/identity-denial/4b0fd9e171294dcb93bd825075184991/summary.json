@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "run_type": "hand_authored_browser_fixture",
+  "live_discovery": false,
+  "operator_evidence": "none",
+  "session_id": "c6cce0c9a74140b4996db26b41209e50",
+  "ownership": "ABORTED",
+  "artifact_hash": "d5dfc52f4be03a7cab2d1f262fe20452f9f7290852b42c0d14e0f37ecf468926",
+  "profile_hash": "d1afbd31776e422bc3fd41645ab7b1b56a2426b60173c0a79055d5c0a0cf4862",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 2.101,
+  "action_count": 8,
+  "result": {
+    "kind": "failure",
+    "step_index": null,
+    "human_intervened": false,
+    "provider_call_count": 0,
+    "code": "IDENTITY_MISMATCH"
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "workspace_masked",
+    "frame_count": 3,
+    "target_count": 9,
+    "mask_rects": [
+      {
+        "x": 215.5,
+        "y": 114.4375,
+        "width": 1064.5,
+        "height": 755
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 9,
+      "dialog": "none",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 1,
+        "link": 1,
+        "text": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "scope": "Phase 3 decision-contract repairs and genuine discovery with changed-input fresh replay",
+  "recorded_by": "coding assistant from observed command results",
+  "checks": [
+    {
+      "command": "uv run --offline pytest -q",
+      "result": "189 passed in 68.36s",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline ruff format --check .",
+      "result": "40 files already formatted",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline ruff check .",
+      "result": "All checks passed!",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline mypy src sandbox",
+      "result": "Success: no issues found in 25 source files",
+      "exit": 0
+    },
+    {
+      "command": "uv lock --check --offline",
+      "result": "Resolved 32 packages",
+      "exit": 0
+    },
+    {
+      "command": "uv build --offline",
+      "result": "Built source distribution and wheel successfully",
+      "exit": 0
+    }
+  ],
+  "successful_live_command": "uv run --offline uicap discover --model gpt-4.1 --authorize-api --max-calls 12 --max-output-tokens 1200 --call-timeout 30 --evidence-dir evidence/phase3-live",
+  "successful_live_exit": 0,
+  "selected_run_index": "selected-runs.json",
+  "provenance_checks": {
+    "compiled_artifact_run_id_matches_discovery": true,
+    "canonical_artifact_hash_matches_discovery_and_replay": true,
+    "discovery_and_replay_session_ids_differ": true,
+    "replay_provider_call_count": 0,
+    "all_selected_provider_responses_completed_and_validated": true
+  },
+  "privacy_checks": {
+    "credential_prefix_and_known_restricted_input_scan": "No matches in live run text artifacts",
+    "selected_discovery_capture": "Visually inspected; entire workspace masked",
+    "selected_replay_capture": "Visually inspected; entire workspace masked"
+  },
+  "limitations": [
+    "Successful happy-path live discovery is not a production-readiness or final assignment acceptance claim.",
+    "Discovery-time human resume remains unsupported; same-session handoff is implemented for replay.",
+    "Broader adversarial review and final submission packaging remain separate phases."
+  ]
+}

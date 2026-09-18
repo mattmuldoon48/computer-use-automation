@@ -1,0 +1,524 @@
+{
+  "schema_version": 1,
+  "capability_id": "prepare_subaccount_review",
+  "capability_version": 1,
+  "goal": {
+    "goal_template": "Prepare {product_code} for {member_id}, nickname {nickname}; stop on review.",
+    "inputs": {
+      "member_id": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 16,
+        "values": []
+      },
+      "product_code": {
+        "type": "enum",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": [
+          "SAVINGS_BASIC",
+          "SAVINGS_PLUS"
+        ]
+      },
+      "nickname": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 32,
+        "values": []
+      }
+    },
+    "outputs": {
+      "member_id": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 16,
+        "values": []
+      },
+      "product_code": {
+        "type": "enum",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": [
+          "SAVINGS_BASIC",
+          "SAVINGS_PLUS"
+        ]
+      },
+      "nickname": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 32,
+        "values": []
+      },
+      "monthly_fee_minor": {
+        "type": "integer",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": []
+      },
+      "currency": {
+        "type": "enum",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": [
+          "USD"
+        ]
+      },
+      "submitted": {
+        "type": "boolean",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": []
+      }
+    },
+    "binding": {
+      "origin": "http://127.0.0.1:8000",
+      "entry_route": "/prepare",
+      "app": "member_ops",
+      "version": "v1",
+      "locale": "en_US"
+    },
+    "terminal_intent": "unsubmitted_review",
+    "budgets": {
+      "max_actions": 20,
+      "active_seconds": 180,
+      "operator_seconds": 300
+    },
+    "policy_ref": "prepare_only"
+  },
+  "surface_requirements": [
+    "web",
+    "frames",
+    "visible_text",
+    "form_controls"
+  ],
+  "targets": {
+    "member_id": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Member number"
+        }
+      },
+      "expected_matches": 1
+    },
+    "product_code": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Product"
+        }
+      },
+      "expected_matches": 1
+    },
+    "nickname": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Nickname"
+        }
+      },
+      "expected_matches": 1
+    },
+    "monthly_fee_minor": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Monthly fee"
+        }
+      },
+      "expected_matches": 1
+    },
+    "currency": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Currency"
+        }
+      },
+      "expected_matches": 1
+    },
+    "submitted": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Submitted"
+        }
+      },
+      "expected_matches": 1
+    },
+    "review": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Review state"
+        }
+      },
+      "expected_matches": 1
+    },
+    "not_found": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Member not found"
+        }
+      },
+      "expected_matches": 1
+    },
+    "expired": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Session expired"
+        }
+      },
+      "expected_matches": 1
+    },
+    "permission": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Permission denied"
+        }
+      },
+      "expected_matches": 1
+    },
+    "interstitial": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "status",
+        "name": {
+          "kind": "literal",
+          "value": "Notice"
+        }
+      },
+      "expected_matches": 1
+    },
+    "nickname_field": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "textbox",
+        "name": {
+          "kind": "literal",
+          "value": "Account nickname"
+        }
+      },
+      "expected_matches": 1
+    },
+    "review_button": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Review"
+        }
+      },
+      "expected_matches": 1
+    },
+    "dismiss": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Dismiss notice"
+        }
+      },
+      "expected_matches": 1
+    }
+  },
+  "steps": [
+    {
+      "id": "fill_nickname",
+      "action": {
+        "kind": "fill",
+        "target": "nickname_field",
+        "value": {
+          "kind": "input_ref",
+          "name": "nickname"
+        }
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "nickname_field"
+        },
+        {
+          "kind": "text_equals",
+          "target": "member_id",
+          "value": {
+            "kind": "input_ref",
+            "name": "member_id"
+          }
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "value_equals",
+          "target": "nickname_field",
+          "value": {
+            "kind": "input_ref",
+            "name": "nickname"
+          }
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "open_review",
+      "action": {
+        "kind": "click",
+        "target": "review_button"
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "review_button"
+        },
+        {
+          "kind": "text_equals",
+          "target": "member_id",
+          "value": {
+            "kind": "input_ref",
+            "name": "member_id"
+          }
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "visible",
+          "target": "review"
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    }
+  ],
+  "preconditions": [
+    {
+      "kind": "visible",
+      "target": "nickname_field"
+    }
+  ],
+  "identity_checks": [
+    {
+      "kind": "text_equals",
+      "target": "member_id",
+      "value": {
+        "kind": "input_ref",
+        "name": "member_id"
+      }
+    }
+  ],
+  "final_checks": [
+    {
+      "kind": "visible",
+      "target": "review"
+    },
+    {
+      "kind": "text_equals",
+      "target": "member_id",
+      "value": {
+        "kind": "input_ref",
+        "name": "member_id"
+      }
+    },
+    {
+      "kind": "value_equals",
+      "target": "submitted",
+      "value": {
+        "kind": "literal",
+        "value": false
+      }
+    }
+  ],
+  "extractions": {
+    "member_id": {
+      "target": "member_id",
+      "source": "text",
+      "parser": "string"
+    },
+    "product_code": {
+      "target": "product_code",
+      "source": "text",
+      "parser": "string"
+    },
+    "nickname": {
+      "target": "nickname",
+      "source": "text",
+      "parser": "string"
+    },
+    "monthly_fee_minor": {
+      "target": "monthly_fee_minor",
+      "source": "text",
+      "parser": "money_minor"
+    },
+    "currency": {
+      "target": "currency",
+      "source": "text",
+      "parser": "string"
+    },
+    "submitted": {
+      "target": "submitted",
+      "source": "value",
+      "parser": "boolean"
+    }
+  },
+  "output_matches": [
+    {
+      "output": "member_id",
+      "expected": {
+        "kind": "input_ref",
+        "name": "member_id"
+      }
+    },
+    {
+      "output": "product_code",
+      "expected": {
+        "kind": "input_ref",
+        "name": "product_code"
+      }
+    },
+    {
+      "output": "nickname",
+      "expected": {
+        "kind": "input_ref",
+        "name": "nickname"
+      }
+    },
+    {
+      "output": "submitted",
+      "expected": {
+        "kind": "literal",
+        "value": false
+      }
+    }
+  ],
+  "business_outcomes": [
+    {
+      "code": "member_not_found",
+      "details": {}
+    }
+  ],
+  "recovery_rules": [],
+  "required_permissions": [
+    "prepare"
+  ],
+  "redaction": [
+    "member_id",
+    "nickname"
+  ],
+  "provenance": {
+    "kind": "test_fixture",
+    "action_source": "hand_authored_test",
+    "contract_source": "caller",
+    "detector_source": "authored_profile",
+    "discovery_run_id": null
+  }
+}

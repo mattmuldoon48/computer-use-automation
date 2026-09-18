@@ -1,0 +1,26 @@
+{
+  "withheld": false,
+  "reason": "workspace_masked",
+  "frame_count": 3,
+  "target_count": 2,
+  "mask_rects": [
+    {
+      "x": 215.5,
+      "y": 114.4375,
+      "width": 1049.5,
+      "height": 755
+    }
+  ],
+  "structure": {
+    "state": "observed",
+    "target_count": 2,
+    "dialog": "none",
+    "controls": {
+      "input": 0,
+      "select": 0,
+      "button": 0,
+      "link": 1,
+      "text": 0
+    }
+  }
+}

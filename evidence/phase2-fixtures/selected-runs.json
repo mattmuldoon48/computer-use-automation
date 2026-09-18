@@ -1,0 +1,78 @@
+{
+  "run_type": "hand_authored_browser_fixture",
+  "live_discovery": false,
+  "real_person_handoff": "completed_user_guided",
+  "manual_summary": "manual/54c4cbabdeae477d824e8b2eb5591620/summary.json",
+  "runs": [
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "happy",
+        "--evidence-dir",
+        "evidence/phase2-fixtures/member-a"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "{\"kind\": \"success\", \"step_index\": null, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted fixture evidence: evidence/phase2-fixtures/member-a/1344560646b941d28e42fdc2b385e019\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "happy",
+        "--inputs-file",
+        "examples/member_b.inputs.json",
+        "--evidence-dir",
+        "evidence/phase2-fixtures/member-b"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "{\"kind\": \"success\", \"step_index\": null, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted fixture evidence: evidence/phase2-fixtures/member-b/9574ad905432400a8af8c5f22cabcec3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "member_not_found",
+        "--evidence-dir",
+        "evidence/phase2-fixtures/not-found"
+      ],
+      "expected_exit": 3,
+      "exit": 3,
+      "stdout": "{\"kind\": \"business_outcome\", \"step_index\": 2, \"human_intervened\": false, \"provider_call_count\": 0, \"code\": \"member_not_found\"}\nRedacted fixture evidence: evidence/phase2-fixtures/not-found/dbaa92ca10624d358147c66e27338af3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "wrong_member_review",
+        "--evidence-dir",
+        "evidence/phase2-fixtures/identity-denial"
+      ],
+      "expected_exit": 2,
+      "exit": 2,
+      "stdout": "{\"kind\": \"failure\", \"step_index\": null, \"human_intervened\": false, \"provider_call_count\": 0, \"code\": \"IDENTITY_MISMATCH\"}\nRedacted fixture evidence: evidence/phase2-fixtures/identity-denial/4b0fd9e171294dcb93bd825075184991\n",
+      "stderr": ""
+    }
+  ]
+}

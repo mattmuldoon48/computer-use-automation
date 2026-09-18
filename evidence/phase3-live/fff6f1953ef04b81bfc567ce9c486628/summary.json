@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "run_type": "live_discovery",
+  "live_discovery": true,
+  "session_id": "7613f7e1e6ae405784ab6cc7c099e782",
+  "run_id": "4da0cb8a238642019e1a1bd9b584fbf8",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 16.526,
+  "action_count": 8,
+  "provider_call_count": 9,
+  "planner_decision_count": 9,
+  "provider_records": [
+    {
+      "response_id": "resp_046dc77e3fe493e3016aac91e4d74087d29ac5ef6c727a3065",
+      "request_id": "req_36d00e65d2904c23b9fe4b4c5ec775df",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 799,
+        "output_tokens": 75,
+        "total_tokens": 874
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_00b30dc7ffe046b3016aac91e6086087d28e9a510ef4568509",
+      "request_id": "req_d2fdb6373d144bffa4250d63ec52e68f",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1108,
+        "output_tokens": 72,
+        "total_tokens": 1180
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "fill"
+    },
+    {
+      "response_id": "resp_094b9efab6cf992b016aac91e76d8487d28e516b5416153634",
+      "request_id": "req_3e2bd3e481f94223aff16420ec9c9d15",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1134,
+        "output_tokens": 78,
+        "total_tokens": 1212
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_0ab1c54f8ee47339016aac91ea8c5c87d2940cd13887b4a638",
+      "request_id": "req_6a326167661f49629871b3a5aa156a62",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 910,
+        "output_tokens": 73,
+        "total_tokens": 983
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_0463a577f4acf5b2016aac91ebff0887d2ab967d1636102026",
+      "request_id": "req_8ed3e6c790d84d0ea4cb41b3064823ef",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1119,
+        "output_tokens": 82,
+        "total_tokens": 1201
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_0c4427b5a6263e11016aac91ed6e0487d2ba5861e38d13500b",
+      "request_id": "req_5d4c0c92e81d49ff8878f1d6b30cfc0d",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1398,
+        "output_tokens": 73,
+        "total_tokens": 1471
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "fill"
+    },
+    {
+      "response_id": "resp_0efaf6c197dac4b7016aac91eeeb7887d29d33b6f86d7d2e10",
+      "request_id": "req_e54f049e65274bffaeaaacca7508599d",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1404,
+        "output_tokens": 76,
+        "total_tokens": 1480
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "select"
+    },
+    {
+      "response_id": "resp_0cafb7a86b65b2a8016aac91f081f887d2bbb4db679bb1cfef",
+      "request_id": "req_c32ef19e022e45dfab0b018d1536f126",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1418,
+        "output_tokens": 79,
+        "total_tokens": 1497
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_0b298df73f8f2e15016aac91f24db887d29b1bfbf58b04d24a",
+      "request_id": "req_20b23bf103b443cdb36d747dcb41c17a",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1603,
+        "output_tokens": 56,
+        "total_tokens": 1659
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "finish"
+    }
+  ],
+  "result": {
+    "kind": "success",
+    "step_index": 8,
+    "human_intervened": false,
+    "provider_call_count": 9
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "workspace_masked",
+    "frame_count": 3,
+    "target_count": 11,
+    "mask_rects": [
+      {
+        "x": 215.5,
+        "y": 114.4375,
+        "width": 1064.5,
+        "height": 755
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 11,
+      "dialog": "none",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 2,
+        "link": 1,
+        "text": 0
+      }
+    }
+  },
+  "fresh_replay": "success",
+  "artifact_status": "validated",
+  "artifact_hash": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+  "fresh_replay_exit_code": 0
+}

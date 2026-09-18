@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "run_type": "live_discovery",
+  "live_discovery": true,
+  "session_id": "db5fd885244049868259398b47207e1f",
+  "run_id": "6d96068762cd4e539b781cf7c1937cde",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 7.646,
+  "action_count": 3,
+  "provider_call_count": 4,
+  "planner_decision_count": 4,
+  "provider_records": [
+    {
+      "response_id": "resp_067fd07f07d92ca0016aac8fe6b8b487d2b2054caadae47651",
+      "request_id": "req_2adce0383def4d3e906641d558f98e16",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 632,
+        "output_tokens": 81,
+        "total_tokens": 713
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_09c8d5a96674d592016aac8fe8321487d2929ed00d32be5637",
+      "request_id": "req_88f1529dd600483b86dc37d5ad0d2188",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 903,
+        "output_tokens": 77,
+        "total_tokens": 980
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_0dd5c9c3e0d7f30b016aac8fe95ff487d289f91d9a46a61970",
+      "request_id": "req_a2fb33df22844242a96d79aefb8f4024",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 916,
+        "output_tokens": 74,
+        "total_tokens": 990
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_040ee761984e811a016aac8febbf1887d28b0639e356c92fde",
+      "request_id": "req_08a804054c4841c6be15e2d5c91eb387",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 745,
+        "output_tokens": 61,
+        "total_tokens": 806
+      },
+      "status": "completed",
+      "decision_validated": true
+    }
+  ],
+  "result": {
+    "kind": "failure",
+    "step_index": 3,
+    "human_intervened": false,
+    "provider_call_count": 4,
+    "code": "POLICY_DENIED"
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "workspace_masked",
+    "frame_count": 3,
+    "target_count": 4,
+    "mask_rects": [
+      {
+        "x": 215.5,
+        "y": 114.4375,
+        "width": 1064.5,
+        "height": 755
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 4,
+      "dialog": "none",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 0,
+        "link": 2,
+        "text": 0
+      }
+    }
+  },
+  "fresh_replay": "not_run",
+  "artifact_status": "not_compiled"
+}

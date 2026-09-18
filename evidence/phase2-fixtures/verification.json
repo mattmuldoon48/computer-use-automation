@@ -1,0 +1,56 @@
+{
+  "scope": "Phase 2 authored fixtures; not live discovery",
+  "recorded_by": "coding assistant from observed command results",
+  "baseline": {
+    "command": "uv run --offline pytest -q",
+    "result": "103 passed in 2.36s"
+  },
+  "final_checks": [
+    {
+      "command": "uv run --offline pytest -q",
+      "result": "131 passed in 55.60s",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline pytest tests/integration -q",
+      "result": "27 passed in 52.17s",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline ruff check .",
+      "result": "All checks passed!",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline ruff format --check .",
+      "result": "32 files already formatted",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline mypy src sandbox",
+      "result": "Success: no issues found in 21 source files",
+      "exit": 0
+    },
+    {
+      "command": "uv lock --check --offline",
+      "result": "Resolved 32 packages",
+      "exit": 0
+    },
+    {
+      "command": "uv build --offline",
+      "result": "Built sdist and wheel successfully",
+      "exit": 0
+    }
+  ],
+  "packaging": {
+    "wheel_members": 33,
+    "sdist_members": 50,
+    "required_resources_present": true,
+    "private_pdf_email_local_evidence_excluded": true
+  },
+  "evidence_canary_scan": "No configured synthetic identifiers, nicknames, or privacy canaries found in persisted fixture text",
+  "visual_verification": "Actual sandbox flow inspected; current persisted terminal image inspected with entire workspace masked",
+  "operator_simulation": "Automated browser test passed; not real-person evidence",
+  "real_person_handoff": "completed in a subsequent user-guided run",
+  "manual_summary": "manual/54c4cbabdeae477d824e8b2eb5591620/summary.json"
+}

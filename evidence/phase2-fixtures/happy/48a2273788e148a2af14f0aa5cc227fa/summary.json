@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "run_type": "hand_authored_browser_fixture",
+  "live_discovery": false,
+  "operator_evidence": "none",
+  "session_id": "2837b5541c9a428797929fe46d3c3edb",
+  "ownership": "AUTOMATION",
+  "artifact_hash": "af5cc768616d684f57d54564286b033af2317f498c732615052bae4ba316b4b0",
+  "profile_hash": "04e7b018c68272e137e4c53ac9207b26e20202d3d61f3ce8e488e82c3bde2da4",
+  "playwright_version": "1.58.0",
+  "elapsed_seconds": 2.585,
+  "action_count": 8,
+  "result": {
+    "kind": "success",
+    "step_index": null,
+    "human_intervened": false,
+    "provider_call_count": 0
+  },
+  "capture": {
+    "withheld": true,
+    "reason": "unreviewed_shell",
+    "structure": {
+      "state": "observed",
+      "target_count": 9,
+      "dialog": "none",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 1,
+        "link": 1,
+        "text": 0
+      }
+    }
+  }
+}

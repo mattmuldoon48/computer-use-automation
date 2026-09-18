@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ui-capability-runtime"
+version = "0.1.0"
+description = "Policy-gated UI discovery and deterministic capability replay"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi==0.128.0",
+    "jinja2==3.1.6",
+    "pillow==12.1.0",
+    "playwright==1.58.0",
+    "pydantic==2.12.5",
+    "python-multipart==0.0.22",
+    "uvicorn==0.40.0",
+]
+
+[project.scripts]
+uicap = "ui_capability.cli:main"
+
+[dependency-groups]
+dev = ["pytest==9.0.3", "ruff==0.15.14", "mypy==1.19.1"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ui_capability", "sandbox"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/ASSIGNMENT.pdf", "/*.pdf", "/.venv", "/artifacts", "/evidence", "/dist"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-ra"
+markers = ["browser: real Chromium tests against isolated loopback applications"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src"]

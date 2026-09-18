@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "scope": "Genuine OpenAI discovery attempts and model-free fresh replay; not final assignment acceptance",
+  "model": "gpt-4.1-2025-04-14",
+  "selected_discovery": "fff6f1953ef04b81bfc567ce9c486628/summary.json",
+  "selected_capability": "fff6f1953ef04b81bfc567ce9c486628/candidate.capability.json",
+  "selected_replay": "fff6f1953ef04b81bfc567ce9c486628/fresh-replay/a535f375c5244e18bf5198efb0026577/summary.json",
+  "artifact_hash": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+  "selected_verification": {
+    "discovery_result": "success",
+    "discovery_provider_calls": 9,
+    "executed_and_compiled_actions": 8,
+    "all_provider_responses_completed_and_validated": true,
+    "provenance_run_id_matches": true,
+    "artifact_hash_matches_replay": true,
+    "distinct_browser_session_ids": true,
+    "member_product_and_nickname_changed": true,
+    "replay_result": "success",
+    "replay_provider_calls": 0,
+    "terminal_intent": "unsubmitted_review"
+  },
+  "attempts": [
+    {
+      "summary": "25f306ff1d304e9f87d9a9cc9be82574/summary.json",
+      "provider_calls": 3,
+      "result": "failure",
+      "code": "INTERRUPTED",
+      "note": "Original attempt: two decisions rejected by local validation; no candidate saved."
+    },
+    {
+      "summary": "a671941db0834c0ba83824e758efeed5/summary.json",
+      "provider_calls": 2,
+      "result": "failure",
+      "code": "BUDGET_EXCEEDED",
+      "note": "Two-call diagnostic attempt isolated invalid input_name without retaining its value."
+    },
+    {
+      "summary": "697cd14e64484378b69390e41af74746/summary.json",
+      "provider_calls": 8,
+      "result": "failure",
+      "code": "POSTCONDITION_FAILED",
+      "note": "All responses validated, but model finish failed independent terminal checks."
+    },
+    {
+      "summary": "fc8fb6284c33489299ea4db8d5d9701a/summary.json",
+      "provider_calls": 4,
+      "result": "failure",
+      "code": "POLICY_DENIED",
+      "note": "Policy rejected the proposed action; no candidate saved."
+    },
+    {
+      "summary": "d14473f60bc446ad8f0fbeef79034e84/summary.json",
+      "provider_calls": 3,
+      "result": "failure",
+      "code": "INTERRUPTED",
+      "note": "Model requested intervention; no candidate saved."
+    },
+    {
+      "summary": "fff6f1953ef04b81bfc567ce9c486628/summary.json",
+      "provider_calls": 9,
+      "result": "success",
+      "note": "Compiled genuine observed actions and passed changed-input fresh replay."
+    }
+  ],
+  "aggregate_observed_usage": {
+    "provider_calls": 29,
+    "input_tokens": 27496,
+    "output_tokens": 2134,
+    "total_tokens": 29630
+  },
+  "privacy_verification": {
+    "credential_prefix_or_configured_restricted_input_matches_in_run_text": 0,
+    "selected_discovery_capture_visually_checked": "workspace_masked",
+    "raw_prompts_responses_or_credentials_saved": false
+  }
+}

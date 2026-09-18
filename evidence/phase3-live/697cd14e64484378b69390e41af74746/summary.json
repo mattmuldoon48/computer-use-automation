@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "run_type": "live_discovery",
+  "live_discovery": true,
+  "session_id": "1b1f2a7bbea1447babcefc70a309a7ad",
+  "run_id": "484560893bdd421eaccb34a2f3c1ae0b",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 16.02,
+  "action_count": 7,
+  "provider_call_count": 8,
+  "planner_decision_count": 8,
+  "provider_records": [
+    {
+      "response_id": "resp_09e882c68f08d050016aac8ef76fac87d2aa1f070ba9195f3b",
+      "request_id": "req_1e454a8b0b1c40708b490f463dc6d87a",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 588,
+        "output_tokens": 77,
+        "total_tokens": 665
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_02f6f60f0e182567016aac8ef942e887d2b2fc6ab98dbf619e",
+      "request_id": "req_4b05e2b587464feaa4ccbbeaf21c6260",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 855,
+        "output_tokens": 75,
+        "total_tokens": 930
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_0f9b018a972587c3016aac8efb039c87d2ac26bd0eeabc063a",
+      "request_id": "req_6932af01f3e343b681eeecf178174d1b",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 883,
+        "output_tokens": 74,
+        "total_tokens": 957
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_071271ab38a72b78016aac8efc85a887d2a5a37195c47f6509",
+      "request_id": "req_14c4785639084330b9e58f537804f586",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 703,
+        "output_tokens": 79,
+        "total_tokens": 782
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_0a7ee3f04a97808d016aac8efeb07087d2af1e036a837277b0",
+      "request_id": "req_88a4ac785d294bda9f970eb990058659",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 894,
+        "output_tokens": 78,
+        "total_tokens": 972
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_063012091ccd8b1a016aac8f003d8087d299a39eb42b280c7a",
+      "request_id": "req_3a4be0cc87e74337aff39802795ff32b",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1107,
+        "output_tokens": 79,
+        "total_tokens": 1186
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_04670fdaf9785feb016aac8f0308b487d28add099bb171d24d",
+      "request_id": "req_d3134b246aa441e7a99883d14b566a3a",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1104,
+        "output_tokens": 74,
+        "total_tokens": 1178
+      },
+      "status": "completed",
+      "decision_validated": true
+    },
+    {
+      "response_id": "resp_087aaa02b0b432db016aac8f04f80087d2b2ac576598040337",
+      "request_id": "req_e287fd87844546bf99b5470dbcb56c82",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1129,
+        "output_tokens": 57,
+        "total_tokens": 1186
+      },
+      "status": "completed",
+      "decision_validated": true
+    }
+  ],
+  "result": {
+    "kind": "failure",
+    "step_index": 7,
+    "human_intervened": false,
+    "provider_call_count": 8,
+    "code": "POSTCONDITION_FAILED"
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "workspace_masked",
+    "frame_count": 3,
+    "target_count": 20,
+    "mask_rects": [
+      {
+        "x": 215.5,
+        "y": 114.4375,
+        "width": 1064.5,
+        "height": 755
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 20,
+      "dialog": "none",
+      "controls": {
+        "input": 6,
+        "select": 6,
+        "button": 2,
+        "link": 1,
+        "text": 0
+      }
+    }
+  },
+  "fresh_replay": "not_run",
+  "artifact_status": "not_compiled"
+}

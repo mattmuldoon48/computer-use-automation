@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "run_type": "live_discovery",
+  "live_discovery": true,
+  "session_id": "fa8a945a325448b69e22e0a49ae083b7",
+  "run_id": "59843db0c952472f972fd066028d9076",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 5.834,
+  "action_count": 2,
+  "provider_call_count": 3,
+  "planner_decision_count": 3,
+  "provider_records": [
+    {
+      "response_id": "resp_0ef0c59aedf7e1cb016aac9107bbc087d29eaad505e33051c3",
+      "request_id": "req_f0837257bfe04aec90df1ae9c1f42a16",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 695,
+        "output_tokens": 76,
+        "total_tokens": 771
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_011043658d773569016aac910920b887d296c09987e5341d21",
+      "request_id": "req_aeca9501a1c844d8bebdafcecd9de0f9",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1012,
+        "output_tokens": 76,
+        "total_tokens": 1088
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "fill"
+    },
+    {
+      "response_id": "resp_0b01f71d8c1a0686016aac910adc8887d2a7226827fe48e268",
+      "request_id": "req_8c1af5a8d8c945c88e01c700cd4786a0",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1031,
+        "output_tokens": 58,
+        "total_tokens": 1089
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "intervene"
+    }
+  ],
+  "result": {
+    "kind": "failure",
+    "step_index": 2,
+    "human_intervened": false,
+    "provider_call_count": 3,
+    "code": "INTERRUPTED"
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "workspace_masked",
+    "frame_count": 3,
+    "target_count": 6,
+    "mask_rects": [
+      {
+        "x": 215.5,
+        "y": 114.4375,
+        "width": 1064.5,
+        "height": 755
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 6,
+      "dialog": "none",
+      "controls": {
+        "input": 1,
+        "select": 0,
+        "button": 1,
+        "link": 1,
+        "text": 0
+      }
+    }
+  },
+  "fresh_replay": "not_run",
+  "artifact_status": "not_compiled"
+}
