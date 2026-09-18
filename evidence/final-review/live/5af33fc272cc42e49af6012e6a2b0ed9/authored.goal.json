@@ -1,0 +1,92 @@
+{
+  "goal_template": "Prepare {product_code} for member {member_id} with nickname {nickname}. Stop at unsubmitted review; do not open the account.",
+  "inputs": {
+    "member_id": {
+      "type": "string",
+      "classification": "restricted",
+      "min_length": 1,
+      "max_length": 16,
+      "values": []
+    },
+    "product_code": {
+      "type": "enum",
+      "classification": "public",
+      "min_length": 1,
+      "max_length": 128,
+      "values": [
+        "SAVINGS_BASIC",
+        "SAVINGS_PLUS"
+      ]
+    },
+    "nickname": {
+      "type": "string",
+      "classification": "restricted",
+      "min_length": 1,
+      "max_length": 32,
+      "values": []
+    }
+  },
+  "outputs": {
+    "member_id": {
+      "type": "string",
+      "classification": "restricted",
+      "min_length": 1,
+      "max_length": 16,
+      "values": []
+    },
+    "product_code": {
+      "type": "enum",
+      "classification": "public",
+      "min_length": 1,
+      "max_length": 128,
+      "values": [
+        "SAVINGS_BASIC",
+        "SAVINGS_PLUS"
+      ]
+    },
+    "nickname": {
+      "type": "string",
+      "classification": "restricted",
+      "min_length": 1,
+      "max_length": 32,
+      "values": []
+    },
+    "monthly_fee_minor": {
+      "type": "integer",
+      "classification": "public",
+      "min_length": 1,
+      "max_length": 128,
+      "values": []
+    },
+    "currency": {
+      "type": "enum",
+      "classification": "public",
+      "min_length": 1,
+      "max_length": 128,
+      "values": [
+        "USD"
+      ]
+    },
+    "submitted": {
+      "type": "boolean",
+      "classification": "public",
+      "min_length": 1,
+      "max_length": 128,
+      "values": []
+    }
+  },
+  "binding": {
+    "origin": "http://127.0.0.1:60239",
+    "entry_route": "/",
+    "app": "member_ops",
+    "version": "v1",
+    "locale": "en_US"
+  },
+  "terminal_intent": "unsubmitted_review",
+  "budgets": {
+    "max_actions": 20,
+    "active_seconds": 180,
+    "operator_seconds": 1800
+  },
+  "policy_ref": "member_ops_prepare"
+}

@@ -21,6 +21,7 @@ from .contracts import (
     Observation,
     ObservedTarget,
     Ownership,
+    Predicate,
     PublicLiteral,
     RoleLocator,
     Scalar,
@@ -33,6 +34,7 @@ from .contracts import (
 from .errors import RuntimeFault
 from .evidence import EvidenceSink, diagnostic_projection
 from .policy import Effect, Policy
+from .profiles import DiscoveryCheckpoint
 from .surfaces.base import CaptureSurface, Surface
 from .values import evaluate_all, matches, resolve
 
@@ -113,6 +115,7 @@ class Session:
         self._last_observation: Observation | None = None
         self._seen_observations: set[str] = set()
         self._paused_step: Step | None = None
+        self._paused_discovery: tuple[DiscoveryCheckpoint, Observation | None] | None = None
         self._timeout: float = 180
         self._settling: asyncio.Task[None] | None = None
 
@@ -147,6 +150,11 @@ class Session:
     @property
     def action_count(self) -> int:
         return self._action_count
+
+    @property
+    def current_observation(self) -> Observation | None:
+        """The current epoch's cached observation, invalidated by every ownership change."""
+        return self._observation
 
     def _transition(self, ownership: Ownership) -> None:
         self._ownership = ownership
@@ -443,6 +451,23 @@ class Session:
         if reason not in _REASONS or not isinstance(step, Step):
             raise RuntimeFault(FailureCode.INVALID_ARGUMENT)
         self._paused_step = step.model_copy(deep=True)
+        await self._settle_pause()
+
+    async def pause_discovery(
+        self,
+        reason: str,
+        checkpoint: DiscoveryCheckpoint,
+        unchanged: Observation | None,
+    ) -> None:
+        self._automation()
+        if reason not in _REASONS or not isinstance(checkpoint, DiscoveryCheckpoint):
+            raise RuntimeFault(FailureCode.INVALID_ARGUMENT)
+        if unchanged is not None and unchanged != self._observation:
+            raise RuntimeFault(FailureCode.STALE_OBSERVATION)
+        self._paused_discovery = (checkpoint.model_copy(deep=True), unchanged)
+        await self._settle_pause()
+
+    async def _settle_pause(self) -> None:
         self._transition(Ownership.PAUSING)
         try:
             async with asyncio.timeout(self._timeout), self._lock:
@@ -556,6 +581,71 @@ class Session:
             if diagnostic.stage == "action":
                 diagnostic = diagnostic.model_copy(update={"stage": "resume"})
             raise RuntimeFault(fault.code, diagnostic) from None
+        finally:
+            if self._ownership == Ownership.VALIDATING_RESUME:
+                self._transition(Ownership.HUMAN)
+
+    async def resume_discovery(
+        self,
+        artifact: CapabilityArtifact,
+        inputs: dict[str, Scalar],
+        caller_permissions: frozenset[str],
+        checkpoint: DiscoveryCheckpoint,
+        *,
+        blocked_states: tuple[Predicate, ...] = (),
+        step_index: int | None = None,
+    ) -> None:
+        """Restore only a pinned discovery checkpoint; never retry or advance a replay step."""
+        if self.ownership != Ownership.HUMAN:
+            raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
+        self._transition(Ownership.VALIDATING_RESUME)
+        try:
+            async with asyncio.timeout(artifact.goal.budgets.active_seconds), self._lock:
+                if self._ownership != Ownership.VALIDATING_RESUME:
+                    raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
+                pinned = self._paused_discovery
+                if pinned is None or pinned[0] != checkpoint:
+                    raise RuntimeFault(FailureCode.INVALID_RESUME)
+                self._compatible(artifact, inputs)
+                if not set(artifact.required_permissions).issubset(caller_permissions):
+                    raise RuntimeFault(FailureCode.PERMISSION_DENIED)
+                observed = await self._read()
+                self.__evidence.observation(
+                    observed, artifact, inputs, {}, step_index=step_index, stage="resume"
+                )
+                if (
+                    observed.origin != artifact.goal.binding.origin
+                    or observed.dialog != "none"
+                    or not any(
+                        rule.origin == observed.origin
+                        and rule.route == observed.route
+                        and rule.permission in artifact.required_permissions
+                        and rule.effect not in {Effect.UNKNOWN, Effect.IRREVERSIBLE}
+                        for rule in self.__policy.rules
+                    )
+                    or not evaluate_all(
+                        artifact.identity_checks + checkpoint.restored,
+                        observed,
+                        artifact,
+                        inputs,
+                        {},
+                    )
+                    or any(
+                        evaluate_all((predicate,), observed, artifact, inputs, {})
+                        for predicate in blocked_states
+                    )
+                    or (pinned[1] is not None and not _same_state(pinned[1], observed))
+                ):
+                    raise RuntimeFault(
+                        FailureCode.INVALID_RESUME,
+                        Diagnostic(stage="resume", expected="checkpoint", observed="mismatch"),
+                    )
+                if self._ownership != Ownership.VALIDATING_RESUME:
+                    raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
+                self._paused_discovery = None
+                self._transition(Ownership.AUTOMATION)
+        except TimeoutError:
+            raise RuntimeFault(FailureCode.BUDGET_EXCEEDED) from None
         finally:
             if self._ownership == Ownership.VALIDATING_RESUME:
                 self._transition(Ownership.HUMAN)

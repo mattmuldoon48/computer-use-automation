@@ -294,12 +294,23 @@ class BusinessOutcomeDefinition(Contract):
     details: dict[Name, ValueDefinition]
 
 
+class DiscoveryAssistance(Contract):
+    """A candidate dependency, never a recording of executable human actions."""
+
+    checkpoints: tuple[Name, ...] = Field(min_length=1)
+    dependency: Literal["same_session_operator_restoration"] = "same_session_operator_restoration"
+    replay_status: Literal["candidate_unverified"] = "candidate_unverified"
+
+
 class Provenance(Contract):
     kind: Literal["test_fixture", "live_discovery"]
     action_source: Literal["hand_authored_test", "observed_live"]
     contract_source: Literal["caller"] = "caller"
     detector_source: Literal["authored_profile"] = "authored_profile"
     discovery_run_id: str | None = None
+    assistance: DiscoveryAssistance | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
 
     @model_validator(mode="after")
     def honest(self) -> Self:

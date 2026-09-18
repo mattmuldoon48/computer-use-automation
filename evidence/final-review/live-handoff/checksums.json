@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "scope": "Interrupted headed attempt only; excludes this inventory itself",
+  "files": {
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/authored.goal.json": "2d6f97d8cb7cf2f2c5d6194036699ac2a85451b593079e9abad2d15537c745e3",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/authored.policy.json": "6249abd5db79e970f11e03cc79e084c2b6419f2e721c26e0b47730401fee19d9",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/authored.profile.json": "f59558f2500dbd550eb9e2fc2c6e5d7ba1cd1830db80af15c0b037e3e216d834",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/events.jsonl": "e2ed20f4ef4b179167207d55634303c80c68f63d74e402ef8ea4a6f441e7cc77",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/failure.snapshot.json": "fb610e9ac25e54afe81c7c83f152a86096107ba97f7b29193d55411fbbdea3b9",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/paused.capture.json": "db0d23b8efe8d07518531ccfcc7fc61df664d5cc6ef77f9b81d2428d00a6fc4e",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/paused.png": "ebb03654b682a076d7709e50a08a5fbdd51ec95a32c0e045ac784c7bd29a6a32",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/source.json": "5c5689a1a58778d68ac1f09b74e38135708bdfe703842ccc9a0c3760e0782ab5",
+    "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/summary.json": "1ae1fd8fd478d57e2439cc6ecd19691e055b4cc43180519dd46805006f365aff",
+    "evidence/final-review/live-handoff/interruption.json": "7979c07c05e4a5b7cac1023c09526f427696168e85d7cf332422dfca68872c19"
+  }
+}

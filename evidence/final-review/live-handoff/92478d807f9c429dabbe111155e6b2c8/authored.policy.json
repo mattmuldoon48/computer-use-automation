@@ -1,0 +1,480 @@
+{
+  "policy_id": "member_ops_prepare",
+  "binding": {
+    "origin": "http://127.0.0.1:60313",
+    "entry_route": "/",
+    "app": "member_ops",
+    "version": "v1",
+    "locale": "en_US"
+  },
+  "rules": [
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "navigation"
+        },
+        "section": null,
+        "locator": {
+          "kind": "role",
+          "role": "link",
+          "name": {
+            "kind": "literal",
+            "value": "Member search"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/home",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "READ"
+    },
+    {
+      "action": "fill",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": null,
+        "locator": {
+          "kind": "table_label_control",
+          "label": {
+            "kind": "literal",
+            "value": "Member number"
+          },
+          "control": "input"
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/search",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "SAFE_OVERWRITE"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": null,
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": {
+            "kind": "literal",
+            "value": "Search"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/search",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "READ"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": null,
+        "locator": {
+          "kind": "role",
+          "role": "link",
+          "name": {
+            "kind": "input_ref",
+            "name": "member_id"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/search",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "READ"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": null,
+        "locator": {
+          "kind": "role",
+          "role": "link",
+          "name": {
+            "kind": "literal",
+            "value": "Prepare sub-account"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/member",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "READ"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": null,
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": {
+            "kind": "literal",
+            "value": "Dismiss notice"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/prepare",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "READ"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": null,
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": {
+            "kind": "literal",
+            "value": "Open account"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/review",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "IRREVERSIBLE"
+    },
+    {
+      "action": "select",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "label",
+          "label": {
+            "kind": "literal",
+            "value": "Product"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/prepare",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "SAFE_OVERWRITE"
+    },
+    {
+      "action": "fill",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "label",
+          "label": {
+            "kind": "literal",
+            "value": "Nickname"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/prepare",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "SAFE_OVERWRITE"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": {
+            "kind": "literal",
+            "value": "Review"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/prepare",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "PREVIEW"
+    },
+    {
+      "action": "select",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "label",
+          "label": {
+            "kind": "literal",
+            "value": "Product"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/signin",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "SAFE_OVERWRITE"
+    },
+    {
+      "action": "fill",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "label",
+          "label": {
+            "kind": "literal",
+            "value": "Nickname"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/signin",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "SAFE_OVERWRITE"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": {
+            "kind": "literal",
+            "value": "Review"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/signin",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "PREVIEW"
+    },
+    {
+      "action": "select",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "label",
+          "label": {
+            "kind": "literal",
+            "value": "Product"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/dismiss",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "SAFE_OVERWRITE"
+    },
+    {
+      "action": "fill",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "label",
+          "label": {
+            "kind": "literal",
+            "value": "Nickname"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/dismiss",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "SAFE_OVERWRITE"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "workspace"
+        },
+        "section": {
+          "kind": "literal",
+          "value": "Account preparation"
+        },
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": {
+            "kind": "literal",
+            "value": "Review"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/dismiss",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "PREVIEW"
+    },
+    {
+      "action": "click",
+      "target": {
+        "frame": {
+          "kind": "named_frame",
+          "name": "navigation"
+        },
+        "section": null,
+        "locator": {
+          "kind": "role",
+          "role": "link",
+          "name": {
+            "kind": "literal",
+            "value": "Member search"
+          }
+        },
+        "expected_matches": 1
+      },
+      "origin": "http://127.0.0.1:60313",
+      "route": "/workspace/review",
+      "destination": null,
+      "permission": "prepare",
+      "effect": "READ"
+    }
+  ],
+  "approved_literals": [
+    "/workspace/home",
+    "/workspace/search",
+    "/workspace/member",
+    "/workspace/prepare",
+    "/workspace/review",
+    "/workspace/signin",
+    "/workspace/dismiss",
+    "Member search",
+    "Member details",
+    "Prepare sub-account",
+    "Review sub-account",
+    "Search",
+    "Account preparation",
+    "Review",
+    "Open account",
+    "Dismiss notice",
+    "Member number",
+    "Product",
+    "Nickname",
+    "Product code",
+    "Monthly fee",
+    "Currency",
+    "Submitted",
+    "Member not found",
+    "Product unavailable",
+    "Business validation rejected",
+    "Permission denied",
+    "Session expired",
+    "Service notice",
+    "Unexpected confirmation",
+    "false",
+    false,
+    "",
+    "SAVINGS_BASIC"
+  ],
+  "permissions": [
+    "prepare"
+  ]
+}

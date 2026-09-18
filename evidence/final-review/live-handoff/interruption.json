@@ -1,0 +1,692 @@
+{
+  "schema_version": 1,
+  "scope": "Separately authorized real-user discovery handoff attempt, interrupted before resume; not successful handoff evidence",
+  "summary": "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/summary.json",
+  "events": "evidence/final-review/live-handoff/92478d807f9c429dabbe111155e6b2c8/events.jsonl",
+  "command": [
+    "uicap",
+    "discover",
+    "--model",
+    "gpt-4.1-2025-04-14",
+    "--authorize-api",
+    "--case",
+    "session_expired",
+    "--headed",
+    "--max-calls",
+    "12",
+    "--max-output-tokens",
+    "1200",
+    "--call-timeout",
+    "30",
+    "--evidence-dir",
+    "evidence/final-review/live-handoff"
+  ],
+  "launch": "Existing .venv Python through supervised PTY; private .env read only inside child process",
+  "user_report": "Reached Prepare sub-account, then accidentally closed browser",
+  "runtime_observations": {
+    "typed_intervention": "session_expired",
+    "human_ownership_granted": true,
+    "human_activity_event_count": 7,
+    "automation_resume_attempted": false,
+    "abort_command_sent": true,
+    "process_exit_code": 2,
+    "result": {
+      "kind": "failure",
+      "step_index": 4,
+      "human_intervened": true,
+      "provider_call_count": 5,
+      "code": "INTERRUPTED",
+      "diagnostic": {
+        "stage": "guard",
+        "expected": "visible",
+        "observed": "interrupted",
+        "target_index": 3,
+        "guard_index": 1,
+        "match_count": 1,
+        "expected_count": 1,
+        "predicate_path": [
+          0
+        ]
+      }
+    },
+    "provider_calls": 5,
+    "automated_actions": 5,
+    "verified_actions_before_pause": 4,
+    "candidate_exported": false,
+    "fresh_replay": "not_run",
+    "terminal_capture": {
+      "withheld": true,
+      "reason": "unsafe_capture",
+      "structure": {
+        "state": "observed",
+        "target_count": 9,
+        "dialog": "none",
+        "controls": {
+          "input": 4,
+          "select": 0,
+          "button": 2,
+          "link": 1,
+          "text": 0
+        },
+        "target_details_state": "current",
+        "targets": [
+          {
+            "target_index": 0,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 1,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 2,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 3,
+            "match_count": 1,
+            "state": "unique",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 1
+            },
+            "value_types": {
+              "string": 1,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": true,
+            "value_present": false,
+            "derived_present": true
+          },
+          {
+            "target_index": 4,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 5,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 6,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 7,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 8,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 9,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 10,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 11,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 12,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 13,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 14,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 15,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 16,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 17,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 18,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 19,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 20,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 21,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 22,
+            "match_count": 1,
+            "state": "unique",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 1,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 1,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": true,
+            "value_present": false,
+            "derived_present": true
+          },
+          {
+            "target_index": 23,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 24,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 25,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          },
+          {
+            "target_index": 26,
+            "match_count": 0,
+            "state": "missing",
+            "controls": {
+              "input": 0,
+              "textarea": 0,
+              "select": 0,
+              "button": 0,
+              "link": 0,
+              "text": 0,
+              "other": 0
+            },
+            "value_types": {
+              "string": 0,
+              "integer": 0,
+              "boolean": 0
+            },
+            "text_present": false,
+            "value_present": false,
+            "derived_present": false
+          }
+        ],
+        "omitted_targets": 0
+      }
+    }
+  },
+  "observed_usage": {
+    "input_tokens": 4878,
+    "output_tokens": 369,
+    "total_tokens": 5247
+  },
+  "source": {
+    "commit": "f6eac09e9c6eba6b175b7d5c5adbce2748c969ac",
+    "worktree_dirty": true,
+    "source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+    "scope": "Runtime Python/JavaScript/JSON/templates and available project configuration"
+  },
+  "privacy": {
+    "credential_and_restricted_input_matches": 0,
+    "text_files_checked": 8
+  },
+  "capture_verification": {
+    "decoded_opaque_captures": 1
+  },
+  "automatic_retries": 0,
+  "remaining": "New authorized headed run and user participation are needed to verify same-session restoration and resumed discovery."
+}

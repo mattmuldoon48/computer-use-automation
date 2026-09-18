@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "scope": "Current local verification only; no paid model or real-human evidence",
+  "source_snapshot": "evidence/final-review/source-snapshot.json",
+  "discovery_simulations": [
+    {
+      "name": "privacy-a",
+      "actor": "scripted_planner",
+      "real_human": false,
+      "live_discovery": false,
+      "summary": "evidence/final-review/local/privacy-a/ad4b79501409407daec28cdfd92f888d/summary.json",
+      "candidate": "evidence/final-review/local/privacy-a/ad4b79501409407daec28cdfd92f888d/candidate.capability.json",
+      "paired_replay": "evidence/final-review/local/privacy-a/ad4b79501409407daec28cdfd92f888d/fresh-replay/5487eed9f040436d8a670c2e6d591ade/summary.json",
+      "artifact_hash": "624714f6ae0f260d4333fb9a97b9e4ac78c700db17bfcbb623678df4d935ffb7",
+      "source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+      "exit_code": 0,
+      "changed_member_product_nickname": true,
+      "distinct_browser_contexts": true,
+      "automated_actions_each": 8,
+      "prepare_requests_each": 1,
+      "review_requests_each": 1,
+      "signin_count": 0,
+      "submit_requests": 0,
+      "ledger_count": 0,
+      "provider_calls": 0,
+      "invalid_resume_then_restoration_each": false,
+      "terminal_command_count": 0
+    },
+    {
+      "name": "privacy-Review",
+      "actor": "scripted_planner",
+      "real_human": false,
+      "live_discovery": false,
+      "summary": "evidence/final-review/local/privacy-Review/e1872df10cd44314bf7fb234f951827a/summary.json",
+      "candidate": "evidence/final-review/local/privacy-Review/e1872df10cd44314bf7fb234f951827a/candidate.capability.json",
+      "paired_replay": "evidence/final-review/local/privacy-Review/e1872df10cd44314bf7fb234f951827a/fresh-replay/4fa383bd6ab44a8cb10e7300f8928a09/summary.json",
+      "artifact_hash": "cb24e7e184cf145189a25102bd6a5928a78f6c47929100c44f7232d35d21d917",
+      "source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+      "exit_code": 0,
+      "changed_member_product_nickname": true,
+      "distinct_browser_contexts": true,
+      "automated_actions_each": 8,
+      "prepare_requests_each": 1,
+      "review_requests_each": 1,
+      "signin_count": 0,
+      "submit_requests": 0,
+      "ledger_count": 0,
+      "provider_calls": 0,
+      "invalid_resume_then_restoration_each": false,
+      "terminal_command_count": 0
+    },
+    {
+      "name": "discovery-handoff-simulation",
+      "actor": "scripted_planner_and_simulated_operator",
+      "real_human": false,
+      "live_discovery": false,
+      "summary": "evidence/final-review/local/discovery-handoff-simulation/e166d93a13f1418a95cca59935096c02/summary.json",
+      "candidate": "evidence/final-review/local/discovery-handoff-simulation/e166d93a13f1418a95cca59935096c02/candidate.capability.json",
+      "paired_replay": "evidence/final-review/local/discovery-handoff-simulation/e166d93a13f1418a95cca59935096c02/fresh-replay/989bb81794904c93bf86082566e9283a/summary.json",
+      "artifact_hash": "0a63272129fe0eff7ff1375631b3d2b9d34da28e08c5b8d80e1959b87457faa6",
+      "source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+      "exit_code": 0,
+      "changed_member_product_nickname": true,
+      "distinct_browser_contexts": true,
+      "automated_actions_each": 8,
+      "prepare_requests_each": 1,
+      "review_requests_each": 1,
+      "signin_count": 2,
+      "submit_requests": 0,
+      "ledger_count": 0,
+      "provider_calls": 0,
+      "invalid_resume_then_restoration_each": true,
+      "terminal_command_count": 8
+    }
+  ],
+  "cli_runs": [
+    {
+      "case": "happy",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "happy",
+        "--evidence-dir",
+        "evidence/final-review/cli-happy"
+      ],
+      "exit_code": 0,
+      "summary": "evidence/final-review/cli-happy/29db8d9978e049b8829487b9d0a5277f/summary.json",
+      "result": {
+        "kind": "success",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "action_count": 8,
+      "stdout": "{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted replay evidence: evidence/final-review/cli-happy/29db8d9978e049b8829487b9d0a5277f\n",
+      "stderr": ""
+    },
+    {
+      "case": "known_interstitial",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "known_interstitial",
+        "--evidence-dir",
+        "evidence/final-review/cli-known_interstitial"
+      ],
+      "exit_code": 0,
+      "summary": "evidence/final-review/cli-known_interstitial/33f6dc72b94344b79c67163578ef9a6b/summary.json",
+      "result": {
+        "kind": "success",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "action_count": 9,
+      "stdout": "{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted replay evidence: evidence/final-review/cli-known_interstitial/33f6dc72b94344b79c67163578ef9a6b\n",
+      "stderr": ""
+    },
+    {
+      "case": "member_not_found",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "member_not_found",
+        "--evidence-dir",
+        "evidence/final-review/cli-member_not_found"
+      ],
+      "exit_code": 3,
+      "summary": "evidence/final-review/cli-member_not_found/f5b8a7773b604421a7e4c546147373e1/summary.json",
+      "result": {
+        "kind": "business_outcome",
+        "step_index": 2,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "member_not_found"
+      },
+      "action_count": 3,
+      "stdout": "{\"kind\": \"business_outcome\", \"step_index\": 2, \"human_intervened\": false, \"provider_call_count\": 0, \"code\": \"member_not_found\"}\nRedacted replay evidence: evidence/final-review/cli-member_not_found/f5b8a7773b604421a7e4c546147373e1\n",
+      "stderr": ""
+    },
+    {
+      "case": "wrong_member_review",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "wrong_member_review",
+        "--evidence-dir",
+        "evidence/final-review/cli-wrong_member_review"
+      ],
+      "exit_code": 2,
+      "summary": "evidence/final-review/cli-wrong_member_review/cd2773c6e7c34827bdadc1ffe30e8da0/summary.json",
+      "result": {
+        "kind": "failure",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "IDENTITY_MISMATCH",
+        "diagnostic": {
+          "stage": "identity",
+          "expected": "text_equals",
+          "observed": "mismatch",
+          "target_index": 5,
+          "match_count": 1,
+          "expected_count": 1,
+          "predicate_path": [
+            0
+          ]
+        }
+      },
+      "action_count": 8,
+      "stdout": "{\"kind\": \"failure\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0, \"code\": \"IDENTITY_MISMATCH\", \"diagnostic\": {\"stage\": \"identity\", \"expected\": \"text_equals\", \"observed\": \"mismatch\", \"target_index\": 5, \"match_count\": 1, \"expected_count\": 1, \"predicate_path\": [0]}}\nRedacted replay evidence: evidence/final-review/cli-wrong_member_review/cd2773c6e7c34827bdadc1ffe30e8da0\n",
+      "stderr": ""
+    }
+  ],
+  "readme_runs": [
+    {
+      "name": "readme-shortest",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "happy",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--inputs-file",
+        "examples/member_b.inputs.json",
+        "--evidence-dir",
+        "evidence/final-review/readme-shortest"
+      ],
+      "exit_code": 0,
+      "summary": "evidence/final-review/readme-shortest/503858d9dab74d32875eacf586c4eb26/summary.json",
+      "stdout": "{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted replay evidence: evidence/final-review/readme-shortest/503858d9dab74d32875eacf586c4eb26\n",
+      "stderr": ""
+    },
+    {
+      "name": "readme-selected-candidate",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "happy",
+        "--artifact",
+        "evidence/final-review/local/privacy-a/ad4b79501409407daec28cdfd92f888d/candidate.capability.json",
+        "--inputs-file",
+        "examples/member_b.inputs.json",
+        "--evidence-dir",
+        "evidence/final-review/readme-selected-candidate"
+      ],
+      "exit_code": 0,
+      "summary": "evidence/final-review/readme-selected-candidate/23d84eae2a4c45d4a6ff42eb0b8d8e6b/summary.json",
+      "stdout": "{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted replay evidence: evidence/final-review/readme-selected-candidate/23d84eae2a4c45d4a6ff42eb0b8d8e6b\n",
+      "stderr": ""
+    }
+  ],
+  "live_discovery": "not_run_pending_user_authorization",
+  "real_user_discovery_handoff": "not_run_pending_user_participation"
+}

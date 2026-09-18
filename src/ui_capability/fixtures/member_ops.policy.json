@@ -470,7 +470,9 @@
     "Service notice",
     "Unexpected confirmation",
     "false",
-    false
+    false,
+    "",
+    "SAVINGS_BASIC"
   ],
   "permissions": [
     "prepare"

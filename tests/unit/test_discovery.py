@@ -240,7 +240,7 @@ def test_structural_generalization_preserves_input_identity_when_values_collide(
     )
     cap = cap.model_copy(update={"targets": {**cap.targets, "member_link": spec}})
     inputs = {**INPUTS, "nickname": INPUTS["member_id"]}
-    compiler = DeterministicCompiler(cap, policy(cap), inputs)
+    compiler = DeterministicCompiler(cap, policy(cap), inputs, reviewed_targets=cap.targets)
     target = ObservedTarget(
         ref="visible_link",
         spec=bind_target(spec, inputs, {}),
@@ -257,13 +257,14 @@ def test_structural_generalization_preserves_input_identity_when_values_collide(
 
 def test_sensitive_literal_target_cannot_be_published_even_if_caller_approved_it():
     cap = artifact()
+    reviewed_targets = dict(cap.targets)
     sensitive = TargetSpec(
         frame=FrameScope(kind="main"),
         locator=RoleLocator(role="link", name=PublicLiteral(value=INPUTS["member_id"])),
     )
     cap = cap.model_copy(update={"targets": {**cap.targets, "unsafe_member_link": sensitive}})
     with pytest.raises(RuntimeFault) as error:
-        DeterministicCompiler(cap, policy(cap), dict(INPUTS))
+        DeterministicCompiler(cap, policy(cap), dict(INPUTS), reviewed_targets=reviewed_targets)
     assert error.value.code == FailureCode.POLICY_DENIED
 
 
@@ -273,7 +274,7 @@ def test_coincidental_input_text_is_not_a_reusable_click_checkpoint():
     ceiling = ceiling.model_copy(
         update={"approved_literals": ceiling.approved_literals + (BINDING.entry_route,)}
     )
-    compiler = DeterministicCompiler(cap, ceiling, dict(INPUTS))
+    compiler = DeterministicCompiler(cap, ceiling, dict(INPUTS), reviewed_targets=cap.targets)
     before = derived(observation(cap, INPUTS))
     after = before.model_copy(
         update={

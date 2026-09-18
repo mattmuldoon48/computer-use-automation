@@ -1,0 +1,777 @@
+{
+  "schema_version": 1,
+  "source": {
+    "commit": "f6eac09e9c6eba6b175b7d5c5adbce2748c969ac",
+    "worktree_dirty": true,
+    "source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+    "scope": "Runtime Python/JavaScript/JSON/templates and available project configuration"
+  },
+  "run_type": "live_discovery",
+  "live_discovery": true,
+  "session_id": "9745aa759ed048c28aa85c89f15d870f",
+  "run_id": "71b53d6ba43542518c6f77e37b0587e0",
+  "profile_hash": "c09152e49d60d2059f415110ec8a7cedaa0ca422553b8db4dc175119d333929d",
+  "goal_hash": "e977a0539e44738abf35ecfa3e31c154dd6624ce7b0bff01e8bdf340b0a34276",
+  "discovery_mode": "unassisted",
+  "operator_evidence": "none",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 24.058,
+  "action_count": 8,
+  "provider_call_count": 9,
+  "planner_decision_count": 9,
+  "provider_records": [
+    {
+      "response_id": "resp_05bd741d68b2c88b016aada3d845c487d2a1b1332d39c58aa4",
+      "request_id": "req_8fde3196a553465dbca3d1a14f3b2165",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 789,
+        "output_tokens": 72,
+        "total_tokens": 861
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_0ea59010a1ff4dd5016aada3da572887d296a9757085989e3a",
+      "request_id": "req_5854a515031d4c61b68636147ee4c84b",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1074,
+        "output_tokens": 78,
+        "total_tokens": 1152
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "fill"
+    },
+    {
+      "response_id": "resp_0400845fd9df130d016aada3dc1b0087d2b70071daab0587d4",
+      "request_id": "req_7292de7882bc4bc6a33a09f9b80fe519",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1084,
+        "output_tokens": 71,
+        "total_tokens": 1155
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_0ea226cc2409c920016aada3ddb3b887d2a71ee1bada164818",
+      "request_id": "req_ce702772a1be4fa490687e9ce34e4d82",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 893,
+        "output_tokens": 74,
+        "total_tokens": 967
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_01f34294ee2ba3be016aada3df6ef087d2b53b9215fa50c9b9",
+      "request_id": "req_c9a52f328f524a179dcb6b637fb1384a",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1059,
+        "output_tokens": 75,
+        "total_tokens": 1134
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_010a7e4fbccb27b4016aada3e45e9487d29557c7a4005d8202",
+      "request_id": "req_d0e1335ab6df4f07a683e3529059f197",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1273,
+        "output_tokens": 74,
+        "total_tokens": 1347
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "select"
+    },
+    {
+      "response_id": "resp_07d485e8ba119719016aada3e6be0487d297c0a4b53c9f66dc",
+      "request_id": "req_673c9e8507f94e8a86167891d64db8c4",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1292,
+        "output_tokens": 72,
+        "total_tokens": 1364
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "fill"
+    },
+    {
+      "response_id": "resp_015b333950d17aad016aada3e92f5487d2ab3f0c69da02c6af",
+      "request_id": "req_e62b49a0bdc24ba9b8dff0a7993745fe",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1307,
+        "output_tokens": 77,
+        "total_tokens": 1384
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "click"
+    },
+    {
+      "response_id": "resp_0ccb495127aeb783016aada3eb28d487d2855a7415d5ca99b4",
+      "request_id": "req_7c7b61d119c442f181d7c1e616afaf44",
+      "model": "gpt-4.1-2025-04-14",
+      "usage": {
+        "input_tokens": 1450,
+        "output_tokens": 58,
+        "total_tokens": 1508
+      },
+      "status": "completed",
+      "decision_validated": true,
+      "decision_kind": "finish"
+    }
+  ],
+  "result": {
+    "kind": "success",
+    "step_index": 8,
+    "human_intervened": false,
+    "provider_call_count": 9
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "page_masked",
+    "frame_count": 3,
+    "target_count": 11,
+    "mask_rects": [
+      {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 907.484375
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 11,
+      "dialog": "none",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 2,
+        "link": 1,
+        "text": 0
+      },
+      "target_details_state": "current",
+      "targets": [
+        {
+          "target_index": 0,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 1
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 1,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 2,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 3,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 4,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 5,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 1
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 6,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 7,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 8,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 1
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 9,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 1
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 10,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 11,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 12,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 13,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 14,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 15,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 16,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 1
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 17,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 18,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 19,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 1
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 20,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 21,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 22,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 1,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 23,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 1,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 24,
+          "match_count": 1,
+          "state": "unique",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 1
+          },
+          "value_types": {
+            "string": 1,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": true,
+          "value_present": false,
+          "derived_present": true
+        },
+        {
+          "target_index": 25,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        },
+        {
+          "target_index": 26,
+          "match_count": 0,
+          "state": "missing",
+          "controls": {
+            "input": 0,
+            "textarea": 0,
+            "select": 0,
+            "button": 0,
+            "link": 0,
+            "text": 0,
+            "other": 0
+          },
+          "value_types": {
+            "string": 0,
+            "integer": 0,
+            "boolean": 0
+          },
+          "text_present": false,
+          "value_present": false,
+          "derived_present": false
+        }
+      ],
+      "omitted_targets": 0
+    }
+  },
+  "fresh_replay": "success",
+  "artifact_status": "validated",
+  "artifact_hash": "296ffed60511b0eb5849f4f4308e24c73bf3aa618a0a34e93a5fab698a8a61ca",
+  "fresh_replay_summary": "fresh-replay/60fbe5f8de98457daf5ad3290d16a681/summary.json",
+  "fresh_replay_exit_code": 0
+}

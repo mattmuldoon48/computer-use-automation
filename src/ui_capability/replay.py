@@ -197,6 +197,20 @@ class Replay:
         self._diagnostic = Diagnostic(
             stage="preflight", expected="valid_contract", observed="mismatch"
         )
+        assistance = self.artifact.provenance.assistance
+        if assistance is not None:
+            checkpoints = {item.id: item for item in self.profile.discovery_checkpoints}
+            for name in assistance.checkpoints:
+                checkpoint = checkpoints.get(name)
+                if checkpoint is None:
+                    raise RuntimeFault(FailureCode.INVALID_ARTIFACT)
+                if checkpoint.action is not None and not any(
+                    step.action == checkpoint.action
+                    and step.preconditions == checkpoint.before
+                    and step.postconditions == checkpoint.restored
+                    for step in self.artifact.steps
+                ):
+                    raise RuntimeFault(FailureCode.INVALID_ARTIFACT)
         rules = {guard.id for guard in self.profile.guards if guard.kind == "recovery"}
         if not set(self.artifact.recovery_rules).issubset(rules):
             raise RuntimeFault(FailureCode.INVALID_ARTIFACT)

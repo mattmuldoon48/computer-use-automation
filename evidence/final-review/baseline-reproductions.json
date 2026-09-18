@@ -1,0 +1,28 @@
+{
+  "privacy": [
+    {
+      "nickname": "Rainy day",
+      "schema_accepts": true,
+      "compiler": "accepted"
+    },
+    {
+      "nickname": "a",
+      "schema_accepts": true,
+      "compiler": "POLICY_DENIED"
+    },
+    {
+      "nickname": "Review",
+      "schema_accepts": true,
+      "compiler": "POLICY_DENIED"
+    }
+  ],
+  "discovery_handoff": {
+    "result": "failure",
+    "code": "INTERRUPTED",
+    "ownership": "ABORTED",
+    "public_resume_available": false,
+    "automated_actions": 0,
+    "real_provider_calls": 0,
+    "test_actor": "explicitly scripted fake-surface planner; not live or human evidence"
+  }
+}

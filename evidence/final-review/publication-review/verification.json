@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "scope": "Final publication review and mandatory compiler-authority hardening; no new paid discovery",
+  "source_snapshot": "evidence/final-review/publication-review/source-snapshot.json",
+  "source": {
+    "commit": "f6eac09e9c6eba6b175b7d5c5adbce2748c969ac",
+    "worktree_dirty": true,
+    "source_digest": "7eb46c3c3ea356741f01567ad22b84e2c79cc089108be0178386011bdd74b130",
+    "scope": "Runtime Python/JavaScript/JSON/templates and available project configuration"
+  },
+  "finding_and_reproduction": "evidence/final-review/publication-review/compiler-authority.json",
+  "review_conclusions": {
+    "handoff": "No blocking findings in ownership, settlement, pending-action compilation, budgets, validated resume, or assistance dependencies",
+    "privacy": "Supported Discovery path already used independent target authority. Removed the optional direct-constructor fallback to enforce the same authority requirement for every call.",
+    "publication": "Private credentials, private review documents and build outputs excluded; previous evidence retained unchanged"
+  },
+  "checks": [
+    {
+      "command": ".venv/bin/pytest -q --tb=short",
+      "exit_code": 0,
+      "result": "284 passed in 189.86s"
+    },
+    {
+      "command": ".venv/bin/mypy src sandbox",
+      "exit_code": 0,
+      "result": "Success: no issues found in 25 source files"
+    },
+    {
+      "command": ".venv/bin/ruff check .",
+      "exit_code": 0,
+      "result": "All checks passed!"
+    },
+    {
+      "command": ".venv/bin/ruff format --check .",
+      "exit_code": 0,
+      "result": "44 files already formatted"
+    },
+    {
+      "command": "uv lock --check --offline",
+      "exit_code": 0,
+      "result": "Resolved 32 packages in 16ms"
+    },
+    {
+      "command": "uv build --offline --no-build-isolation",
+      "exit_code": 0,
+      "result": "Built wheel and source distribution",
+      "environment": {
+        "PYTHONPATH": "$HOME/.cache/uv/archive-v0/EUpSMPh00pyc1DJf:$HOME/.cache/uv/archive-v0/7yVhO-4CEagtqn8Z"
+      },
+      "installation": "None; reused existing cached backend packages and existing .venv dependencies"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors"
+    }
+  ],
+  "local_browser_smoke": {
+    "actor": "scripted_planner_not_live_model",
+    "summary": "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/summary.json",
+    "candidate": "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/candidate.capability.json",
+    "paired_replay": "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/summary.json",
+    "exit_code": 0,
+    "provider_calls": 0,
+    "nickname_case": "single_character_a",
+    "member_product_nickname_changed": true,
+    "exact_artifact_hash_matches": true,
+    "submit_requests": 0,
+    "ledger_entries": 0,
+    "captures": {
+      "decoded_opaque_captures": 2
+    },
+    "stdout": "{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted discovery evidence: evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137\n{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted replay evidence: evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875\nPOST_REVIEW_LOCAL_SMOKE_OK\n"
+  },
+  "live_evidence_scope": {
+    "live_runtime_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+    "final_runtime_digest": "7eb46c3c3ea356741f01567ad22b84e2c79cc089108be0178386011bdd74b130",
+    "runtime_files_changed_since_live": [
+      "src/ui_capability/compiler.py"
+    ],
+    "live_receipts_relabelled": false,
+    "additional_paid_calls": 0,
+    "interpretation": "Prior live receipts execute the earlier source. Discovery already supplied reviewed_targets, so the supported constructor path is unchanged; final source is independently locally verified."
+  },
+  "versions": {
+    "python": "3.12.13",
+    "playwright": "1.58.0",
+    "pydantic": "2.12.5",
+    "pytest": "9.0.3",
+    "mypy": "1.19.1",
+    "ruff": "0.15.14",
+    "Pillow": "12.1.0",
+    "browser": "145.0.7632.6"
+  },
+  "build_outputs": {
+    "dist/ui_capability_runtime-0.1.0-py3-none-any.whl": "38bbf639ee05a9571903d36763aec500dce21afdf67dae90292210282d954665",
+    "dist/ui_capability_runtime-0.1.0.tar.gz": "fd351864ff688e80e7b37d1c0a97cb09c45e9bcb0228c064cacb7e031269db30"
+  },
+  "staged_committed_pushed_or_published": false
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "scope": "Post-live publication review of direct compiler authority; no provider calls",
+  "before_source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+  "after_source_digest": "7eb46c3c3ea356741f01567ad22b84e2c79cc089108be0178386011bdd74b130",
+  "finding": "The optional three-argument compiler path could retain a caller-added embedded private locator when its scalar was approved. Production Discovery already supplied independently reviewed profile targets.",
+  "before": {
+    "unreviewed_embedded_private_target_published": true,
+    "provider_calls": 0
+  },
+  "after": {
+    "omitting_independent_authority": "rejected_missing_required_argument",
+    "supplying_original_independent_authority": "POLICY_DENIED",
+    "private_target_published": false,
+    "provider_calls": 0
+  },
+  "fix": "Make reviewed_targets mandatory, reject every target not matching that map, and remove the legacy exact-private-value fallback. Direct callers migrated; negative tests retain the original pre-mutation target map.",
+  "production_behavior": "Discovery already passed profile.targets; its reviewed-target path is unchanged. No claim that prior live runs executed the later file bytes.",
+  "new_permanent_tests": "No redundant API-wiring test added; existing embedded-locator regressions and direct-call tests use the required authority. Before/after reproduction was an offline throwaway program.",
+  "lsp_references": "Python server returned -32601 unsupported; scoped grep identified all constructor callers."
+}

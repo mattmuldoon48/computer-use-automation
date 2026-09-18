@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import time
 from dataclasses import dataclass
 from typing import Literal
 
@@ -15,6 +16,7 @@ from .contracts import (
     CapabilityArtifact,
     Click,
     Diagnostic,
+    DiscoveryAssistance,
     ExecutableAction,
     Failure,
     FailureCode,
@@ -24,6 +26,7 @@ from .contracts import (
     Metadata,
     Navigate,
     Observation,
+    Ownership,
     PublicLiteral,
     Select,
     Success,
@@ -32,7 +35,7 @@ from .contracts import (
 )
 from .errors import RuntimeFault
 from .evidence import contract_hash
-from .profiles import Profile
+from .profiles import DiscoveryCheckpoint, Profile
 from .provider import ModelDecision, OpenAIPlanner, Planner, ProviderError
 from .replay import Replay, _Stop
 from .session import Session
@@ -40,8 +43,15 @@ from .session import Session
 
 @dataclass(frozen=True)
 class DiscoveryOutcome:
-    result: TerminalResult
+    result: TerminalResult | Intervention
     artifact: CapabilityArtifact | None
+
+
+@dataclass(frozen=True)
+class _PendingAction:
+    action: ExecutableAction
+    before: Observation
+    action_index: int
 
 
 def live_planner(planner: Planner) -> bool:
@@ -50,11 +60,10 @@ def live_planner(planner: Planner) -> bool:
 
 
 class _DiscoveryDriver(Replay):
-    """One non-resumable discovery invocation; replay retains its human handoff API.
+    """Discovery trace with a separate, reviewed restoration protocol.
 
-    Shared replay routines supply profile guard precedence, input/authority checks,
-    typed predicates and terminal extraction. No ordered template step is retained.
-    Recovery/intervention states fail closed rather than omit actions from the trace.
+    Shared replay routines supply guard precedence, authority and output validation.
+    Discovery never resumes against the empty template's nonexistent replay steps.
     """
 
     def __init__(
@@ -69,6 +78,12 @@ class _DiscoveryDriver(Replay):
         self.planner = planner
         self._compiler: DeterministicCompiler | None = None
         self._repair_used = False
+        self._pending: _PendingAction | None = None
+        self._checkpoint: DiscoveryCheckpoint | None = None
+        self._assisted_checkpoints: list[str] = []
+        self._operator_task: asyncio.Task[None] | None = None
+        self._candidate: CapabilityArtifact | None = None
+        self._initial_verified = False
         bound = self.artifact.goal.budgets.max_actions + 2
         configured = getattr(planner, "max_calls", bound)
         self._max_calls = (
@@ -93,16 +108,139 @@ class _DiscoveryDriver(Replay):
         if type(self.planner.call_count) is not int or self.planner.call_count != 0:
             raise RuntimeFault(FailureCode.INVALID_ARGUMENT)
         self._validate_invocation(supplied)
-        self._compiler = DeterministicCompiler(self.artifact, self.session.policy, self._inputs)
+        self._compiler = DeterministicCompiler(
+            self.artifact, self.session.policy, self._inputs, reviewed_targets=self.profile.targets
+        )
 
     async def _pause(
         self, reason: Literal["session_expired", "unknown_dialog", "unsupported_state"]
     ) -> None:
-        # Discovery has no safe resume protocol. Never inherit Replay.resume by accident.
-        raise RuntimeFault(FailureCode.INTERRUPTED)
+        observed = self.session.current_observation
+        if observed is None:
+            raise RuntimeFault(FailureCode.STALE_OBSERVATION)
+        pending = self._pending
+        candidates = [
+            checkpoint
+            for checkpoint in self.profile.discovery_checkpoints
+            if (
+                pending is not None
+                and checkpoint.reason == reason
+                and checkpoint.action == pending.action
+                and self._checks(checkpoint.before, pending.before)
+            )
+            or (
+                pending is None
+                and checkpoint.action is None
+                and self._checks(checkpoint.restored, observed)
+            )
+        ]
+        if (
+            not candidates
+            and pending is None
+            and reason == "unsupported_state"
+            and observed.dialog == "none"
+            and self._checks(self.artifact.preconditions + self.artifact.identity_checks, observed)
+        ):
+            # An authored initial checkpoint plus exact snapshot restoration does not
+            # generalize operator work, even when a profile has no discovery additions.
+            candidates = [
+                DiscoveryCheckpoint(
+                    id="initial_restored",
+                    restored=self.artifact.preconditions + self.artifact.identity_checks,
+                )
+            ]
+        if len(candidates) != 1:
+            raise RuntimeFault(FailureCode.INTERRUPTED)
+        self._checkpoint = candidates[0]
+        await self.session.pause_discovery(
+            reason, self._checkpoint, observed if pending is None else None
+        )
+        self._paused_at = time.monotonic()
+        self._operator_task = asyncio.create_task(self._expire_operator())
+        raise _Stop(
+            Intervention(
+                reason=reason,
+                step=self._checkpoint.id,
+                session_id=self.session.session_id,
+                ownership_epoch=self.session.epoch,
+                metadata=self._metadata(),
+            )
+        )
 
-    async def resume(self) -> TerminalResult:
-        raise RuntimeFault(FailureCode.INVALID_RESUME)
+    async def _expire_operator(self) -> None:
+        try:
+            await asyncio.sleep(self.artifact.goal.budgets.operator_seconds)
+            async with self._run_lock:
+                if self._paused_at is not None and self._terminal is None:
+                    await self._finish_failure(FailureCode.BUDGET_EXCEEDED)
+        except asyncio.CancelledError:
+            return
+
+    def _cancel_operator_timer(self) -> None:
+        task, self._operator_task = self._operator_task, None
+        if task is not None and task is not asyncio.current_task():
+            task.cancel()
+
+    async def _finish_failure(
+        self, code: FailureCode, diagnostic: Diagnostic | None = None
+    ) -> DiscoveryOutcome:
+        self._cancel_operator_timer()
+        self._paused_at = None
+        await self._abort_safely()
+        result = self._failure(code, diagnostic)
+        self._record(result)
+        return DiscoveryOutcome(result=result, artifact=None)
+
+    async def abort(self) -> DiscoveryOutcome:
+        # Revoke immediately, even if a provider call/action currently holds the run lock.
+        await self._abort_safely()
+        async with self._run_lock:
+            if self._terminal is not None:
+                return DiscoveryOutcome(result=self._terminal, artifact=self._candidate)
+            return await self._finish_failure(FailureCode.INTERRUPTED)
+
+    async def resume_discovery(self) -> DiscoveryOutcome:
+        async with self._run_lock:
+            if self._terminal is not None:
+                if self.session.ownership == Ownership.ABORTED:
+                    return DiscoveryOutcome(result=self._terminal, artifact=None)
+                raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
+            if self._paused_at is None or self._checkpoint is None:
+                raise RuntimeFault(FailureCode.INVALID_RESUME)
+            remaining_operator = self.artifact.goal.budgets.operator_seconds - (
+                time.monotonic() - self._paused_at
+            )
+            remaining_active = self.artifact.goal.budgets.active_seconds - self._active_seconds
+            if min(remaining_operator, remaining_active) <= 0:
+                return await self._finish_failure(FailureCode.BUDGET_EXCEEDED)
+            started = time.monotonic()
+            try:
+                async with asyncio.timeout(min(remaining_operator, remaining_active)):
+                    await self.session.resume_discovery(
+                        self.artifact,
+                        self._inputs,
+                        self.permissions,
+                        self._checkpoint,
+                        blocked_states=tuple(guard.when for guard in self.profile.guards),
+                        step_index=self._index,
+                    )
+            except TimeoutError:
+                return await self._finish_failure(FailureCode.BUDGET_EXCEEDED)
+            except asyncio.CancelledError:
+                await self._finish_failure(FailureCode.INTERRUPTED)
+                raise
+            except RuntimeFault as fault:
+                if fault.code == FailureCode.BUDGET_EXCEEDED:
+                    return await self._finish_failure(fault.code, fault.diagnostic)
+                # Invalid restoration leaves both the checkpoint and HUMAN ownership intact.
+                raise
+            finally:
+                self._active_seconds += time.monotonic() - started
+            self._cancel_operator_timer()
+            self._paused_at = None
+            if self._checkpoint.id not in self._assisted_checkpoints:
+                self._assisted_checkpoints.append(self._checkpoint.id)
+            return await self._drive_discovery(resuming=True)
 
     async def _observe(self, *, allow_recovery: bool = False) -> Observation:
         return await super()._observe(allow_recovery=False)
@@ -153,7 +291,7 @@ class _DiscoveryDriver(Replay):
                 "allowed_actions": allowed_actions,
             }
             for field in ("text", "value"):
-                value = compiler._bound_value(getattr(target, field))
+                value = compiler.project_value(getattr(target, field), target=name, field=field)
                 if value is not None:
                     descriptor[field] = value.model_dump(mode="json")
             targets.append(descriptor)
@@ -161,20 +299,17 @@ class _DiscoveryDriver(Replay):
             raise RuntimeFault(FailureCode.BUDGET_EXCEEDED)
         visible_text = []
         for text in observation.visible_text[:128]:
-            value = compiler._bound_value(text)
+            value = compiler.project_value(text)
             if value is not None:
                 visible_text.append(value.model_dump(mode="json"))
+        # Reviewed schema/configuration, never values from this invocation.
         definitions = {
             name: {
                 "type": definition.type,
                 "classification": definition.classification,
                 "min_length": definition.min_length,
                 "max_length": definition.max_length,
-                "values": [
-                    value
-                    for value in definition.values
-                    if definition.classification == "public" and not compiler._sensitive(value)
-                ],
+                "values": list(definition.values) if definition.classification == "public" else [],
             }
             for name, definition in self.artifact.goal.inputs.items()
         }
@@ -198,8 +333,7 @@ class _DiscoveryDriver(Replay):
         destinations = [
             destination
             for destination in observation.destinations[:128]
-            if compiler.public(destination)
-            and not compiler._sensitive(destination)
+            if compiler.public_route(destination)
             and self._permitted(Navigate(destination=PublicLiteral(value=destination)), observation)
         ]
         if destinations:
@@ -234,15 +368,10 @@ class _DiscoveryDriver(Replay):
                 }
             ),
         }
-        encoded = json.dumps(request, ensure_ascii=False)
-        # Defense in depth for caller-authored goal text, frame names and enum definitions.
-        # Never repair a leak with global string substitution: reject it before transport.
-        if compiler._sensitive(encoded):
-            raise RuntimeFault(
-                FailureCode.POLICY_DENIED,
-                Diagnostic(stage="discovery", expected="valid_contract", observed="denied"),
-            )
-        if len(encoded.encode("utf-8")) > 64_000:
+        # Only reviewed configuration and structurally projected observations enter
+        # the request. A byte scan would taint public labels and even JSON keys when
+        # a restricted input is short or coincidentally equal to public structure.
+        if len(json.dumps(request, ensure_ascii=False).encode("utf-8")) > 64_000:
             raise RuntimeFault(
                 FailureCode.BUDGET_EXCEEDED,
                 Diagnostic(
@@ -352,99 +481,146 @@ class _DiscoveryDriver(Replay):
             if self._started:
                 raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
             self._started = True
-            candidate: CapabilityArtifact | None = None
             try:
-                async with asyncio.timeout(self.artifact.goal.budgets.active_seconds):
-                    self._preflight(inputs)
-                    assert self._compiler is not None
-                    observed = await self._observe()
+                self._preflight(inputs)
+            except RuntimeFault as fault:
+                return await self._finish_failure(fault.code, fault.diagnostic)
+            return await self._drive_discovery()
+
+    def _record_pending(self, after: Observation, *, restored: bool = False) -> None:
+        assert self._compiler is not None and self._pending is not None
+        pending = self._pending
+        step = self._compiler.record(pending.action, pending.before, after)
+        if restored:
+            assert self._checkpoint is not None
+            # A human-restored page is not evidence for arbitrary inferred postconditions.
+            self._compiler.steps[-1] = step.model_copy(
+                update={
+                    "preconditions": self._checkpoint.before,
+                    "postconditions": self._checkpoint.restored,
+                }
+            )
+        self.session.evidence.emit(
+            "action_verified", action_index=pending.action_index, step_index=self._index
+        )
+        self._index += 1
+        self._pending = None
+
+    async def _drive_discovery(self, *, resuming: bool = False) -> DiscoveryOutcome:
+        started = time.monotonic()
+        remaining = self.artifact.goal.budgets.active_seconds - self._active_seconds
+        candidate: CapabilityArtifact | None = None
+        result: TerminalResult | Intervention
+        try:
+            if remaining <= 0:
+                raise RuntimeFault(FailureCode.BUDGET_EXCEEDED)
+            async with asyncio.timeout(remaining):
+                assert self._compiler is not None
+                # Never reuse the proposal or observation from before a handoff.
+                observed = await self._observe()
+                if resuming:
+                    assert self._checkpoint is not None
+                    if not self._verify(
+                        self.artifact.identity_checks + self._checkpoint.restored,
+                        observed,
+                        "resume",
+                    ):
+                        raise RuntimeFault(FailureCode.INVALID_RESUME)
+                    if self._pending is not None:
+                        self._record_pending(observed, restored=True)
+                    self._checkpoint = None
+                if not self._initial_verified:
                     if not self._verify(self.artifact.preconditions, observed, "initial"):
                         raise RuntimeFault(FailureCode.PRECONDITION_FAILED)
-                    while True:
-                        decision = await self._propose(observed)
-                        if decision.kind == "intervene":
-                            raise RuntimeFault(
-                                FailureCode.INTERRUPTED,
-                                Diagnostic(
-                                    stage="discovery",
-                                    expected="known_state",
-                                    observed="interrupted",
-                                ),
+                    self._initial_verified = True
+                while True:
+                    if self.session.ownership != Ownership.AUTOMATION:
+                        raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
+                    decision = await self._propose(observed)
+                    if decision.kind == "intervene":
+                        await self._pause(decision.reason or "unsupported_state")
+                    if decision.kind == "finish":
+                        # A finish proposal is only a request for independent verification.
+                        observed = await self._observe()
+                        if not self._verify(self.artifact.identity_checks, observed, "identity"):
+                            raise RuntimeFault(FailureCode.IDENTITY_MISMATCH)
+                        if not self._verify(
+                            self.profile.terminal_checks + self.artifact.final_checks,
+                            observed,
+                            "terminal",
+                        ):
+                            raise RuntimeFault(FailureCode.POSTCONDITION_FAILED)
+                        extracted = self._extract(observed)
+                        candidate = self._compiler.finish(
+                            live=self._completed_live(), run_id=self.session.run_id
+                        )
+                        if self._assisted_checkpoints:
+                            provenance = candidate.provenance.model_copy(
+                                update={
+                                    "assistance": DiscoveryAssistance(
+                                        checkpoints=tuple(self._assisted_checkpoints)
+                                    )
+                                }
                             )
-                        if decision.kind == "finish":
-                            # A finish proposal is only a request for independent verification.
-                            observed = await self._observe()
-                            if not self._verify(
-                                self.artifact.identity_checks, observed, "identity"
-                            ):
-                                raise RuntimeFault(FailureCode.IDENTITY_MISMATCH)
-                            if not self._verify(
-                                self.profile.terminal_checks + self.artifact.final_checks,
-                                observed,
-                                "terminal",
-                            ):
-                                raise RuntimeFault(FailureCode.POSTCONDITION_FAILED)
-                            extracted = self._extract(observed)
-                            candidate = self._compiler.finish(
-                                live=self._completed_live(), run_id=self.session.run_id
-                            )
+                            candidate = candidate.model_copy(update={"provenance": provenance})
+                        reviewed = {item.id for item in self.profile.discovery_checkpoints}
+                        if not set(self._assisted_checkpoints).issubset(reviewed):
+                            # Exact initial-state fallback can finish this invocation, but
+                            # cannot export a dependency absent from the trusted profile.
+                            candidate = None
+                        else:
                             self.artifact = candidate
                             self._artifact_hash = contract_hash(candidate)
-                            result: TerminalResult = Success(
-                                outputs=extracted.outputs, metadata=self._metadata()
-                            )
-                            break
-                        if self.session.action_count >= self.artifact.goal.budgets.max_actions:
-                            raise RuntimeFault(FailureCode.BUDGET_EXCEEDED)
-                        action = self._action(decision, observed)
-                        envelope = self._compiler.proposal_artifact(action, observed)
-                        await self.session.execute(
-                            ActionProposal(
-                                observation_id=observed.observation_id,
-                                ownership_epoch=observed.ownership_epoch,
-                                action=action,
-                            ),
-                            envelope,
-                            self._inputs,
-                            self._locals,
-                            self.permissions,
-                            purpose="discovery",
-                            step_index=self._index,
-                        )
-                        after = await self._observe()
-                        self._compiler.record(action, observed, after)
-                        self._index += 1
-                        self.session.evidence.emit(
-                            "action_verified",
-                            action_index=self.session.action_count - 1,
-                            step_index=self._index - 1,
-                        )
-                        observed = after
-            except _Stop as stop:
-                result = (
-                    self._failure(FailureCode.INTERRUPTED)
-                    if isinstance(stop.result, Intervention)
-                    else stop.result
-                )
-            except RuntimeFault as fault:
-                result = self._failure(fault.code, fault.diagnostic)
-            except TimeoutError:
-                result = self._failure(FailureCode.BUDGET_EXCEEDED)
-            except asyncio.CancelledError:
-                await self._abort_safely()
-                self._record(self._failure(FailureCode.INTERRUPTED))
-                raise
-            except Exception:
-                result = self._failure(FailureCode.INTERRUPTED)
-            if isinstance(result, Failure):
-                candidate = None
-                await self._abort_safely()
-            self._record(result)
-            return DiscoveryOutcome(result=result, artifact=candidate)
+                        result = Success(outputs=extracted.outputs, metadata=self._metadata())
+                        break
+                    if self.session.action_count >= self.artifact.goal.budgets.max_actions:
+                        raise RuntimeFault(FailureCode.BUDGET_EXCEEDED)
+                    action = self._action(decision, observed)
+                    envelope = self._compiler.proposal_artifact(action, observed)
+                    pending = _PendingAction(
+                        action=action,
+                        before=observed,
+                        action_index=self.session.action_count,
+                    )
+                    await self.session.execute(
+                        ActionProposal(
+                            observation_id=observed.observation_id,
+                            ownership_epoch=observed.ownership_epoch,
+                            action=action,
+                        ),
+                        envelope,
+                        self._inputs,
+                        self._locals,
+                        self.permissions,
+                        purpose="discovery",
+                        step_index=self._index,
+                    )
+                    self._pending = pending
+                    observed = await self._observe()
+                    self._record_pending(observed)
+        except _Stop as stop:
+            result = stop.result
+        except RuntimeFault as fault:
+            result = self._failure(fault.code, fault.diagnostic)
+        except TimeoutError:
+            result = self._failure(FailureCode.BUDGET_EXCEEDED)
+        except asyncio.CancelledError:
+            await self._finish_failure(FailureCode.INTERRUPTED)
+            raise
+        except Exception:
+            result = self._failure(FailureCode.INTERRUPTED)
+        finally:
+            self._active_seconds += time.monotonic() - started
+        if isinstance(result, Failure):
+            return await self._finish_failure(result.code, result.diagnostic)
+        if not isinstance(result, Intervention):
+            self._candidate = candidate
+        self._record(result)
+        return DiscoveryOutcome(result=result, artifact=candidate)
 
 
 class Discovery:
-    """Public discovery interface, deliberately without replay's resume contract."""
+    """Keep this invocation and its Session alive across typed interventions."""
 
     def __init__(
         self,
@@ -458,3 +634,9 @@ class Discovery:
 
     async def run(self, inputs: object) -> DiscoveryOutcome:
         return await self._driver.discover(inputs)
+
+    async def resume(self) -> DiscoveryOutcome:
+        return await self._driver.resume_discovery()
+
+    async def abort(self) -> DiscoveryOutcome:
+        return await self._driver.abort()

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
 import json
+import subprocess
 import sys
 import time
 from importlib.metadata import version
@@ -89,6 +91,57 @@ def write_failure_snapshot(
     (directory / "failure.snapshot.json").write_text(json.dumps(snapshot, indent=2) + "\n")
 
 
+def _source_snapshot() -> dict[str, object]:
+    """Fingerprint the executed public runtime; never read environment secrets."""
+    package = Path(__file__).resolve().parent
+    root = package.parent.parent
+    sandbox = root / "sandbox"
+    if not sandbox.is_dir():
+        sandbox = package.parent / "sandbox"
+    files: dict[str, str] = {}
+    for prefix, directory in (("src/ui_capability", package), ("sandbox", sandbox)):
+        for path in sorted(directory.rglob("*")):
+            if path.is_file() and path.suffix in {".py", ".js", ".json", ".html"}:
+                name = f"{prefix}/{path.relative_to(directory).as_posix()}"
+                files[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    for name in ("pyproject.toml", "uv.lock", ".python-version"):
+        path = root / name
+        if path.is_file():
+            files[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    commit: str | None = None
+    dirty: bool | None = None
+    try:
+        revision = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--show-toplevel", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+        lines = revision.stdout.splitlines()
+        if revision.returncode == 0 and len(lines) == 2 and Path(lines[0]).resolve() == root:
+            status = subprocess.run(
+                ["git", "-C", str(root), "status", "--porcelain", "--untracked-files=normal"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+                check=False,
+            )
+            if status.returncode == 0:
+                commit, dirty = lines[1], bool(status.stdout)
+    except (OSError, subprocess.TimeoutExpired):
+        pass  # Installed packages can lack Git; the runtime digest remains available.
+    return {
+        "commit": commit,
+        "worktree_dirty": dirty,
+        "source_digest": hashlib.sha256(
+            json.dumps(files, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest(),
+        "scope": "Runtime Python/JavaScript/JSON/templates and available project configuration",
+        "files": files,
+    }
+
+
 async def run_browser(
     origin: str,
     inputs: object,
@@ -113,6 +166,8 @@ async def run_browser(
     values: dict[str, Scalar] = dict(inputs)
     run_dir = evidence_dir / uuid4().hex
     run_dir.mkdir(parents=True, exist_ok=False)
+    source = _source_snapshot()
+    (run_dir / "source.json").write_text(json.dumps(source, indent=2) + "\n")
     for name, contract in (
         ("artifact", bundle.artifact),
         ("profile", bundle.profile),
@@ -222,6 +277,7 @@ async def run_browser(
             write_failure_snapshot(run_dir, result, capture)
             summary = {
                 "schema_version": 1,
+                "source": {key: value for key, value in source.items() if key != "files"},
                 "run_type": "discovered_capability_replay"
                 if bundle.artifact.provenance.kind == "live_discovery"
                 else "hand_authored_browser_fixture",
@@ -281,6 +337,7 @@ def main() -> None:
     discover.add_argument("--max-output-tokens", type=int, default=1200)
     discover.add_argument("--call-timeout", type=float, default=30)
     discover.add_argument("--headed", action="store_true")
+    discover.add_argument("--case", choices=("happy", "session_expired"), default="happy")
     discover.add_argument("--inputs-file", type=Path)
     discover.add_argument("--replay-inputs-file", type=Path)
     discover.add_argument("--evidence-dir", type=Path, default=Path("artifacts/local/discovery"))

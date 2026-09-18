@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "scope": "Completed real-user-assisted discovery and exact-candidate changed-input replay, separately authorized after the preserved interrupted attempt",
+  "selected_discovery": "evidence/final-review/live-handoff/ebf307649aec48cebc0e25a743c9d151/summary.json",
+  "selected_capability": "evidence/final-review/live-handoff/ebf307649aec48cebc0e25a743c9d151/candidate.capability.json",
+  "selected_replay": "evidence/final-review/live-handoff/ebf307649aec48cebc0e25a743c9d151/fresh-replay/f6ccd2aa8a6d4df79db7c50c08fd0a5a/summary.json",
+  "artifact_hash": "3d0037d3476a375163e2e20066ad4b00c9019205a6331bb8ebadbb59d4aeebbf",
+  "candidate_file_sha256": "0baccdf1501cae7f2ce34437bb6f99b6aae23dd7bb13ead6705947632fb04df9",
+  "profile_hash": "db44dbc4219a0a5817bd20f7fdcc6bd4c6d22393fea49a1f605f8aaedd41a2c7",
+  "source": {
+    "commit": "f6eac09e9c6eba6b175b7d5c5adbce2748c969ac",
+    "worktree_dirty": true,
+    "source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+    "scope": "Runtime Python/JavaScript/JSON/templates and available project configuration"
+  },
+  "model": "gpt-4.1-2025-04-14",
+  "discovery_provider_calls": 10,
+  "replay_provider_calls": 0,
+  "discovery_result": "success",
+  "replay_result": "success",
+  "changed_member_product_nickname": true,
+  "changed_input_evidence": "CLI defaults used; discover_browser checks all three differ before launching. Invocation values are not retained.",
+  "artifact_status": "validated_with_operator_dependency",
+  "operator_dependency": {
+    "checkpoints": [
+      "expired_prepare_restored",
+      "prepare_restored"
+    ],
+    "dependency": "same_session_operator_restoration",
+    "replay_status": "candidate_unverified"
+  },
+  "observed_usage": {
+    "input_tokens": 11487,
+    "output_tokens": 710,
+    "total_tokens": 12197
+  },
+  "operator_attribution": "Actual user browser participation confirmed in this conversation, combined with runtime ownership/resume traces; not independent identity attestation",
+  "earlier_interrupted_attempt": "evidence/final-review/live-handoff/interruption.json",
+  "automatic_retries": 0
+}

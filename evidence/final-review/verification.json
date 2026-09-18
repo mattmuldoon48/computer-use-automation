@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "scope": "Uncommitted focused closing pass; local proof only, not publication or final live/human acceptance",
+  "source_snapshot": "evidence/final-review/source-snapshot.json",
+  "source_commit": "f6eac09e9c6eba6b175b7d5c5adbce2748c969ac",
+  "worktree_dirty": true,
+  "runtime_source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+  "versions": {
+    "python": "3.12.13",
+    "playwright": "1.58.0",
+    "pydantic": "2.12.5",
+    "pytest": "9.0.3",
+    "mypy": "1.19.1",
+    "ruff": "0.15.14",
+    "Pillow": "12.1.0",
+    "browser": "145.0.7632.6"
+  },
+  "installed_lock_check": {
+    "installed_distributions": 31,
+    "all_installed_versions_match_lock": true
+  },
+  "checks": [
+    {
+      "command": ".venv/bin/pytest -q --tb=short tests/unit/test_discovery.py tests/unit/test_discovery_handoff.py tests/unit/test_compiler_privacy.py tests/integration/test_browser_discovery_handoff.py tests/integration/test_discovery_privacy.py",
+      "exit_code": 0,
+      "result": "46 passed in 39.57s"
+    },
+    {
+      "command": ".venv/bin/pytest -q --tb=short",
+      "exit_code": 0,
+      "result": "284 passed in 187.66s"
+    },
+    {
+      "command": ".venv/bin/mypy src sandbox",
+      "exit_code": 0,
+      "result": "Success: no issues found in 25 source files"
+    },
+    {
+      "command": ".venv/bin/ruff check .",
+      "exit_code": 0,
+      "result": "All checks passed!"
+    },
+    {
+      "command": ".venv/bin/ruff format --check .",
+      "exit_code": 0,
+      "result": "44 files already formatted"
+    },
+    {
+      "command": "uv lock --check --offline",
+      "exit_code": 0,
+      "result": "Resolved 32 packages in 4ms"
+    },
+    {
+      "command": "uv build --offline --no-build-isolation",
+      "exit_code": 0,
+      "result": "Built wheel and source distribution",
+      "environment": {
+        "PYTHONPATH": "$HOME/.cache/uv/archive-v0/EUpSMPh00pyc1DJf:$HOME/.cache/uv/archive-v0/7yVhO-4CEagtqn8Z"
+      },
+      "environment_note": "Two already-existing cached backend package directories imported directly; no synchronization, installation, isolation provisioning or downloads. Other dependencies were already present in .venv.",
+      "existing_build_packages": {
+        "hatchling": "1.27.0",
+        "trove-classifiers": "2026.6.1.19",
+        "packaging": "26.3",
+        "pathspec": "1.1.1",
+        "pluggy": "1.6.0"
+      }
+    }
+  ],
+  "resolved_intermediate_failures": [
+    {
+      "check": "Focused pytest collection",
+      "result": "Import-file mismatch: unit and integration modules shared test_discovery_handoff basename",
+      "resolution": "Renamed integration module to test_browser_discovery_handoff.py"
+    },
+    {
+      "check": "Initial static checks",
+      "result": "Replay.resume override return incompatibility, ownership literal narrowing, import ordering, timeout-test polling lint",
+      "resolution": "Separate private resume_discovery driver path, ownership property guard, organized imports, event-based timeout observation"
+    },
+    {
+      "check": "Focused regressions and mypy after initial integration corrections",
+      "result": "13 failed, 33 passed; missing required step_index on resume evidence observation; mypy reported the same call error",
+      "resolution": "Pass actual discovery step index explicitly through Session.resume_discovery into EvidenceSink.observation; corrected focused run 46 passed"
+    }
+  ],
+  "reproductions": "evidence/final-review/baseline-reproductions.json",
+  "behavioral_smoke": {
+    "entrypoints": "Actual discover_browser/run_browser plus uicap CLI, real Chromium and isolated synthetic HTTP app",
+    "discovery_actor": "Explicit scripted planner; real provider methods disabled in the smoke harness",
+    "operator_actor": "Explicit simulated operator in actual headed browser; no real-human claim",
+    "runs": "evidence/final-review/selected-runs.json",
+    "assertions": "evidence/final-review/local-probes.json",
+    "script_exit_code": 0,
+    "script_sha256": "cb31ca44c834ab5a624f54aef594ece947adc69f1c548cd52d74984c58d2101f",
+    "short_nickname_and_public_label_collision": "Both compile and pass exact-candidate changed-input fresh replay",
+    "handoff": "Discovery and fresh replay reject premature resume, retain HUMAN control, accept restored state and finish; one prepare request and one review request each",
+    "receiving_server_and_ledger": "All three discovery/replay probe pairs: zero submissions and no ledger entries",
+    "readme_stdout_parser": "Executed exact documented parser against captured discovery stdout, replayed its selected candidate without model calls",
+    "readme_shortest": "Passed using reviewed historical version 2 and member_b inputs",
+    "captures": {
+      "decoded_png_count": 16,
+      "all_fully_opaque": true,
+      "rgba": [
+        32,
+        32,
+        32,
+        255
+      ]
+    },
+    "same_runtime_digest_across_recorded_summaries": true,
+    "recorded_summary_count": 12
+  },
+  "historical_evidence": {
+    "files_checked": 291,
+    "all_original_bytes_unchanged": true,
+    "prior_checksum_inventories": "Not edited; retain their original revision scope"
+  },
+  "build_outputs": {
+    "dist/ui_capability_runtime-0.1.0-py3-none-any.whl": "016927297d04fdf3feccd8789db3b4dcb7ca1662687ef884f245c5b581b67e05",
+    "dist/ui_capability_runtime-0.1.0.tar.gz": "003e394ee437fea1d7a852a679a2a08e90963bec9eb072a2c2c48b45ce4a7bfc"
+  },
+  "not_performed": [
+    "Paid model/provider calls",
+    "New real-user handoff",
+    "Dependency or browser installation",
+    "Commit, push, publication or submission"
+  ],
+  "remaining_gates": "evidence/final-review/authorization-request.json"
+}

@@ -7,6 +7,51 @@
     "version": "v1",
     "locale": "en_US"
   },
+  "discovery_checkpoints": [
+    {
+      "id": "details_restored",
+      "restored": [{"kind": "visible", "target": "details_heading"}]
+    },
+    {
+      "id": "prepare_restored",
+      "restored": [{"kind": "visible", "target": "prepare_heading"}]
+    },
+    {
+      "id": "review_restored",
+      "restored": [{"kind": "visible", "target": "review_heading"}]
+    },
+    {
+      "id": "expired_prepare_restored",
+      "reason": "session_expired",
+      "action": {"kind": "click", "target": "prepare_link"},
+      "before": [
+        {"kind": "visible", "target": "details_heading"},
+        {
+          "kind": "text_equals",
+          "target": "member_id",
+          "value": {"kind": "input_ref", "name": "member_id"}
+        }
+      ],
+      "restored": [
+        {"kind": "visible", "target": "prepare_heading"},
+        {
+          "kind": "text_equals",
+          "target": "member_id",
+          "value": {"kind": "input_ref", "name": "member_id"}
+        },
+        {
+          "kind": "value_equals",
+          "target": "nickname_field",
+          "value": {"kind": "literal", "value": ""}
+        },
+        {
+          "kind": "value_equals",
+          "target": "product_field",
+          "value": {"kind": "literal", "value": "SAVINGS_BASIC"}
+        }
+      ]
+    }
+  ],
   "targets": {
     "search_navigation": {
       "frame": {

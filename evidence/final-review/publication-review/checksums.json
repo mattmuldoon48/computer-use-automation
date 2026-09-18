@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "scope": "Post-review local proof and final source receipts only; excludes this inventory itself; all previous inventories unchanged",
+  "files": {
+    "evidence/final-review/publication-review/compiler-authority.json": "d17997e8aab8b5545af0fa73a0793ce785fc1808d5e1e073237af9a4b101ad76",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/authored.goal.json": "c6858ec4f362a61c04595d6f82ab01c93eda412485d02ba92aa8958d66409f42",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/authored.policy.json": "8ad08b829e0e1b1fca2b1cdba5bbabc94cedb9875ce187c917c758d9c5480f36",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/authored.profile.json": "ee49dd253f32a63255fe811ce212cd8117f339be3cab60fc024e5e052be7ba24",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/candidate.capability.json": "1f82fd35e1f596d04b02d820292c8c36409b500861f2e38090772d73cabe14df",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/events.jsonl": "9d75e0b4d084525d65e284f4c4192a7c7471c254780468a78602b95c72918d35",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/events.jsonl": "7993ff0845356b12409ca4dd78b2535214a9d9219f33b4c62671e4abb0d5b806",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/fixture.artifact.json": "1f82fd35e1f596d04b02d820292c8c36409b500861f2e38090772d73cabe14df",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/fixture.policy.json": "8ad08b829e0e1b1fca2b1cdba5bbabc94cedb9875ce187c917c758d9c5480f36",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/fixture.profile.json": "ee49dd253f32a63255fe811ce212cd8117f339be3cab60fc024e5e052be7ba24",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/source.json": "d91bc6da623688f4b717144e2f8da795ed5e7bb3751986c79038fd90c5fffe3f",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/summary.json": "83a8e02952330d000e07a586be95f7bc0b116ba2fde149c0d575ccb3324e7f08",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/fresh-replay/4cc9d6a028984f5eaf5784369ac8e875/terminal.png": "bb47855700c4b955cb434481532714df53942c1cad6fe72474693d4265c6ba8a",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/source.json": "d91bc6da623688f4b717144e2f8da795ed5e7bb3751986c79038fd90c5fffe3f",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/summary.json": "d099afb71619bba4b43b83801ee3415cdd43b731528411aec242244344903af3",
+    "evidence/final-review/publication-review/local/4cfd899babf243a39244381732fbc137/terminal.png": "bb47855700c4b955cb434481532714df53942c1cad6fe72474693d4265c6ba8a",
+    "evidence/final-review/publication-review/source-snapshot.json": "0403f8c84667938f7c9b14145b33c027e5fe47e1edb745693d5aee40a0ab36fd",
+    "evidence/final-review/publication-review/verification.json": "245e2dbb9ee3c7d80f9ada2480552adfd1f3b19059849e1bf369a3444a885972"
+  }
+}

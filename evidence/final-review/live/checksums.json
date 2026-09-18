@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "scope": "New authorized live evidence only; excludes this inventory itself",
+  "files": {
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/authored.goal.json": "b7093555c72e8ef7f1dc185d8cd51235bd36ff0e7355b41064abf8da762a8ca7",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/authored.policy.json": "239f265a744b003568f587483f4a0e1458c9309032aeee8cc9ab7b72f73b89e6",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/authored.profile.json": "ce12ba3154b83d2afd8e504577de95bf6bf4d65a0020a668df28d0158cd544cb",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/candidate.capability.json": "878479039d4c4dbd668344fbe39e7a1d3c31ba3d6552cb15507d548d301e9a6f",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/events.jsonl": "729debaa806b546ed0f5bb8911df8fcb648610abad9c69125e71faea2d2c7a40",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681/events.jsonl": "732353c3abfd2027486b9d904779f55254b3a2b30db9a25dedd38d256363d99d",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681/fixture.artifact.json": "878479039d4c4dbd668344fbe39e7a1d3c31ba3d6552cb15507d548d301e9a6f",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681/fixture.policy.json": "239f265a744b003568f587483f4a0e1458c9309032aeee8cc9ab7b72f73b89e6",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681/fixture.profile.json": "ce12ba3154b83d2afd8e504577de95bf6bf4d65a0020a668df28d0158cd544cb",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681/source.json": "5c5689a1a58778d68ac1f09b74e38135708bdfe703842ccc9a0c3760e0782ab5",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681/summary.json": "4bc7fbe32f3f67a86dabae09b56da4958c143f176d1d6b3d9f434fcd0b026323",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681/terminal.png": "bb47855700c4b955cb434481532714df53942c1cad6fe72474693d4265c6ba8a",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/source.json": "5c5689a1a58778d68ac1f09b74e38135708bdfe703842ccc9a0c3760e0782ab5",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/summary.json": "b64d45de8d5d036781e82a4b016b2222331446b51af49e926e4151545c6cc853",
+    "evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/terminal.png": "bb47855700c4b955cb434481532714df53942c1cad6fe72474693d4265c6ba8a",
+    "evidence/final-review/live/selected-runs.json": "bf608f47750ecca2aee312b2259dc3e470ddd90eb0d7113dc4ee8afc8b61ba58",
+    "evidence/final-review/live/verification.json": "8cacfd2c7698a85422bf1260f75edf767016bc79c375d0c16004ac8e90c3bc53"
+  }
+}

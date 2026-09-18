@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "scope": "Authorized live happy-path receipts; no claim of real-user handoff or independently observed receiving-server ledger counters",
+  "selected_runs": "evidence/final-review/live/selected-runs.json",
+  "source": {
+    "commit": "f6eac09e9c6eba6b175b7d5c5adbce2748c969ac",
+    "worktree_dirty": true,
+    "source_digest": "60be856b58f6a47f808c412ffd1a76c77c4afacb25d7a80fb829ef26649d850e",
+    "scope": "Runtime Python/JavaScript/JSON/templates and available project configuration"
+  },
+  "runtime_matches_locally_tested_digest": true,
+  "versions": {
+    "python": "3.12.13",
+    "playwright": "1.58.0",
+    "browser": "145.0.7632.6"
+  },
+  "checks": {
+    "canonical_artifact_hash": "296ffed60511b0eb5849f4f4308e24c73bf3aa618a0a34e93a5fab698a8a61ca",
+    "canonical_profile_hash": "c09152e49d60d2059f415110ec8a7cedaa0ca422553b8db4dc175119d333929d",
+    "artifact_and_saved_replay_contract_match": true,
+    "profile_hashes_match": true,
+    "provider_records_valid": true,
+    "distinct_sessions": true,
+    "unassisted": true,
+    "decoded_opaque_captures": 2,
+    "python_version": "3.12.13"
+  },
+  "privacy": {
+    "credential_and_restricted_input_matches": 0,
+    "text_files_checked": 13
+  },
+  "observed_usage": {
+    "input_tokens": 10221,
+    "output_tokens": 651,
+    "total_tokens": 10872
+  },
+  "trace_checks": {
+    "action_intents": 8,
+    "verified_actions": 8,
+    "compiled_steps": 8
+  },
+  "terminal_intent": "Verified unsubmitted review, not account opening",
+  "offline_verification_exit_code": 0,
+  "offline_probe_correction": "Initial offline inspection used nonexistent provenance.execution_source; corrected to the actual action_source field and all assertions passed. No live run was repeated.",
+  "stdout": "{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 9}\nRedacted discovery evidence: evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9\n{\"kind\": \"success\", \"step_index\": 8, \"human_intervened\": false, \"provider_call_count\": 0}\nRedacted replay evidence: evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/fresh-replay/60fbe5f8de98457daf5ad3290d16a681\n",
+  "stderr": "",
+  "historical_evidence_files_unchanged": 291,
+  "prior_local_evidence_files_unchanged": 102,
+  "prior_checksums_not_rewritten": true,
+  "reporting_updates": {
+    "REPORT.md": "08a55d65169bcf89b18a0a31662ef73692cb08e471510856fffcc3e2f610cdea",
+    "evidence/README.md": "b55d186d998c7cfbf98b84d7f33039244add8f95c90ac52ca3a35a98a78b32a4"
+  },
+  "remaining": "Real-user discovery handoff requires participation and separate paid-run authorization",
+  "commit_push_or_publication": false
+}
