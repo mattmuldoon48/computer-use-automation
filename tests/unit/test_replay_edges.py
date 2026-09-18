@@ -1,12 +1,17 @@
 import asyncio
 
+import pytest
+
 from tests.support import BINDING, INPUTS, artifact, observation, rig
 from ui_capability.contracts import (
     Budgets,
     Click,
+    Equals,
     FailureCode,
+    Fill,
     Intervention,
     Ownership,
+    PublicLiteral,
     RetryPolicy,
     Success,
     Visible,
@@ -126,3 +131,60 @@ def test_artifact_cannot_rebind_trusted_review_target():
     result = asyncio.run(r.replay.run(dict(INPUTS)))
     assert result.code == FailureCode.INCOMPATIBLE
     assert not r.surface.actions
+
+
+@pytest.mark.parametrize("clear_form", [False, True])
+def test_resume_does_not_repeat_preview_already_completed_by_operator(clear_form):
+    async def scenario():
+        cap = artifact()
+        if clear_form:
+            # A safe form reset remains pending after the human completed preview.
+            reset = cap.steps[0].model_copy(
+                update={
+                    "id": "clear_form",
+                    "action": Fill(target="nickname_field", value=PublicLiteral(value="")),
+                    "preconditions": (Visible(target="review"),),
+                    "postconditions": (
+                        Equals(
+                            kind="value_equals",
+                            target="nickname_field",
+                            value=PublicLiteral(value=""),
+                        ),
+                    ),
+                }
+            )
+            cap = cap.model_copy(update={"steps": (*cap.steps, reset)})
+        profile = Profile(
+            profile_id="member_ops",
+            binding=BINDING,
+            targets=artifact().targets,
+            terminal_checks=(Visible(target="review"),),
+            guards=(
+                Guard(
+                    id="expired",
+                    kind="intervention",
+                    when=Visible(target="expired"),
+                    reason="session_expired",
+                ),
+            ),
+        )
+        r = rig(cap=cap, profile=profile, update=False)
+
+        async def cleared(action, target, value):
+            if isinstance(action, Fill):
+                r.surface.observations[:] = [observation(cap, INPUTS, review=True)]
+
+        r.surface.on_action = cleared
+        r.surface.observations[:] = [observation(r.cap, INPUTS, extra=("expired",))]
+        assert isinstance(await r.replay.run(dict(INPUTS)), Intervention)
+        await r.session.takeover()
+        r.surface.observations[:] = [observation(r.cap, INPUTS, filled=True, review=True)]
+        result = await r.replay.resume()
+        assert isinstance(result, Success)
+        assert result.outputs["submitted"] is False
+        assert result.metadata.human_intervened
+        assert [action.kind for action, _, _ in r.surface.actions] == (
+            ["fill"] if clear_form else []
+        )
+
+    asyncio.run(scenario())

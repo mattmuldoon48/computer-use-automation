@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "run_type": "discovered_capability_replay",
+  "live_discovery": false,
+  "artifact_provenance": "live_discovery",
+  "operator_evidence": "none",
+  "session_id": "a3bcf2d0ce7844f78f77eca41341ca07",
+  "ownership": "ABORTED",
+  "artifact_hash": "4dd7a8dca4a9f692dec48c2010ac77e0f214edb701bcfed758521752d8d43922",
+  "profile_hash": "fa4fc8f318d3d582c0eec352f9985f956667db3e54934643691322ecfb93c19a",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 7.2,
+  "action_count": 5,
+  "result": {
+    "kind": "failure",
+    "step_index": 4,
+    "human_intervened": false,
+    "provider_call_count": 0,
+    "code": "INTERRUPTED"
+  },
+  "capture": {
+    "withheld": true,
+    "reason": "dialog_open",
+    "structure": {
+      "state": "observed",
+      "target_count": 4,
+      "dialog": "unknown",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 0,
+        "link": 2,
+        "text": 0
+      }
+    }
+  }
+}

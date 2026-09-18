@@ -348,8 +348,9 @@ class Session:
         self._transition(Ownership.PAUSING)
         try:
             async with asyncio.timeout(self._timeout), self._lock:
-                if self._ownership == Ownership.PAUSING:
-                    self._transition(Ownership.AWAITING_OPERATOR)
+                if self._ownership != Ownership.PAUSING:
+                    raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
+                self._transition(Ownership.AWAITING_OPERATOR)
         except TimeoutError:
             raise RuntimeFault(FailureCode.BUDGET_EXCEEDED) from None
 

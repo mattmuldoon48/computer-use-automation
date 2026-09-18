@@ -1,0 +1,590 @@
+{
+  "profile_id": "member_ops_v1",
+  "binding": {
+    "origin": "http://127.0.0.1:56973",
+    "entry_route": "/",
+    "app": "member_ops",
+    "version": "v1",
+    "locale": "en_US"
+  },
+  "targets": {
+    "search_navigation": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "navigation"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "link",
+        "name": {
+          "kind": "literal",
+          "value": "Member search"
+        }
+      },
+      "expected_matches": 1
+    },
+    "search_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Member search"
+        }
+      },
+      "expected_matches": 1
+    },
+    "details_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Member details"
+        }
+      },
+      "expected_matches": 1
+    },
+    "prepare_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Prepare sub-account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "review_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Review sub-account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "search_button": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Search"
+        }
+      },
+      "expected_matches": 1
+    },
+    "member_result": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "link",
+        "name": {
+          "kind": "input_ref",
+          "name": "member_id"
+        }
+      },
+      "expected_matches": 1
+    },
+    "prepare_link": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "link",
+        "name": {
+          "kind": "literal",
+          "value": "Prepare sub-account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "review_button": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": {
+        "kind": "literal",
+        "value": "Account preparation"
+      },
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Review"
+        }
+      },
+      "expected_matches": 1
+    },
+    "submit_button": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Open account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "dismiss": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Dismiss notice"
+        }
+      },
+      "expected_matches": 1
+    },
+    "member_search_field": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_control",
+        "label": {
+          "kind": "literal",
+          "value": "Member number"
+        },
+        "control": "input"
+      },
+      "expected_matches": 1
+    },
+    "product_field": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": {
+        "kind": "literal",
+        "value": "Account preparation"
+      },
+      "locator": {
+        "kind": "label",
+        "label": {
+          "kind": "literal",
+          "value": "Product"
+        }
+      },
+      "expected_matches": 1
+    },
+    "nickname_field": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": {
+        "kind": "literal",
+        "value": "Account preparation"
+      },
+      "locator": {
+        "kind": "label",
+        "label": {
+          "kind": "literal",
+          "value": "Nickname"
+        }
+      },
+      "expected_matches": 1
+    },
+    "member_id": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Member number"
+        }
+      },
+      "expected_matches": 1
+    },
+    "product_code": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Product code"
+        }
+      },
+      "expected_matches": 1
+    },
+    "nickname": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Nickname"
+        }
+      },
+      "expected_matches": 1
+    },
+    "monthly_fee_minor": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Monthly fee"
+        }
+      },
+      "expected_matches": 1
+    },
+    "currency": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Currency"
+        }
+      },
+      "expected_matches": 1
+    },
+    "submitted": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Submitted"
+        }
+      },
+      "expected_matches": 1
+    },
+    "not_found": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Member not found"
+        }
+      },
+      "expected_matches": 1
+    },
+    "ineligible": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Product unavailable"
+        }
+      },
+      "expected_matches": 1
+    },
+    "validation": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Business validation rejected"
+        }
+      },
+      "expected_matches": 1
+    },
+    "permission": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Permission denied"
+        }
+      },
+      "expected_matches": 1
+    },
+    "expired": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Session expired"
+        }
+      },
+      "expected_matches": 1
+    },
+    "notice": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Service notice"
+        }
+      },
+      "expected_matches": 1
+    },
+    "unknown": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Unexpected confirmation"
+        }
+      },
+      "expected_matches": 1
+    }
+  },
+  "terminal_checks": [
+    {
+      "kind": "visible",
+      "target": "review_heading"
+    },
+    {
+      "kind": "text_equals",
+      "target": "member_id",
+      "value": {
+        "kind": "input_ref",
+        "name": "member_id"
+      }
+    },
+    {
+      "kind": "text_equals",
+      "target": "submitted",
+      "value": {
+        "kind": "literal",
+        "value": "false"
+      }
+    }
+  ],
+  "guards": [
+    {
+      "id": "denied",
+      "kind": "failure",
+      "when": {
+        "kind": "visible",
+        "target": "permission"
+      },
+      "failure_code": "PERMISSION_DENIED",
+      "reason": null,
+      "outcome_code": null,
+      "details": {},
+      "action": null,
+      "max_count": 1,
+      "checkpoint": []
+    },
+    {
+      "id": "expired",
+      "kind": "intervention",
+      "when": {
+        "kind": "visible",
+        "target": "expired"
+      },
+      "failure_code": null,
+      "reason": "session_expired",
+      "outcome_code": null,
+      "details": {},
+      "action": null,
+      "max_count": 1,
+      "checkpoint": []
+    },
+    {
+      "id": "unknown",
+      "kind": "intervention",
+      "when": {
+        "kind": "visible",
+        "target": "unknown"
+      },
+      "failure_code": null,
+      "reason": "unknown_dialog",
+      "outcome_code": null,
+      "details": {},
+      "action": null,
+      "max_count": 1,
+      "checkpoint": []
+    },
+    {
+      "id": "not_found",
+      "kind": "business",
+      "when": {
+        "kind": "visible",
+        "target": "not_found"
+      },
+      "failure_code": null,
+      "reason": null,
+      "outcome_code": "member_not_found",
+      "details": {},
+      "action": null,
+      "max_count": 1,
+      "checkpoint": []
+    },
+    {
+      "id": "ineligible",
+      "kind": "business",
+      "when": {
+        "kind": "visible",
+        "target": "ineligible"
+      },
+      "failure_code": null,
+      "reason": null,
+      "outcome_code": "product_ineligible",
+      "details": {},
+      "action": null,
+      "max_count": 1,
+      "checkpoint": []
+    },
+    {
+      "id": "validation",
+      "kind": "business",
+      "when": {
+        "kind": "visible",
+        "target": "validation"
+      },
+      "failure_code": null,
+      "reason": null,
+      "outcome_code": "validation_rejected",
+      "details": {},
+      "action": null,
+      "max_count": 1,
+      "checkpoint": []
+    },
+    {
+      "id": "dismiss_notice",
+      "kind": "recovery",
+      "when": {
+        "kind": "visible",
+        "target": "notice"
+      },
+      "failure_code": null,
+      "reason": null,
+      "outcome_code": null,
+      "details": {},
+      "action": {
+        "kind": "click",
+        "target": "dismiss"
+      },
+      "max_count": 1,
+      "checkpoint": [
+        {
+          "kind": "visible",
+          "target": "prepare_heading"
+        },
+        {
+          "kind": "text_equals",
+          "target": "member_id",
+          "value": {
+            "kind": "input_ref",
+            "name": "member_id"
+          }
+        }
+      ]
+    }
+  ]
+}

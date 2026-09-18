@@ -196,6 +196,26 @@ def test_public_projection_never_sends_restricted_or_unknown_visible_text():
     ]
 
 
+@pytest.mark.parametrize("field", ["role", "control"])
+def test_provider_projection_excludes_unreviewed_dom_metadata(field):
+    before = derived(observation(artifact(), INPUTS))
+    before = before.model_copy(
+        update={
+            "targets": tuple(
+                target.model_copy(update={field: "private_dom_metadata_canary"})
+                for target in before.targets
+            )
+        }
+    )
+    actor = Actor(lambda request: {})
+    discovery, surface = setup(actor, observed=before)
+    outcome = asyncio.run(discovery.run(dict(INPUTS)))
+    assert actor.requests
+    assert "private_dom_metadata_canary" not in json.dumps(actor.requests)
+    assert outcome.artifact is None
+    assert not surface.actions
+
+
 def test_second_malformed_decision_is_terminal_without_raw_error_repair():
     class Malformed(Actor):
         async def propose(self, request):

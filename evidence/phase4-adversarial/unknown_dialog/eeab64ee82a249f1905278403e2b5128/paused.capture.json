@@ -1,0 +1,16 @@
+{
+  "withheld": true,
+  "reason": "dialog_open",
+  "structure": {
+    "state": "observed",
+    "target_count": 4,
+    "dialog": "unknown",
+    "controls": {
+      "input": 0,
+      "select": 0,
+      "button": 0,
+      "link": 2,
+      "text": 0
+    }
+  }
+}

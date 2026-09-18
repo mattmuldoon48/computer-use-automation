@@ -4,6 +4,7 @@ import asyncio
 from io import StringIO
 
 import pytest
+from PIL import Image
 
 from sandbox.app import create_app
 from sandbox.server import running_app
@@ -111,6 +112,42 @@ def test_discovery_merges_authored_specs_and_rejects_ambiguous_or_hidden_control
             assert [target.model_dump(exclude={"ref"}) for target in observed.targets] == [
                 target.model_dump(exclude={"ref"}) for target in refreshed.targets
             ]
+        finally:
+            await surface.close()
+
+    with running_app(create_app()) as origin:
+        asyncio.run(scenario(origin))
+
+
+@pytest.mark.parametrize("frame_name", ["main", "navigation"])
+def test_capture_never_persists_css_painted_canaries(tmp_path, frame_name):
+    async def scenario(origin):
+        bundle = load_demo(origin)
+        surface = await PlaywrightSurface.launch(
+            bundle.artifact.goal.binding,
+            bundle.profile.targets,
+            {"member_id": "000099", "product_code": "SAVINGS_PLUS", "nickname": "Reserve"},
+            EvidenceSink(StringIO()),
+        )
+        try:
+            page = surface._PlaywrightSurface__page
+            frame = page.main_frame if frame_name == "main" else page.frame(name=frame_name)
+            before = await frame.locator("body").inner_text()
+            await frame.add_style_tag(
+                content=(
+                    "body::before {content:'PRIVATE_PAINT_CANARY'; position:fixed; "
+                    "top:0; left:0; width:120px; height:40px; z-index:2147483647; "
+                    "background:rgb(255,0,255); color:rgb(255,0,255)}"
+                )
+            )
+            assert await frame.locator("body").inner_text() == before
+            path = tmp_path / "capture.png"
+            capture = await surface.capture_safe(path)
+            if capture["withheld"]:
+                assert not path.exists()
+            else:
+                with Image.open(path) as image:
+                    assert image.convert("RGB").getextrema() == ((32, 32), (32, 32), (32, 32))
         finally:
             await surface.close()
 

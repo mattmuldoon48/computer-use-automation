@@ -59,7 +59,6 @@ class ScriptedPlanner:
         }
         if index < len(self.script):
             kind, name, input_name = self.script[index]
-            control = {"fill": "input", "select": "select"}.get(kind)
             found = []
             for target in observed["targets"]:
                 descriptor = target["descriptor"]
@@ -72,9 +71,7 @@ class ScriptedPlanner:
                 )
                 if label != expected:
                     continue
-                if control and target["control"] != control:
-                    continue
-                if kind == "click" and target["control"] not in {"button", "link"}:
+                if kind not in target["allowed_actions"]:
                     continue
                 if name == "Review" and descriptor["section"] != {
                     "kind": "literal",
@@ -90,7 +87,10 @@ class ScriptedPlanner:
         return ModelDecision.model_validate(fields)
 
 
-def test_compiled_observed_flow_replays_new_inputs_without_provider(monkeypatch):
+@pytest.mark.parametrize("replay_case", ["happy", "known_interstitial"])
+def test_compiled_observed_flow_replays_new_inputs_without_provider(
+    monkeypatch, tmp_path, replay_case
+):
     app = create_app()
     first = {"member_id": "000042", "product_code": "SAVINGS_BASIC", "nickname": "PRIVATE_FIRST"}
     second = {"member_id": "000099", "product_code": "SAVINGS_PLUS", "nickname": "PRIVATE_SECOND"}
@@ -134,27 +134,39 @@ def test_compiled_observed_flow_replays_new_inputs_without_provider(monkeypatch)
 
         monkeypatch.setattr(OpenAIPlanner, "propose", forbidden)
         monkeypatch.setattr(planner, "propose", forbidden)
-        replay_surface = await PlaywrightSurface.launch(
-            bundle.artifact.goal.binding, bundle.profile.targets, second, sink
-        )
-        try:
-            assert replay_surface.context_id != first_context
-            result = await Replay(
-                outcome.artifact,
-                bundle.profile,
-                Session(replay_surface, bundle.policy, sink),
-                frozenset({"prepare"}),
-            ).run(second)
-            assert isinstance(result, Success), result
-            assert result.outputs == {
-                **second,
-                "monthly_fee_minor": 700,
-                "currency": "USD",
-                "submitted": False,
-            }
-            assert result.metadata.provider_call_count == 0
-        finally:
-            await replay_surface.close()
+        artifact_path = tmp_path / "compiled.json"
+        artifact_path.write_text(outcome.artifact.model_dump_json())
+        replay_app = create_app(replay_case)
+        with running_app(replay_app) as replay_origin:
+            rebound = load_demo(replay_origin, artifact_path)
+            replay_surface = await PlaywrightSurface.launch(
+                rebound.artifact.goal.binding, rebound.profile.targets, second, sink
+            )
+            try:
+                assert replay_surface.context_id != first_context
+                result = await Replay(
+                    rebound.artifact,
+                    rebound.profile,
+                    Session(replay_surface, rebound.policy, sink),
+                    frozenset({"prepare"}),
+                ).run(second)
+                assert isinstance(result, Success), result
+                assert result.outputs == {
+                    **second,
+                    "monthly_fee_minor": 700,
+                    "currency": "USD",
+                    "submitted": False,
+                }
+                assert result.metadata.provider_call_count == 0
+                assert replay_app.state.oracle.request_counts[("POST", "/workspace/review")] == 1
+                if replay_case == "known_interstitial":
+                    assert (
+                        replay_app.state.oracle.request_counts[("POST", "/workspace/dismiss")] == 1
+                    )
+                assert replay_app.state.oracle.submit_requests == 0
+                assert replay_app.state.oracle.ledger == []
+            finally:
+                await replay_surface.close()
         assert app.state.oracle.submit_requests == 0
         assert app.state.oracle.ledger == []
 

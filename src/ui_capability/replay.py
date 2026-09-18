@@ -216,9 +216,9 @@ class Replay:
             if decision == "advance":
                 self._index += 1
             self._paused_at = None
-            return await self._drive()
+            return await self._drive(resuming=True)
 
-    async def _drive(self) -> TerminalResult | Intervention:
+    async def _drive(self, *, resuming: bool = False) -> TerminalResult | Intervention:
         started = time.monotonic()
         remaining = self.artifact.goal.budgets.active_seconds - self._active_seconds
         try:
@@ -230,6 +230,17 @@ class Replay:
                     if not self._checks(self.artifact.preconditions, initial):
                         raise RuntimeFault(FailureCode.PRECONDITION_FAILED)
                 while self._index < len(self.artifact.steps):
+                    if resuming:
+                        observed = await self._observe()
+                        step = self.artifact.steps[self._index]
+                        if self._verify(step.postconditions, observed, "postconditions"):
+                            if not self._checks(self.artifact.identity_checks, observed):
+                                raise RuntimeFault(FailureCode.IDENTITY_MISMATCH)
+                            # The operator may have completed several checkpoints.
+                            # Do not repeat a verified effect merely to replay its recipe.
+                            self._index += 1
+                            continue
+                        resuming = False
                     await self._step(self.artifact.steps[self._index])
                     self._index += 1
                 observed = await self._observe()

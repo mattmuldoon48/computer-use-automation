@@ -1,0 +1,23 @@
+{
+  "scenario": "CDP Browser.crash during a real slow-search request using the reviewed checkpoint revision",
+  "before_fix": {
+    "scope": "browser_process",
+    "failure": "POLICY_DENIED",
+    "ownership": "ABORTED",
+    "submission_receipts": 0,
+    "review_receipts": 0,
+    "provider_call_count": 0,
+    "resume_rejected": "OWNERSHIP_DENIED"
+  },
+  "after_fix": {
+    "scope": "browser_process",
+    "failure": "INTERRUPTED",
+    "ownership": "ABORTED",
+    "submission_receipts": 0,
+    "review_receipts": 0,
+    "provider_call_count": 0,
+    "resume_rejected": "OWNERSHIP_DENIED"
+  },
+  "separate_regression": "tests/integration/test_browser_replay.py::test_real_browser_crash_fails_closed_without_submission_or_resume",
+  "not_supported": "Durable process-crash resume is not implemented or claimed."
+}

@@ -1,0 +1,69 @@
+{
+  "surface": "FakeSurface preflight smoke; not live UI evidence",
+  "original_artifact": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+  "revised_artifact": "3add1fa1ffcb47607c07a7304e9c23918fb1928762aef39c2af73409a8b5817b",
+  "same_results_for_both": true,
+  "cases": [
+    {
+      "case": "unsupported_action",
+      "rejected_by": "schema",
+      "actions": 0
+    },
+    {
+      "case": "unknown_version",
+      "rejected_by": "replay_preflight",
+      "code": "INCOMPATIBLE",
+      "actions": 0,
+      "observations": 0,
+      "provider_call_count": 0
+    },
+    {
+      "case": "widened_permissions",
+      "rejected_by": "replay_preflight",
+      "code": "PERMISSION_DENIED",
+      "actions": 0,
+      "observations": 0,
+      "provider_call_count": 0
+    },
+    {
+      "case": "final_submission",
+      "rejected_by": "replay_preflight",
+      "code": "POLICY_DENIED",
+      "actions": 0,
+      "observations": 0,
+      "provider_call_count": 0
+    },
+    {
+      "case": "unsafe_retry",
+      "rejected_by": "replay_preflight",
+      "code": "POLICY_DENIED",
+      "actions": 0,
+      "observations": 0,
+      "provider_call_count": 0
+    },
+    {
+      "case": "restricted_literal",
+      "rejected_by": "replay_preflight",
+      "code": "POLICY_DENIED",
+      "actions": 0,
+      "observations": 0,
+      "provider_call_count": 0
+    },
+    {
+      "case": "identity_target_rebind",
+      "rejected_by": "replay_preflight",
+      "code": "INCOMPATIBLE",
+      "actions": 0,
+      "observations": 0,
+      "provider_call_count": 0
+    },
+    {
+      "case": "submitted_true",
+      "rejected_by": "replay_preflight",
+      "code": "POLICY_DENIED",
+      "actions": 0,
+      "observations": 0,
+      "provider_call_count": 0
+    }
+  ]
+}

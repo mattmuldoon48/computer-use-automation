@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "run_type": "automated_submission_denial_probe",
+  "live_discovery": false,
+  "setup_run_type": "discovered_capability_replay",
+  "run_id": "5876822d38ea4c53a999b4a12fa13f80",
+  "session_id": "95695836d3034cc38d5ddfaed472c895",
+  "artifact_hash": "ab4e4a4c3fa9c24d80eb14d754ba8ac593b1ed129c6fb118398dc16d95625037",
+  "profile_hash": "58d7a4c6fb70ef91e26d8b5925c6f7edceec17753b11978b594502a1bc9c1f80",
+  "policy_hash": "8f02a349e164d806efa7737f7fcdc9a131200b1967c21c6c21136be981b7ad16",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 3.222,
+  "setup_action_count": 8,
+  "setup_result": {
+    "kind": "success",
+    "step_index": null,
+    "human_intervened": false,
+    "provider_call_count": 0
+  },
+  "result": {
+    "kind": "failure",
+    "step_index": null,
+    "human_intervened": false,
+    "provider_call_count": 0,
+    "code": "POLICY_DENIED"
+  },
+  "operator_evidence": "automated_adversarial_probe",
+  "ownership": "ABORTED",
+  "action_denial_submission_receipts": 0,
+  "transport_probe_submission_receipts": 0,
+  "ledger_entries": 0,
+  "transport_denied_count": 1,
+  "provider_boundary_attempts": 0,
+  "capture_stage": "after_action_gate_denial_before_direct_transport_probe",
+  "capture": {
+    "withheld": false,
+    "reason": "page_masked",
+    "frame_count": 3,
+    "target_count": 9,
+    "mask_rects": [
+      {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 907.484375
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 9,
+      "dialog": "none",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 1,
+        "link": 1,
+        "text": 0
+      }
+    }
+  },
+  "reproducer": "tests/integration/test_browser_replay.py::test_submission_denied_at_action_and_transport_boundaries"
+}

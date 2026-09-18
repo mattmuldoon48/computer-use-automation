@@ -20,7 +20,6 @@ from .contracts import (
     Provenance,
     PublicLiteral,
     RetryPolicy,
-    RouteMatches,
     Scalar,
     Select,
     Step,
@@ -118,10 +117,9 @@ class DeterministicCompiler:
             raise RuntimeFault(FailureCode.POLICY_DENIED)
         return names[0]
 
-    def _route(self, observation: Observation) -> RouteMatches:
+    def _route(self, observation: Observation) -> None:
         if not self.public(observation.route) or self._sensitive(observation.route):
             raise RuntimeFault(FailureCode.POLICY_DENIED)
-        return RouteMatches(route=PublicLiteral(value=observation.route))
 
     def _bound_value(self, value: Scalar) -> InputRef | PublicLiteral | None:
         names = [
@@ -166,7 +164,7 @@ class DeterministicCompiler:
         return predicates
 
     def preconditions(self, action: ExecutableAction, before: Observation) -> tuple[Predicate, ...]:
-        route = self._route(before)
+        self._route(before)
         if isinstance(action, (Click, Fill, Select)):
             found = matches(self.template.targets[action.target], before, self.inputs, {})
             if len(found) != 1:
@@ -175,11 +173,11 @@ class DeterministicCompiler:
                 )
             if self.target_name(found[0], before) != action.target:
                 raise RuntimeFault(FailureCode.TARGET_NOT_FOUND)
-            return route, Visible(target=action.target)
+            return (Visible(target=action.target),)
         markers = self._markers(before)
         if not markers:
             raise RuntimeFault(FailureCode.PRECONDITION_FAILED)
-        return route, markers[0]
+        return (markers[0],)
 
     def proposal_artifact(
         self, action: ExecutableAction, before: Observation
@@ -197,12 +195,11 @@ class DeterministicCompiler:
 
     def record(self, action: ExecutableAction, before: Observation, after: Observation) -> Step:
         preconditions = self.preconditions(action, before)
-        route = self._route(after)
+        self._route(after)
         if isinstance(action, (Fill, Select)):
             if not isinstance(action.value, InputRef):
                 raise RuntimeFault(FailureCode.POLICY_DENIED)
             postconditions: tuple[Predicate, ...] = (
-                route,
                 Equals(kind="value_equals", target=action.target, value=action.value),
             )
         else:
@@ -214,7 +211,7 @@ class DeterministicCompiler:
             if not changed:
                 # A returned click/navigation/wait is not evidence of an application effect.
                 raise RuntimeFault(FailureCode.POSTCONDITION_FAILED)
-            postconditions = route, changed[0]
+            postconditions = (changed[0],)
         if not evaluate_all(postconditions, after, self.template, self.inputs, {}):
             raise RuntimeFault(FailureCode.POSTCONDITION_FAILED)
         step = Step(

@@ -1,0 +1,337 @@
+{
+  "scope": "Phase 4 adversarial execution, not a new discovery run",
+  "derivation": "derivation.json",
+  "candidate": "revised.capability.json",
+  "provider_calls": 0,
+  "cli_attempt_count": 12,
+  "prior_failed_attempt": {
+    "case": "known_interstitial",
+    "artifact": "../phase3-live/fff6f1953ef04b81bfc567ce9c486628/candidate.capability.json",
+    "summary": "original-checkpoints/c4891004f9c54ee9a0a56d534003e384/summary.json",
+    "exit": 2,
+    "code": "POSTCONDITION_FAILED",
+    "reason": "Original compiled route predicates rejected the reviewed post-dismissal preparation UI. This run also withheld its capture while the initial full-page mask implementation was being corrected."
+  },
+  "revised_candidate_runs": [
+    {
+      "case": "happy",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "happy",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/happy",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 0,
+      "summary": "happy/b7c57246c292451da7235aed7007c3fa/summary.json",
+      "result": {
+        "kind": "success",
+        "step_index": null,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "actions": 8,
+      "capture": "page_masked"
+    },
+    {
+      "case": "member_not_found",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "member_not_found",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/member_not_found"
+      ],
+      "exit": 3,
+      "summary": "member_not_found/867ceec4fae8438b8a09d789cbd543c6/summary.json",
+      "result": {
+        "kind": "business_outcome",
+        "step_index": 2,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "member_not_found"
+      },
+      "actions": 3,
+      "capture": "page_masked"
+    },
+    {
+      "case": "product_ineligible",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "product_ineligible",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/product_ineligible",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 3,
+      "summary": "product_ineligible/77a557394fe14ed8beeca01957806bac/summary.json",
+      "result": {
+        "kind": "business_outcome",
+        "step_index": 7,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "product_ineligible"
+      },
+      "actions": 8,
+      "capture": "page_masked"
+    },
+    {
+      "case": "validation_rejected",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "validation_rejected",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/validation_rejected",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 3,
+      "summary": "validation_rejected/81f414ff3995492eaad3dd1c18151e0a/summary.json",
+      "result": {
+        "kind": "business_outcome",
+        "step_index": 7,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "validation_rejected"
+      },
+      "actions": 8,
+      "capture": "page_masked"
+    },
+    {
+      "case": "slow_load",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "slow_load",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/slow_load",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 0,
+      "summary": "slow_load/1eef400cf53d4be8bf5f89a3bbd19844/summary.json",
+      "result": {
+        "kind": "success",
+        "step_index": null,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "actions": 8,
+      "capture": "page_masked"
+    },
+    {
+      "case": "known_interstitial",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "known_interstitial",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/known_interstitial",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 0,
+      "summary": "known_interstitial/42d0cda5a61a4fbaaba6bb35f0425934/summary.json",
+      "result": {
+        "kind": "success",
+        "step_index": null,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "actions": 9,
+      "capture": "page_masked"
+    },
+    {
+      "case": "permission_denied",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "permission_denied",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/permission_denied",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 2,
+      "summary": "permission_denied/25fbbaee124d43369723ffdb94e424c6/summary.json",
+      "result": {
+        "kind": "failure",
+        "step_index": 4,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "PERMISSION_DENIED"
+      },
+      "actions": 5,
+      "capture": "page_masked"
+    },
+    {
+      "case": "session_expired",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "session_expired",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/session_expired",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 2,
+      "summary": "session_expired/9423c48678bb433aa4fe013b36794c8a/summary.json",
+      "result": {
+        "kind": "failure",
+        "step_index": 4,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "INTERRUPTED"
+      },
+      "actions": 5,
+      "capture": "page_masked"
+    },
+    {
+      "case": "unknown_dialog",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "unknown_dialog",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/unknown_dialog",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 2,
+      "summary": "unknown_dialog/eeab64ee82a249f1905278403e2b5128/summary.json",
+      "result": {
+        "kind": "failure",
+        "step_index": 4,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "INTERRUPTED"
+      },
+      "actions": 5,
+      "capture": "dialog_open"
+    },
+    {
+      "case": "duplicate_target",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "duplicate_target",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/duplicate_target",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 2,
+      "summary": "duplicate_target/71b0ffe9f65d439b8545f606abd70af8/summary.json",
+      "result": {
+        "kind": "failure",
+        "step_index": 7,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "AMBIGUOUS_TARGET"
+      },
+      "actions": 7,
+      "capture": "page_masked"
+    },
+    {
+      "case": "wrong_member_review",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--case",
+        "wrong_member_review",
+        "--evidence-dir",
+        "evidence/phase4-adversarial/wrong_member_review",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit": 2,
+      "summary": "wrong_member_review/3fd5b318c7ca4d7d8ce921305dc78b4c/summary.json",
+      "result": {
+        "kind": "failure",
+        "step_index": null,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "IDENTITY_MISMATCH"
+      },
+      "actions": 8,
+      "capture": "page_masked"
+    }
+  ],
+  "interpretation": {
+    "interventions": "Expired-session and unknown-dialog CLI runs were headless and deliberately aborted; no human assistance claimed. Automated resume is separately covered by tests. Prior real human handoff remains under evidence/phase2-fixtures/manual.",
+    "negative_outcomes": "Business outcomes and denied/interrupted results are expected safety results, not successful goal completions.",
+    "receiver_checks": "Zero receiver receipts are asserted by the browser/transport tests, not inferred from CLI summary failure codes.",
+    "hashes": "Run artifact hashes include their ephemeral installation origin and therefore differ from the unbound source canonical hash."
+  }
+}

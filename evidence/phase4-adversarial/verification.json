@@ -1,0 +1,158 @@
+{
+  "scope": "Phase 4 adversarial review and fault coverage",
+  "recorded_by": "coding assistant from observed commands and scenarios",
+  "source_state": {
+    "base_commit": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+    "source_and_tests_dirty": true,
+    "source_and_tests_diff_sha256": "32f92cfb5d964a62eb605a902f7f100b7eb2ba799fdecec78ca6be9e0d8430ad",
+    "diff_scope": [
+      "src",
+      "tests",
+      "pyproject.toml",
+      "uv.lock"
+    ],
+    "note": "Final source/test snapshot for the 221-test verification. CLI matrix preceded formatting, additional resume/crash tests, and the final disconnected-browser classification fix; no exact per-CLI-run code diff was captured. Artifact/browser versions and installation hashes are in each summary."
+  },
+  "checks": [
+    {
+      "command": "uv run --offline pytest -q",
+      "result": "221 passed in 131.78s",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline ruff check .",
+      "result": "All checks passed!",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline ruff format --check .",
+      "result": "40 files already formatted",
+      "exit": 0
+    },
+    {
+      "command": "uv run --offline mypy src sandbox",
+      "result": "Success: no issues found in 25 source files",
+      "exit": 0
+    },
+    {
+      "command": "uv lock --check --offline",
+      "result": "Resolved 32 packages",
+      "exit": 0
+    },
+    {
+      "command": "uv build --offline",
+      "result": "Built source distribution and wheel successfully",
+      "exit": 0
+    }
+  ],
+  "model_api_calls": 0,
+  "cli_matrix": {
+    "index": "selected-runs.json",
+    "revised_candidate_cases": 11,
+    "expected_outcomes_observed": 11,
+    "prior_original_artifact_failure_retained": true
+  },
+  "baseline_reproductions": [
+    {
+      "issue": "Raw DOM role/control strings reached planner requests",
+      "proof": "Two new projection regressions failed before the fix; pass after removing redundant raw descriptors."
+    },
+    {
+      "issue": "CSS-painted shell pixels bypassed workspace-only screenshot masks",
+      "proof": "Real main-document pseudo-element paint survived the old PNG capture; full-page masking and decoded-pixel verification now prevent persistence."
+    },
+    {
+      "issue": "HTML/ARIA dialogs did not stop replay",
+      "proof": "Four original-artifact/authored browser regressions returned Success instead of intervention before the fix. Current regression uses authored and reviewed live-derived artifacts."
+    },
+    {
+      "issue": "Provider metadata could echo the configured credential",
+      "proof": "Response ID, model, and request ID regressions all failed before the fix; the local transport used only a synthetic credential."
+    },
+    {
+      "issue": "Resume repeated an operator-completed preview",
+      "proof": "Pre-fix regression observed an extra review click after the operator completed the checkpoint. Current coverage includes both fully completed and partially completed suffixes."
+    },
+    {
+      "issue": "Abort superseded pause but pause reported success",
+      "proof": "Executed baseline Session source from commit 2d3db05 in an isolated subprocess; event-controlled regression failed before and passes after."
+    },
+    {
+      "issue": "Compiled exact-route checkpoints blocked reviewed recovery and sign-in",
+      "proof": "Original live artifact CLI recovery failed with POSTCONDITION_FAILED, retained under original-checkpoints. Baseline compiler source also failed the new compilation-to-recovery regression. Linked checkpoint revision and current compiler pass."
+    },
+    {
+      "issue": "Whole-browser crash was misclassified as policy denial",
+      "proof": "Actual CDP Browser.crash produced POLICY_DENIED before the disconnect guard and INTERRUPTED afterward, with zero review/submission receipts; see browser-crash.json."
+    }
+  ],
+  "development_verification": [
+    {
+      "result": "8 failed, 1 passed in initial boundary reproduction batch",
+      "interpretation": "Failures reproduced role/control disclosure, extra preview, shell CSS leakage, and HTML/ARIA dialog gaps. The SVG-background variant did not reproduce leakage and was not retained as a claimed finding."
+    },
+    {
+      "result": "4 failed, 39 passed in initial integration hardening batch",
+      "interpretation": "Original route-pinned recovery/resume and an ineffective html-root mask remained. Revised checkpoints and body masking corrected these; no failures were relabelled as success."
+    },
+    {
+      "result": "10 passed, 25 deselected in focused recovery/capture confirmation"
+    },
+    {
+      "result": "219 passed before adding full-browser-process crash coverage"
+    },
+    {
+      "result": "4 passed in renderer/full-browser crash confirmation"
+    }
+  ],
+  "coverage": {
+    "business_identity_validation_slow_recovery_permission_ambiguity": "CLI matrix plus tests/integration/test_browser_replay.py against authored and reviewed live-derived artifacts",
+    "submission_and_outbound_receiver_denial": "tests/integration/test_browser_replay.py and tests/integration/test_transport.py assert receiver counters, including direct/frame/popup, redirects, websockets, service workers, uploads, downloads, and unreviewed paths/queries",
+    "native_html_aria_dialogs": "tests/integration/test_browser_replay.py checks intervention, no acceptance/dismissal, no mutation, and withheld captures",
+    "stale_epoch_human_gate_inflight_duplicate_resume_unsafe_resume": "tests/unit/test_session.py, tests/unit/test_discovery.py, tests/unit/test_replay_edges.py, and automated browser handoff with cookie rotation",
+    "renderer_and_browser_process_crash": "Permanent real-Chromium regression plus browser-crash.json smoke evidence",
+    "artifact_tampering": "tampering.json: eight mutations rejected for both original and revised artifacts before any surface action",
+    "typed_extraction_and_goal_checks": "tests/unit/test_replay.py, tests/unit/test_policy.py, tests/unit/test_replay_edges.py, and browser exact-output assertions",
+    "model_free_replay": "Transitive import-boundary regression, provider propose/transport tripwires in browser fixture, and zero API-call metadata",
+    "runtime_oracle_isolation": "Source inspection found scenario/oracle access only in sandbox/demo/test-controller code; production Replay, Session, policy, compiler, discovery and surface do not consult the sandbox oracle"
+  },
+  "privacy": {
+    "persisted_text_scan": "No matches for configured credential prefix or known invocation/privacy canaries in Phase 4 evidence text files.",
+    "captures": {
+      "captures_checked": 11,
+      "all_pixels_opaque_mask": true
+    },
+    "visual_confirmation": "Inspected the happy-run terminal PNG directly: fully opaque mask, no visible UI pixels.",
+    "archives": [
+      {
+        "archive": "dist/ui_capability_runtime-0.1.0.tar.gz",
+        "sha256": "15e16aa8c10987847322f1a739143f42b3d37e5173bca7a062c060436065cb1e",
+        "file_count": 59,
+        "private_paths_excluded": true,
+        "credential_prefix_matches": 0,
+        "browser_helpers_included": true
+      },
+      {
+        "archive": "dist/ui_capability_runtime-0.1.0-py3-none-any.whl",
+        "sha256": "7ad0a548e8efd1d3200b65ec96dcc0588fe06321cb7792e5770cd80e74e54967",
+        "file_count": 38,
+        "private_paths_excluded": true,
+        "credential_prefix_matches": 0,
+        "browser_helpers_included": true
+      }
+    ],
+    "trace_policy": "No raw traces, DOM dumps, videos, or provider prompts/responses persisted.",
+    "scope": "Known canary scans and fixed projection rules are not a general PII-detection or provider-wide retention guarantee."
+  },
+  "limitations": [
+    "The revised capability is a reviewed checkpoint revision of the original live-discovered action sequence, not a new model-generated artifact or paid discovery run. Original evidence is unchanged.",
+    "No new live provider run followed the provider/discovery hardening; local deterministic regressions exercise those changes.",
+    "Phase 4 handoff automation is test-driven; no new real-human demonstration was claimed. The earlier Phase 2 user-guided handoff remains the real-human evidence.",
+    "Fully opaque captures deliberately lose shell and business-screen visual information; structural evidence carries runtime state.",
+    "Exact pre-format per-CLI-run source diffs were not captured; the final verification source/test diff is recorded here. Fresh-checkout verification remains Phase 5.",
+    "Discovery-time human resume and durable process-crash recovery remain unsupported.",
+    "Trusted caller/profile/schema text is public configuration; arbitrary secret-bearing configuration is outside the tested minimization contract.",
+    "DOM revalidation is not an atomic transaction against hostile page mutation; this cooperative local browser/proxy boundary is not OS egress or multi-user isolation."
+  ],
+  "next_phase": "Final reviewer demo, concise REPORT.md, revision-linked submission manifest, and authorized fresh-checkout verification. No commit or push performed during Phase 4."
+}

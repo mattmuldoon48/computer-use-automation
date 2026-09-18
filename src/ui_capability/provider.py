@@ -428,6 +428,12 @@ class OpenAIPlanner:
             and _IDENTIFIER.fullmatch(request_id) is None
         ):
             raise ValueError("invalid response metadata")
+        if any(
+            self._key in value
+            for value in (response_id, model, request_id)
+            if isinstance(value, str)
+        ):
+            raise ValueError("unsafe response metadata")
         tokens: dict[str, object] = {}
         for name in ("input_tokens", "output_tokens", "total_tokens"):
             number = usage.get(name)

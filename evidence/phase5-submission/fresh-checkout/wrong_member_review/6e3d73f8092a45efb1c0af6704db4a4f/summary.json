@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "run_type": "discovered_capability_replay",
+  "live_discovery": false,
+  "artifact_provenance": "live_discovery",
+  "operator_evidence": "none",
+  "session_id": "25d0acc1e90c493e95328f6efd41a764",
+  "ownership": "ABORTED",
+  "artifact_hash": "55172aa863c7f5fd33ad1aab1ae83b245318a429744e3b380ed64cc1537c39b4",
+  "profile_hash": "0fea90a1cf3d288846dfd83dc5f637e3cf114425facba97fba890693476d1870",
+  "playwright_version": "1.58.0",
+  "browser_version": "145.0.7632.6",
+  "elapsed_seconds": 2.206,
+  "action_count": 8,
+  "result": {
+    "kind": "failure",
+    "step_index": null,
+    "human_intervened": false,
+    "provider_call_count": 0,
+    "code": "IDENTITY_MISMATCH"
+  },
+  "capture": {
+    "withheld": false,
+    "reason": "page_masked",
+    "frame_count": 3,
+    "target_count": 9,
+    "mask_rects": [
+      {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 907.484375
+      }
+    ],
+    "structure": {
+      "state": "observed",
+      "target_count": 9,
+      "dialog": "none",
+      "controls": {
+        "input": 0,
+        "select": 0,
+        "button": 1,
+        "link": 1,
+        "text": 0
+      }
+    }
+  }
+}

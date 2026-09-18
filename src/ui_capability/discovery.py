@@ -149,8 +149,6 @@ class _DiscoveryDriver(Replay):
             descriptor: dict[str, object] = {
                 "ref": target.ref,
                 "descriptor": self.artifact.targets[name].model_dump(mode="json"),
-                "role": target.role,
-                "control": target.control,
                 "allowed_actions": allowed_actions,
             }
             for field in ("text", "value"):

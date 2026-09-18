@@ -297,6 +297,29 @@ def test_refusal_incomplete_errors_and_unbounded_metadata_fail_closed(response):
     asyncio.run(scenario())
 
 
+@pytest.mark.parametrize("field", ["id", "model", "request_id"])
+def test_response_metadata_cannot_persist_configured_credential(field):
+    async def scenario():
+        response = envelope()
+        if field != "request_id":
+            response[field] = "echo_" + SECRET
+        planner = LocalPlanner(response)
+        if field == "request_id":
+
+            async def reflected_header(body):
+                return json.dumps(response).encode(), "echo_" + SECRET
+
+            planner._transport = reflected_header
+        with pytest.raises(ProviderError) as caught:
+            await planner.propose({})
+        assert caught.value.code == "provider_error"
+        assert planner.call_count == 1
+        assert SECRET not in str(caught.value)
+        assert SECRET not in json.dumps(planner.records)
+
+    asyncio.run(scenario())
+
+
 class Writer:
     def __init__(self):
         self.transport = self

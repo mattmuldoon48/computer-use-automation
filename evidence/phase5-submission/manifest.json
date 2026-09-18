@@ -1,0 +1,1105 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-18T02:28:28Z",
+  "status": "locally_verified_submission_snapshot_not_published",
+  "entry_points": {
+    "readme": "README.md",
+    "report": "REPORT.md",
+    "verification": "evidence/phase5-submission/verification.json",
+    "source": "evidence/phase5-submission/source.json",
+    "checkout_inputs": "evidence/phase5-submission/checkout-inputs.json"
+  },
+  "source_identity": {
+    "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+    "dirty": true,
+    "source_diff_sha256": "32f92cfb5d964a62eb605a902f7f100b7eb2ba799fdecec78ca6be9e0d8430ad",
+    "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c",
+    "checkout_input_inventory_sha256": "dde777998582ba299a25f394c64fd4b35bad340ca0f58fbdc25f67837e9d38ea",
+    "scope_note": "Source hashes were captured in memory before the new CLI/probe executions and persisted afterward. The fresh clone applied the exact pending tracked patch and copied public untracked inputs. Final manifest/verification/checksums and fresh-checkout demo copies are subsequent outputs, excluded from that input snapshot."
+  },
+  "checksums": {
+    "file": "evidence/phase5-submission/checksums.json",
+    "algorithm": "SHA-256",
+    "canonical_contract_hash": "SHA-256 of JSON with sorted keys and compact separators; different from byte-file hashes.",
+    "coverage": "All tracked/public untracked submission files except checksums.json itself. Hashes live outside the bytes they checksum.",
+    "meaning": "Content identity only; not an execution, provider-authenticity, human-identity or security attestation."
+  },
+  "fixture": {
+    "business_data": "fixed hand-authored synthetic records",
+    "dataset_file": "sandbox/fixtures.py",
+    "dataset_sha256": "15c20f4e235badd154503849219c459d1798b7912a7ff417bcfe86eadaf4fbb9",
+    "scenario_controller_file": "sandbox/app.py",
+    "scenario_controller_sha256": "1c020b215dac37177faa39edc72f4c5174f42953b90efc3f5c939b710bbc5347",
+    "seed": null,
+    "seed_status": "No deterministic random seed is implemented. Business fixture records are fixed; generated DOM IDs and session tokens intentionally use secrets.",
+    "discovery_seed": null,
+    "discovery_seed_status": "No model sampling seed was recorded."
+  },
+  "historical": {
+    "genuine_discovery": {
+      "summary": "evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/summary.json",
+      "events": "evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/events.jsonl",
+      "evidence_directory_id": "fff6f1953ef04b81bfc567ce9c486628",
+      "run_id": "4da0cb8a238642019e1a1bd9b584fbf8",
+      "session_id": "7613f7e1e6ae405784ab6cc7c099e782",
+      "run_type": "live_discovery",
+      "live_discovery": true,
+      "result": {
+        "kind": "success",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 9
+      },
+      "operator_evidence": "none",
+      "elapsed_seconds": 16.526,
+      "action_count": 8,
+      "playwright_version": "1.58.0",
+      "browser_version": "145.0.7632.6",
+      "artifact_hash": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+      "profile_hash": "90c3a6f78f84f5ceb3e2f5f69c5e5a85f9d99bb9706d31fd040cea2aa8a188ee",
+      "event_artifact_hash": "fd326e3e88eb9b2f6dfa087d4b935cfd7d8ad077140e79ddf7e8b1fa0a7f66f4",
+      "run_start_utc": "2026-09-18T01:20:36.356554+00:00",
+      "last_result_utc": "2026-09-18T01:20:51.318208+00:00",
+      "contextual_events_share_run_and_session": true,
+      "events_without_run_context": 0,
+      "source_record": null,
+      "source_revision_note": "Exact historical source revision/diff was not recorded.",
+      "capture": {
+        "withheld": false,
+        "reason": "workspace_masked",
+        "frame_count": 3,
+        "target_count": 11,
+        "mask_rects": [
+          {
+            "x": 215.5,
+            "y": 114.4375,
+            "width": 1064.5,
+            "height": 755
+          }
+        ],
+        "structure": {
+          "state": "observed",
+          "target_count": 11,
+          "dialog": "none",
+          "controls": {
+            "input": 0,
+            "select": 0,
+            "button": 2,
+            "link": 1,
+            "text": 0
+          }
+        }
+      },
+      "provider_records": [
+        {
+          "response_id": "resp_046dc77e3fe493e3016aac91e4d74087d29ac5ef6c727a3065",
+          "request_id": "req_36d00e65d2904c23b9fe4b4c5ec775df",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 799,
+            "output_tokens": 75,
+            "total_tokens": 874
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "click"
+        },
+        {
+          "response_id": "resp_00b30dc7ffe046b3016aac91e6086087d28e9a510ef4568509",
+          "request_id": "req_d2fdb6373d144bffa4250d63ec52e68f",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 1108,
+            "output_tokens": 72,
+            "total_tokens": 1180
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "fill"
+        },
+        {
+          "response_id": "resp_094b9efab6cf992b016aac91e76d8487d28e516b5416153634",
+          "request_id": "req_3e2bd3e481f94223aff16420ec9c9d15",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 1134,
+            "output_tokens": 78,
+            "total_tokens": 1212
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "click"
+        },
+        {
+          "response_id": "resp_0ab1c54f8ee47339016aac91ea8c5c87d2940cd13887b4a638",
+          "request_id": "req_6a326167661f49629871b3a5aa156a62",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 910,
+            "output_tokens": 73,
+            "total_tokens": 983
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "click"
+        },
+        {
+          "response_id": "resp_0463a577f4acf5b2016aac91ebff0887d2ab967d1636102026",
+          "request_id": "req_8ed3e6c790d84d0ea4cb41b3064823ef",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 1119,
+            "output_tokens": 82,
+            "total_tokens": 1201
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "click"
+        },
+        {
+          "response_id": "resp_0c4427b5a6263e11016aac91ed6e0487d2ba5861e38d13500b",
+          "request_id": "req_5d4c0c92e81d49ff8878f1d6b30cfc0d",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 1398,
+            "output_tokens": 73,
+            "total_tokens": 1471
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "fill"
+        },
+        {
+          "response_id": "resp_0efaf6c197dac4b7016aac91eeeb7887d29d33b6f86d7d2e10",
+          "request_id": "req_e54f049e65274bffaeaaacca7508599d",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 1404,
+            "output_tokens": 76,
+            "total_tokens": 1480
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "select"
+        },
+        {
+          "response_id": "resp_0cafb7a86b65b2a8016aac91f081f887d2bbb4db679bb1cfef",
+          "request_id": "req_c32ef19e022e45dfab0b018d1536f126",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 1418,
+            "output_tokens": 79,
+            "total_tokens": 1497
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "click"
+        },
+        {
+          "response_id": "resp_0b298df73f8f2e15016aac91f24db887d29b1bfbf58b04d24a",
+          "request_id": "req_20b23bf103b443cdb36d747dcb41c17a",
+          "model": "gpt-4.1-2025-04-14",
+          "usage": {
+            "input_tokens": 1603,
+            "output_tokens": 56,
+            "total_tokens": 1659
+          },
+          "status": "completed",
+          "decision_validated": true,
+          "decision_kind": "finish"
+        }
+      ],
+      "provider_usage": {
+        "input_tokens": 10893,
+        "output_tokens": 664,
+        "total_tokens": 11557
+      },
+      "provider_call_count": 9,
+      "planner_decision_count": 9,
+      "event_artifact_hash_kind": "authored goal, not compiled capability",
+      "historical_environment_note": "Only Playwright/browser versions were recorded; current installed dependency inventory is not retroactively assigned.",
+      "source_revision": null
+    },
+    "changed_input_unassisted_replay": {
+      "summary": "evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/fresh-replay/a535f375c5244e18bf5198efb0026577/summary.json",
+      "events": "evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/fresh-replay/a535f375c5244e18bf5198efb0026577/events.jsonl",
+      "evidence_directory_id": "a535f375c5244e18bf5198efb0026577",
+      "run_id": "fd0584a0b59240febad69b039cb6ddaf",
+      "session_id": "a45cf050057040729824e8dd8b33e76b",
+      "run_type": "discovered_capability_replay",
+      "live_discovery": false,
+      "result": {
+        "kind": "success",
+        "step_index": null,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "operator_evidence": "none",
+      "elapsed_seconds": 2.104,
+      "action_count": 8,
+      "playwright_version": "1.58.0",
+      "browser_version": "145.0.7632.6",
+      "artifact_hash": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+      "profile_hash": "90c3a6f78f84f5ceb3e2f5f69c5e5a85f9d99bb9706d31fd040cea2aa8a188ee",
+      "event_artifact_hash": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+      "run_start_utc": "2026-09-18T01:20:51.911900+00:00",
+      "last_result_utc": "2026-09-18T01:20:53.488474+00:00",
+      "contextual_events_share_run_and_session": true,
+      "events_without_run_context": 0,
+      "source_record": null,
+      "source_revision_note": "Exact historical source revision/diff was not recorded.",
+      "capture": {
+        "withheld": false,
+        "reason": "workspace_masked",
+        "frame_count": 3,
+        "target_count": 9,
+        "mask_rects": [
+          {
+            "x": 215.5,
+            "y": 114.4375,
+            "width": 1064.5,
+            "height": 755
+          }
+        ],
+        "structure": {
+          "state": "observed",
+          "target_count": 9,
+          "dialog": "none",
+          "controls": {
+            "input": 0,
+            "select": 0,
+            "button": 1,
+            "link": 1,
+            "text": 0
+          }
+        }
+      },
+      "source_revision": null,
+      "changed_fields": [
+        "member_id",
+        "product_code",
+        "nickname"
+      ],
+      "change_evidence": "evidence/phase3-live/selected-runs.json records the changed inputs. The discovery controller rejects replay if any of the three fields is unchanged and launches a fresh browser after closing discovery. Private invocation values were deliberately not persisted, so a raw-payload comparison is not available.",
+      "historical_limit": "Current source corroborates controller design, not an unrecorded historical source revision."
+    },
+    "real_person_handoff": {
+      "summary": "evidence/phase2-fixtures/manual/54c4cbabdeae477d824e8b2eb5591620/summary.json",
+      "events": "evidence/phase2-fixtures/manual/54c4cbabdeae477d824e8b2eb5591620/events.jsonl",
+      "evidence_directory_id": "54c4cbabdeae477d824e8b2eb5591620",
+      "run_id": "c0ba834b64344e578bd9c017b5e64cb8",
+      "session_id": "86121c6112cb436cbcf8bd3870c800e3",
+      "run_type": "hand_authored_browser_fixture",
+      "live_discovery": false,
+      "result": {
+        "kind": "success",
+        "step_index": null,
+        "human_intervened": true,
+        "provider_call_count": 0
+      },
+      "operator_evidence": "terminal_control_transfer",
+      "elapsed_seconds": 57.043,
+      "action_count": 8,
+      "playwright_version": "1.58.0",
+      "browser_version": "145.0.7632.6",
+      "artifact_hash": "8f1ae960da9dfc1d7faa9ccc5aac5dbfec949d5fb9e2d88ff06a9ef42e464c30",
+      "profile_hash": "01cb00412d6e58faf8eb03109c4dcc1c777ee3527b337e3686eec9294fbd7402",
+      "event_artifact_hash": "8f1ae960da9dfc1d7faa9ccc5aac5dbfec949d5fb9e2d88ff06a9ef42e464c30",
+      "run_start_utc": "2026-09-18T00:34:15.338271+00:00",
+      "last_result_utc": "2026-09-18T00:35:09.041814+00:00",
+      "contextual_events_share_run_and_session": true,
+      "events_without_run_context": 6,
+      "source_record": null,
+      "source_revision_note": "Exact historical source revision/diff was not recorded.",
+      "capture": {
+        "withheld": false,
+        "reason": "workspace_masked",
+        "frame_count": 3,
+        "target_count": 9,
+        "mask_rects": [
+          {
+            "x": 215.5,
+            "y": 107.4375,
+            "width": 1049.5,
+            "height": 755
+          }
+        ],
+        "structure": {
+          "state": "observed",
+          "target_count": 9,
+          "dialog": "none",
+          "controls": {
+            "input": 0,
+            "select": 0,
+            "button": 1,
+            "link": 1,
+            "text": 0
+          }
+        }
+      },
+      "ownership_transitions": [
+        {
+          "ownership": "PAUSING",
+          "epoch": 1,
+          "time_utc": "2026-09-18T00:34:16.572685+00:00"
+        },
+        {
+          "ownership": "AWAITING_OPERATOR",
+          "epoch": 2,
+          "time_utc": "2026-09-18T00:34:16.572751+00:00"
+        },
+        {
+          "ownership": "HUMAN",
+          "epoch": 3,
+          "time_utc": "2026-09-18T00:34:19.862908+00:00"
+        },
+        {
+          "ownership": "VALIDATING_RESUME",
+          "epoch": 4,
+          "time_utc": "2026-09-18T00:35:08.303179+00:00"
+        },
+        {
+          "ownership": "AUTOMATION",
+          "epoch": 5,
+          "time_utc": "2026-09-18T00:35:08.407760+00:00"
+        }
+      ],
+      "operator_activity_event_count": 7,
+      "automation_intents_during_human_interval": 0,
+      "human_claim_basis": [
+        "evidence/phase2-fixtures/selected-runs.json: completed_user_guided",
+        "evidence/phase2-fixtures/verification.json: user-guided manual run distinct from automated operator simulation",
+        "same-run/session ownership transitions, operator events, successful resumed identity/terminal checkpoints"
+      ],
+      "human_claim_limit": "Historical controller attestation and actual user-guided session; booleans, terminal transfers and browser telemetry do not authenticate human identity. Not repeated during submission packaging.",
+      "final_checkpoints": [
+        {
+          "run_id": "c0ba834b64344e578bd9c017b5e64cb8",
+          "session_id": "86121c6112cb436cbcf8bd3870c800e3",
+          "artifact_hash": "8f1ae960da9dfc1d7faa9ccc5aac5dbfec949d5fb9e2d88ff06a9ef42e464c30",
+          "profile_hash": "01cb00412d6e58faf8eb03109c4dcc1c777ee3527b337e3686eec9294fbd7402",
+          "run_type": "hand_authored_browser_fixture",
+          "time_utc": "2026-09-18T00:35:09.039247+00:00",
+          "event": "checkpoint",
+          "step_index": 8,
+          "stage": "identity",
+          "expected_predicates": 1,
+          "matched_predicates": 1
+        },
+        {
+          "run_id": "c0ba834b64344e578bd9c017b5e64cb8",
+          "session_id": "86121c6112cb436cbcf8bd3870c800e3",
+          "artifact_hash": "8f1ae960da9dfc1d7faa9ccc5aac5dbfec949d5fb9e2d88ff06a9ef42e464c30",
+          "profile_hash": "01cb00412d6e58faf8eb03109c4dcc1c777ee3527b337e3686eec9294fbd7402",
+          "run_type": "hand_authored_browser_fixture",
+          "time_utc": "2026-09-18T00:35:09.039426+00:00",
+          "event": "checkpoint",
+          "step_index": 8,
+          "stage": "terminal",
+          "expected_predicates": 6,
+          "matched_predicates": 6
+        }
+      ],
+      "source_revision": null
+    },
+    "all_discovery_attempts": {
+      "index": "evidence/phase3-live/selected-runs.json",
+      "attempt_count": 6,
+      "unsuccessful_attempt_count": 5,
+      "provider_call_count": 29,
+      "input_tokens": 27496,
+      "output_tokens": 2134,
+      "total_tokens": 29630,
+      "note": "Historical index totals; unsuccessful runs remain intact. Nine calls and 11557 total tokens belong to the selected successful discovery."
+    }
+  },
+  "reviewed_artifact": {
+    "file": "evidence/phase4-adversarial/revised.capability.json",
+    "derivation": "evidence/phase4-adversarial/derivation.json",
+    "original_file": "evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/candidate.capability.json",
+    "relationship": "reviewed_checkpoint_revision",
+    "new_discovery": false,
+    "source_canonical_sha256": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+    "revised_canonical_sha256": "3add1fa1ffcb47607c07a7304e9c23918fb1928762aef39c2af73409a8b5817b",
+    "only_changes": [
+      "capability_version 1 to 2",
+      "remove 16 redundant step route_matches predicates"
+    ],
+    "preserved": "All eight observed actions, typed references, semantic checkpoints, identity/terminal/output contracts, recovery and provenance. Current policy still authorizes the actual route.",
+    "installation_note": "Per-run installed artifact/profile hashes differ because the origin is rebound to the ephemeral local installation; hash installed fixture snapshots against their run summaries.",
+    "historical_matrix": "evidence/phase4-adversarial/selected-runs.json",
+    "historical_verification": "evidence/phase4-adversarial/verification.json",
+    "historical_revision_limit": "Phase 4 final source/test diff is recorded, but its earlier CLI runs lack exact per-run source diffs."
+  },
+  "fresh_evidence": {
+    "worktree_runs": [
+      {
+        "summary": "evidence/phase5-submission/happy/618d03811bc2498cb3611ff1775d444d/summary.json",
+        "events": "evidence/phase5-submission/happy/618d03811bc2498cb3611ff1775d444d/events.jsonl",
+        "evidence_directory_id": "618d03811bc2498cb3611ff1775d444d",
+        "run_id": "b33fe74552c246eb8f446d74742de7fd",
+        "session_id": "20b3f7c8272d407c94183de638c51ef1",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "success",
+          "step_index": null,
+          "human_intervened": false,
+          "provider_call_count": 0
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 2.919,
+        "action_count": 8,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "d56e7529541b1c86893f7a607a10eefb3c079026b2b16f6885108deaaf0c8ced",
+        "profile_hash": "b41cf4e9bc68cab70d915bfbabcbc8f7b6e84056fb4ffa57f5cdd4f43d35063e",
+        "event_artifact_hash": "d56e7529541b1c86893f7a607a10eefb3c079026b2b16f6885108deaaf0c8ced",
+        "run_start_utc": "2026-09-18T02:12:27.573225+00:00",
+        "last_result_utc": "2026-09-18T02:12:29.242549+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 9,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 9,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 1,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "happy",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--case",
+          "happy",
+          "--evidence-dir",
+          "evidence/phase5-submission/happy",
+          "--inputs-file",
+          "examples/member_b.inputs.json"
+        ],
+        "exit": 0,
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c",
+        "execution_environment": "original_worktree"
+      },
+      {
+        "summary": "evidence/phase5-submission/member_not_found/3548e270695e4b52b3b913cadb243371/summary.json",
+        "events": "evidence/phase5-submission/member_not_found/3548e270695e4b52b3b913cadb243371/events.jsonl",
+        "evidence_directory_id": "3548e270695e4b52b3b913cadb243371",
+        "run_id": "4ea9404eed3f41f0b2bfb9b5215a599b",
+        "session_id": "849ac80d798341a1a22f286fcd5c7a49",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "business_outcome",
+          "step_index": 2,
+          "human_intervened": false,
+          "provider_call_count": 0,
+          "code": "member_not_found"
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 1.128,
+        "action_count": 3,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "068ad8bc13fb0117afabb50afffe72b66bfe8063160e0f1422ae0e4cd54c21fc",
+        "profile_hash": "ffeb98379563e192d61f15bc1f0528ac57025306d3f60d114c4a0a8c90b11901",
+        "event_artifact_hash": "068ad8bc13fb0117afabb50afffe72b66bfe8063160e0f1422ae0e4cd54c21fc",
+        "run_start_utc": "2026-09-18T02:12:30.243768+00:00",
+        "last_result_utc": "2026-09-18T02:12:30.912726+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 2,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 2,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 0,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "member_not_found",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--case",
+          "member_not_found",
+          "--evidence-dir",
+          "evidence/phase5-submission/member_not_found"
+        ],
+        "exit": 3,
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c",
+        "execution_environment": "original_worktree"
+      },
+      {
+        "summary": "evidence/phase5-submission/known_interstitial/fc298297ef2844c5aa06c4fff6465c0f/summary.json",
+        "events": "evidence/phase5-submission/known_interstitial/fc298297ef2844c5aa06c4fff6465c0f/events.jsonl",
+        "evidence_directory_id": "fc298297ef2844c5aa06c4fff6465c0f",
+        "run_id": "46cbd1a1fb734222bd5544845f17e54c",
+        "session_id": "8edb74c624ce4a3d973170f74600ab01",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "success",
+          "step_index": null,
+          "human_intervened": false,
+          "provider_call_count": 0
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 2.278,
+        "action_count": 9,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "9cdeb1edb552fd8d58fd8c41758c518fccf3d030d5932ea41077236a8dcd1659",
+        "profile_hash": "b22a8c0cfccf4d273d168d17dc9eee043a996d07f3eb98ac511449956ae5d774",
+        "event_artifact_hash": "9cdeb1edb552fd8d58fd8c41758c518fccf3d030d5932ea41077236a8dcd1659",
+        "run_start_utc": "2026-09-18T02:12:31.871986+00:00",
+        "last_result_utc": "2026-09-18T02:12:33.694822+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 9,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 9,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 1,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "known_interstitial",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--case",
+          "known_interstitial",
+          "--evidence-dir",
+          "evidence/phase5-submission/known_interstitial",
+          "--inputs-file",
+          "examples/member_b.inputs.json"
+        ],
+        "exit": 0,
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c",
+        "execution_environment": "original_worktree"
+      },
+      {
+        "summary": "evidence/phase5-submission/wrong_member_review/8a23138c1adc436bb36da04f3053a376/summary.json",
+        "events": "evidence/phase5-submission/wrong_member_review/8a23138c1adc436bb36da04f3053a376/events.jsonl",
+        "evidence_directory_id": "8a23138c1adc436bb36da04f3053a376",
+        "run_id": "ea861b59d21c45a8a3ef60524125d465",
+        "session_id": "2a13ff0242324b7581a0537487c9bb6d",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "failure",
+          "step_index": null,
+          "human_intervened": false,
+          "provider_call_count": 0,
+          "code": "IDENTITY_MISMATCH"
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 2.741,
+        "action_count": 8,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "f2589bd9ef840ceb0cd4e58a6a6217dfdad00c2700ed7bfc91fc262fc398040b",
+        "profile_hash": "212da11deb1dc13f95edaa2624ad4244d6ae991858e3546a671354f8fcb76f4a",
+        "event_artifact_hash": "f2589bd9ef840ceb0cd4e58a6a6217dfdad00c2700ed7bfc91fc262fc398040b",
+        "run_start_utc": "2026-09-18T02:12:34.641853+00:00",
+        "last_result_utc": "2026-09-18T02:12:36.883375+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 9,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 9,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 1,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "wrong_member_review",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--case",
+          "wrong_member_review",
+          "--evidence-dir",
+          "evidence/phase5-submission/wrong_member_review",
+          "--inputs-file",
+          "examples/member_b.inputs.json"
+        ],
+        "exit": 2,
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c",
+        "execution_environment": "original_worktree"
+      }
+    ],
+    "fresh_checkout_runs": [
+      {
+        "summary": "evidence/phase5-submission/fresh-checkout/happy/1b17c7455a8b41719b21bdc55dd24f04/summary.json",
+        "events": "evidence/phase5-submission/fresh-checkout/happy/1b17c7455a8b41719b21bdc55dd24f04/events.jsonl",
+        "evidence_directory_id": "1b17c7455a8b41719b21bdc55dd24f04",
+        "run_id": "c722a9197870437bb69eb48c7a5a2564",
+        "session_id": "7fa2ebc9b06841df99f7f2b6cb53ccf6",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "success",
+          "step_index": null,
+          "human_intervened": false,
+          "provider_call_count": 0
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 2.853,
+        "action_count": 8,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "d28613dba288dffb4977f836e0cbc2359578afc77acd3d8f39eb99c62b05727b",
+        "profile_hash": "a1e837363fd706f63471d3a8321785858375c53c424c6c22b20ed27c9508ac6c",
+        "event_artifact_hash": "d28613dba288dffb4977f836e0cbc2359578afc77acd3d8f39eb99c62b05727b",
+        "run_start_utc": "2026-09-18T02:22:32.227996+00:00",
+        "last_result_utc": "2026-09-18T02:22:33.901058+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 9,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 9,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 1,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "happy",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--case",
+          "happy",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--inputs-file",
+          "examples/member_b.inputs.json",
+          "--evidence-dir",
+          "artifacts/local/reviewer-happy"
+        ],
+        "exit": 0,
+        "execution_environment": "isolated_fresh_local_checkout",
+        "checkout_input_inventory_sha256": "dde777998582ba299a25f394c64fd4b35bad340ca0f58fbdc25f67837e9d38ea",
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c"
+      },
+      {
+        "summary": "evidence/phase5-submission/fresh-checkout/member_not_found/a4ed7ba7f5284a8e8ffa1abaff01ae7b/summary.json",
+        "events": "evidence/phase5-submission/fresh-checkout/member_not_found/a4ed7ba7f5284a8e8ffa1abaff01ae7b/events.jsonl",
+        "evidence_directory_id": "a4ed7ba7f5284a8e8ffa1abaff01ae7b",
+        "run_id": "18555064997047e2b5ae431420453a2e",
+        "session_id": "2170152d60b6493dabcc8ea3aa9be938",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "business_outcome",
+          "step_index": 2,
+          "human_intervened": false,
+          "provider_call_count": 0,
+          "code": "member_not_found"
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 1.313,
+        "action_count": 3,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "045edb01dde8575253494608952cf6bc09f40cf39a355ce3266eaa5dc687cd7b",
+        "profile_hash": "4b5be057972868792d04367c3a8405dc3feec20927dbd67e1e5dc392876c68e8",
+        "event_artifact_hash": "045edb01dde8575253494608952cf6bc09f40cf39a355ce3266eaa5dc687cd7b",
+        "run_start_utc": "2026-09-18T02:22:34.896380+00:00",
+        "last_result_utc": "2026-09-18T02:22:35.743827+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 2,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 2,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 0,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "member_not_found",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--case",
+          "member_not_found",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--evidence-dir",
+          "artifacts/local/reviewer-not-found"
+        ],
+        "exit": 3,
+        "execution_environment": "isolated_fresh_local_checkout",
+        "checkout_input_inventory_sha256": "dde777998582ba299a25f394c64fd4b35bad340ca0f58fbdc25f67837e9d38ea",
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c"
+      },
+      {
+        "summary": "evidence/phase5-submission/fresh-checkout/known_interstitial/16f41d11e2764063a31c849eb1c5f744/summary.json",
+        "events": "evidence/phase5-submission/fresh-checkout/known_interstitial/16f41d11e2764063a31c849eb1c5f744/events.jsonl",
+        "evidence_directory_id": "16f41d11e2764063a31c849eb1c5f744",
+        "run_id": "6779fb5f644245df937abc9d23dfcd74",
+        "session_id": "771fa11b5131448c861e2446546455b0",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "success",
+          "step_index": null,
+          "human_intervened": false,
+          "provider_call_count": 0
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 2.346,
+        "action_count": 9,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "5be18a65eaf38bfc1799a9071c4323b671dffb5621ecf74a613c51a4df5771e3",
+        "profile_hash": "a0351e8147eac013472d0bc45338c54a35629e86dfeba0418148bdd8f24e6113",
+        "event_artifact_hash": "5be18a65eaf38bfc1799a9071c4323b671dffb5621ecf74a613c51a4df5771e3",
+        "run_start_utc": "2026-09-18T02:22:36.756843+00:00",
+        "last_result_utc": "2026-09-18T02:22:38.589160+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 9,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 9,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 1,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "known_interstitial",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--case",
+          "known_interstitial",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--inputs-file",
+          "examples/member_b.inputs.json",
+          "--evidence-dir",
+          "artifacts/local/reviewer-recovery"
+        ],
+        "exit": 0,
+        "execution_environment": "isolated_fresh_local_checkout",
+        "checkout_input_inventory_sha256": "dde777998582ba299a25f394c64fd4b35bad340ca0f58fbdc25f67837e9d38ea",
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c"
+      },
+      {
+        "summary": "evidence/phase5-submission/fresh-checkout/wrong_member_review/6e3d73f8092a45efb1c0af6704db4a4f/summary.json",
+        "events": "evidence/phase5-submission/fresh-checkout/wrong_member_review/6e3d73f8092a45efb1c0af6704db4a4f/events.jsonl",
+        "evidence_directory_id": "6e3d73f8092a45efb1c0af6704db4a4f",
+        "run_id": "6461636b5a0843c19c5d2337c04cd23d",
+        "session_id": "25d0acc1e90c493e95328f6efd41a764",
+        "run_type": "discovered_capability_replay",
+        "live_discovery": false,
+        "result": {
+          "kind": "failure",
+          "step_index": null,
+          "human_intervened": false,
+          "provider_call_count": 0,
+          "code": "IDENTITY_MISMATCH"
+        },
+        "operator_evidence": "none",
+        "elapsed_seconds": 2.206,
+        "action_count": 8,
+        "playwright_version": "1.58.0",
+        "browser_version": "145.0.7632.6",
+        "artifact_hash": "55172aa863c7f5fd33ad1aab1ae83b245318a429744e3b380ed64cc1537c39b4",
+        "profile_hash": "0fea90a1cf3d288846dfd83dc5f637e3cf114425facba97fba890693476d1870",
+        "event_artifact_hash": "55172aa863c7f5fd33ad1aab1ae83b245318a429744e3b380ed64cc1537c39b4",
+        "run_start_utc": "2026-09-18T02:22:39.687999+00:00",
+        "last_result_utc": "2026-09-18T02:22:41.357339+00:00",
+        "contextual_events_share_run_and_session": true,
+        "events_without_run_context": 0,
+        "source_record": "evidence/phase5-submission/source.json",
+        "source_revision_note": "Baseline plus dirty source inventory/diff; not the baseline alone.",
+        "capture": {
+          "withheld": false,
+          "reason": "page_masked",
+          "frame_count": 3,
+          "target_count": 9,
+          "mask_rects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 907.484375
+            }
+          ],
+          "structure": {
+            "state": "observed",
+            "target_count": 9,
+            "dialog": "none",
+            "controls": {
+              "input": 0,
+              "select": 0,
+              "button": 1,
+              "link": 1,
+              "text": 0
+            }
+          }
+        },
+        "case": "wrong_member_review",
+        "command": [
+          "uv",
+          "run",
+          "--offline",
+          "uicap",
+          "demo",
+          "--case",
+          "wrong_member_review",
+          "--artifact",
+          "evidence/phase4-adversarial/revised.capability.json",
+          "--inputs-file",
+          "examples/member_b.inputs.json",
+          "--evidence-dir",
+          "artifacts/local/reviewer-identity-denial"
+        ],
+        "exit": 2,
+        "execution_environment": "isolated_fresh_local_checkout",
+        "checkout_input_inventory_sha256": "dde777998582ba299a25f394c64fd4b35bad340ca0f58fbdc25f67837e9d38ea",
+        "base_revision": "2d3db05d0e43f5510477a0eff5ae5ba72faa8491",
+        "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c"
+      }
+    ],
+    "denied_risky_action": {
+      "summary": "evidence/phase5-submission/denied-submission/280d143ff6df4c2ab91b7c671c6c217b/summary.json",
+      "events": "evidence/phase5-submission/denied-submission/280d143ff6df4c2ab91b7c671c6c217b/events.jsonl",
+      "run_type": "automated_submission_denial_probe",
+      "run_id": "5876822d38ea4c53a999b4a12fa13f80",
+      "session_id": "95695836d3034cc38d5ddfaed472c895",
+      "artifact_hash": "ab4e4a4c3fa9c24d80eb14d754ba8ac593b1ed129c6fb118398dc16d95625037",
+      "profile_hash": "58d7a4c6fb70ef91e26d8b5925c6f7edceec17753b11978b594502a1bc9c1f80",
+      "policy_hash": "8f02a349e164d806efa7737f7fcdc9a131200b1967c21c6c21136be981b7ad16",
+      "source_record": "evidence/phase5-submission/source.json",
+      "source_inventory_sha256": "ba31ec66016b39bb399d655c49149fb17dc3d994bddff66d92a33d5210616b2c",
+      "elapsed_seconds": 3.222,
+      "setup_action_count": 8,
+      "setup_result": {
+        "kind": "success",
+        "step_index": null,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "result": {
+        "kind": "failure",
+        "step_index": null,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "POLICY_DENIED"
+      },
+      "operator_evidence": "automated_adversarial_probe",
+      "action_gate_denial": "POLICY_DENIED",
+      "submission_endpoint_receipts_after_action_denial": 0,
+      "submission_endpoint_receipts_after_direct_transport_probe": 0,
+      "ledger_entries": 0,
+      "transport_denied_count": 1,
+      "provider_boundary_attempts": 0,
+      "reproducer": "tests/integration/test_browser_replay.py::test_submission_denied_at_action_and_transport_boundaries",
+      "capture_stage": "after_action_gate_denial_before_direct_transport_probe",
+      "scope_note": "Successful model-free preparation followed by an intentionally denied final action and a separate direct-page transport probe. Test-only receiver oracle is outside the runtime actor. The preparation is not relabeled as a replay failure."
+    }
+  },
+  "limits": [
+    "Historical selected live/manual runs have no exact source revision, full installed dependency inventory or model sampling seed. These are not retroactively fabricated.",
+    "Fixture business data is fixed; DOM IDs, session tokens and UUIDs intentionally are not seeded.",
+    "Provider metadata and controller attestations are retained evidence, not cryptographic proof.",
+    "No new paid discovery or real-person handoff was performed after hardening.",
+    "Current captures are fully opaque or withheld; historical captures retain their narrower workspace-only masking guarantee.",
+    "Native desktop, production banking, durable process-crash resume, discovery-time human resume, multi-tenant deployment and OS-level egress isolation are not implemented."
+  ],
+  "readiness": {
+    "local_reviewer_commands": "passed in original worktree and isolated fresh local checkout",
+    "cached_offline_setup": "passed with new venv and existing package/interpreter/browser caches",
+    "full_suite": "221 passed in 140.29s",
+    "named_submission_denial_regression": "2 passed in 6.73s",
+    "mypy_ruff_format_lock_build": "passed",
+    "report": "Exactly seven required headings; 1057 words.",
+    "historical_genuine_discovery": "retained, with nine actual provider records; no renewed live validation after hardening",
+    "historical_real_user_handoff": "retained user-guided same-session run; not repeated and not a human-identity attestation",
+    "fresh_submit_denial": "POLICY_DENIED and zero submit receiver requests/ledger entries at both tested boundaries",
+    "publication": "not performed; pending local changes are not available from the previously private, empty GitHub repository",
+    "remaining_authorization": [
+      "Review and authorize commit/push.",
+      "Authorize public visibility and submission email separately."
+    ]
+  }
+}

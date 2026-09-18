@@ -1,0 +1,15 @@
+{
+  "source_artifact": "../phase3-live/fff6f1953ef04b81bfc567ce9c486628/candidate.capability.json",
+  "source_canonical_sha256": "8623528337ad214edae19c600614888293577922fbbbd93d3932f9fb04086ae9",
+  "revised_artifact": "revised.capability.json",
+  "revised_canonical_sha256": "3add1fa1ffcb47607c07a7304e9c23918fb1928762aef39c2af73409a8b5817b",
+  "kind": "reviewed_checkpoint_revision",
+  "new_discovery": false,
+  "provider_calls": 0,
+  "source_capability_version": 1,
+  "revised_capability_version": 2,
+  "change": "Remove 16 route_matches predicates from observed step pre/postconditions. Preserve all observed semantic checkpoints, actions, input references, identity/final/output checks, recovery rules, and provenance. Exact current-route authorization remains mandatory at each action.",
+  "actions_preserved": 8,
+  "removed_route_predicates": 16,
+  "source_preserved": true
+}

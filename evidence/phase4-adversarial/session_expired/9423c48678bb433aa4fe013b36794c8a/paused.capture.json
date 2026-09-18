@@ -1,0 +1,26 @@
+{
+  "withheld": false,
+  "reason": "page_masked",
+  "frame_count": 3,
+  "target_count": 2,
+  "mask_rects": [
+    {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 907.484375
+    }
+  ],
+  "structure": {
+    "state": "observed",
+    "target_count": 2,
+    "dialog": "none",
+    "controls": {
+      "input": 0,
+      "select": 0,
+      "button": 0,
+      "link": 1,
+      "text": 0
+    }
+  }
+}

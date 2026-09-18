@@ -8,10 +8,12 @@ from __future__ import annotations
 
 import asyncio
 import re
+from io import BytesIO
 from pathlib import Path
 from typing import Any, Literal, cast
 from uuid import uuid4
 
+from PIL import Image
 from playwright.async_api import (
     Browser,
     BrowserContext,
@@ -93,13 +95,6 @@ _VISIBLE = """() => {
         .filter(visible).map(element => element.href).slice(0, 200);
     return {text, destinations};
 }"""
-_SHELL = """() => ({
-    text: document.body.innerText.trim(),
-    dynamic: document.querySelectorAll(
-        'input,textarea,select,canvas,video,img,svg,object,embed'
-    ).length,
-    frames: document.querySelectorAll('iframe,frame').length
-})"""
 _CLICK_NAVIGATION = """element => {
     if (element.tagName === 'A' && element.hasAttribute('href')) {
         return {url: element.href, method: 'GET', frame: element.target || '_self'};
@@ -255,7 +250,13 @@ class PlaywrightSurface:
         self.__evidence.human_activity(kind, control, actual_frame)
 
     def _page(self) -> Page:
-        if self.__page is None or self.__closed:
+        if (
+            self.__page is None
+            or self.__closed
+            or self.__page.is_closed()
+            or self.__browser is None
+            or not self.__browser.is_connected()
+        ):
             raise RuntimeFault(FailureCode.INTERRUPTED)
         return self.__page
 
@@ -292,20 +293,26 @@ class PlaywrightSurface:
             raise RuntimeFault(FailureCode.INTERRUPTED)
         return self.__browser.version
 
-    async def _dialog_active(self) -> bool:
-        if self.__dialog is None:
-            return False
-        # Retain one pending read rather than cancelling Playwright's protocol
-        # waiter repeatedly. It settles when the operator dismisses the dialog
-        # or the context closes, and close() always consumes its outcome.
-        if self.__dialog_probe is None:
-            self.__dialog_probe = asyncio.create_task(self._page().evaluate("1"))
-        done, _ = await asyncio.wait({self.__dialog_probe}, timeout=0.25)
-        if not done:
-            return True
-        self.__dialog_probe.result()
-        self.__dialog_probe = None
-        self.__dialog = None
+    async def _dialog_active(self, frames: dict[str, Frame]) -> bool:
+        if self.__dialog is not None:
+            # Retain one pending read until native dialog dismissal or context close.
+            if self.__dialog_probe is None:
+                self.__dialog_probe = asyncio.create_task(self._page().evaluate("1"))
+            done, _ = await asyncio.wait({self.__dialog_probe}, timeout=0.25)
+            if not done:
+                return True
+            self.__dialog_probe.result()
+            self.__dialog_probe = None
+            self.__dialog = None
+        for frame in frames.values():
+            if (
+                await frame.locator(
+                    'dialog, [role~="dialog" i], [role~="alertdialog" i], [aria-modal="true" i]'
+                )
+                .filter(visible=True)
+                .count()
+            ):
+                return True
         return False
 
     async def _locator(self, spec: TargetSpec, frames: dict[str, Frame]) -> Locator:
@@ -443,7 +450,7 @@ class PlaywrightSurface:
             route = self.__transport.path_for(frames["workspace"].url)
             if route is None:
                 raise RuntimeFault(FailureCode.POLICY_DENIED)
-            if await self._dialog_active():
+            if await self._dialog_active(frames):
                 observed = Observation(
                     observation_id=uuid4().hex,
                     run_id=run_id,
@@ -512,7 +519,7 @@ class PlaywrightSurface:
             raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
         try:
             frames = self._frames()
-            if await self._dialog_active():
+            if await self._dialog_active(frames):
                 raise RuntimeFault(FailureCode.POLICY_DENIED)
             if isinstance(action, Wait):
                 await asyncio.sleep(action.milliseconds / 1000)
@@ -587,51 +594,21 @@ class PlaywrightSurface:
             raise RuntimeFault(FailureCode.UNKNOWN_ACTION_OUTCOME) from None
 
     async def capture_safe(self, path: Path) -> dict[str, object]:
-        """Persist only a pre-masked PNG after validating the reviewed shell.
+        """Persist only a fully opaque capture; structured evidence carries UI state.
 
-        Workspace contents are entirely opaque, including headings, form fields,
-        restricted link names, records and messages. Static outer chrome remains.
+        DOM text checks cannot establish that shell CSS paints only public pixels.
+        Mask the entire page in Chromium, then verify decoded pixels before writing.
         """
         try:
             frames = self._frames()
-            if await self._dialog_active():
+            if await self._dialog_active(frames):
                 return {"withheld": True, "reason": "dialog_open"}
-            shell = await frames["main"].evaluate(_SHELL)
-            navigation = await frames["navigation"].evaluate(_SHELL)
-            shell["text"] = "\n".join(
-                line.strip() for line in shell["text"].splitlines() if line.strip()
-            )
-            navigation["text"] = "\n".join(
-                line.strip() for line in navigation["text"].splitlines() if line.strip()
-            )
-            if (
-                shell["text"].splitlines()
-                != [
-                    "Member Operations Sandbox",
-                    "Training environment · Synthetic records only",
-                    "Hand-authored test fixture · Not connected to a financial institution",
-                ]
-                or shell["dynamic"] != 0
-                or shell["frames"] != 2
-                or navigation["text"].splitlines()
-                != [
-                    "OPERATIONS MENU",
-                    "Member search",
-                    "Member services",
-                    "Training desk",
-                ]
-                or navigation["dynamic"] != 0
-                or navigation["frames"] != 0
-            ):
-                return {"withheld": True, "reason": "unreviewed_shell"}
-            mask = self._page().locator('iframe[name="workspace"]')
+            mask = self._page().locator("body")
             if await mask.count() != 1:
                 return {"withheld": True, "reason": "unsafe_structure"}
             rectangle = await mask.bounding_box()
             if rectangle is None:
                 return {"withheld": True, "reason": "unsafe_structure"}
-            # mask is applied by Chromium before bytes exist; no unmasked image
-            # or raw trace is ever produced, even temporarily on disk.
             image = await self._page().screenshot(
                 type="png",
                 full_page=True,
@@ -642,13 +619,21 @@ class PlaywrightSurface:
                 scale="css",
                 timeout=_TIMEOUT,
             )
-            self._frames()
-            if self.__dialog is not None:
+            with Image.open(BytesIO(image)) as decoded:
+                if decoded.convert("RGBA").getextrema() != (
+                    (32, 32),
+                    (32, 32),
+                    (32, 32),
+                    (255, 255),
+                ):
+                    return {"withheld": True, "reason": "incomplete_mask"}
+            frames = self._frames()
+            if await self._dialog_active(frames):
                 return {"withheld": True, "reason": "dialog_open"}
             await asyncio.to_thread(path.write_bytes, image)
             return {
                 "withheld": False,
-                "reason": "workspace_masked",
+                "reason": "page_masked",
                 "frame_count": len(frames),
                 "target_count": 0 if self.__last is None else len(self.__last.targets),
                 "mask_rects": [dict(rectangle)],

@@ -1,24 +1,30 @@
-# UI Capability Runtime — Discovery and Model-Free Replay
+# UI Capability Runtime
 
-A Python 3.12 UI runtime with a synthetic legacy banking application, real
-Chromium execution, prepare-only policy, and same-session replay operator controls.
-Phase 3 adds opt-in structured OpenAI discovery and deterministic compilation.
-**Genuine model-driven discovery and fresh model-free replay have succeeded.**
-The selected run is
-`evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/`.
-Local tests still use explicitly scripted actors, not an LLM. Packaged browser
-fixtures remain hand-authored; the selected live capability is separate. The
-original planning documents are unchanged.
+A Python 3.12 runtime that discovers a bounded UI workflow with an explicitly
+opted-in model, compiles observed actions into a capability, and replays it
+without model calls. The demonstration uses real Chromium and a synthetic,
+server-rendered legacy banking UI. It prepares a savings sub-account and stops
+at **unsubmitted review**; it does not open an account.
+
+Start with [REPORT.md](REPORT.md) for architecture and cuts, the
+[submission manifest](evidence/phase5-submission/manifest.json) for revision and
+evidence provenance, and [submission verification](evidence/phase5-submission/verification.json)
+for the recorded reviewer runs and checkout checks. These records distinguish
+fresh local verification from retained historical evidence. This is a local
+submission snapshot, not a claim that the pending changes are published remotely.
 
 ## Setup and checks
 
-Python 3.12 and uv are required. Installation needs package-index/browser-download
-access unless cached; obtain authorization first. Dependencies and tools are
-pinned in `pyproject.toml` and `uv.lock`.
+Run from the repository root. Prerequisites are Python **3.12**, `uv`, cached
+locked dependencies/build tools, and the Playwright Chromium browser already
+installed in the current user's browser cache. Versions are pinned in
+[pyproject.toml](pyproject.toml) and [uv.lock](uv.lock). Playwright **1.58.0** uses
+Chromium **145.0.7632.6**, revision **1208**; the browser is not committed.
+
+Cached, offline setup and checks:
 
 ```sh
-uv sync --locked
-uv run playwright install chromium
+uv sync --locked --offline
 uv run --offline pytest -q
 uv run --offline mypy src sandbox
 uv run --offline ruff check .
@@ -27,290 +33,201 @@ uv lock --check --offline
 uv build --offline
 ```
 
-Playwright 1.58.0 selects Chromium **145.0.7632.6, revision 1208**. The browser is
-installed in Playwright's per-user cache, not committed. Each run records its
-actual browser and Playwright versions. Offline commands require prior setup.
-Tests use isolated loopback servers; no external bank or business service.
+A machine without those caches needs separately authorized network setup:
+`uv sync --locked` and `uv run --offline playwright install chromium`.
+The latter downloads a browser: `uv --offline` only disables package fetching,
+not networking by the program it launches. Online installation on a clean
+machine is not claimed as verified. Offline verification uses existing caches.
+Tests start isolated loopback servers and make no external model requests.
+The historical [hardening verification](evidence/phase4-adversarial/verification.json)
+recorded **221 passing tests**, Ruff, mypy, lock and build checks; use the
+submission verification above for fresh results rather than treating that
+historical count as a new run.
 
-- `tests/unit`: fake-surface safety, fixture binding, structured provider transport,
-  discovery budgets, privacy, freshness, and compiler regressions.
-- `tests/integration`: real Chromium workflows, DOM-derived targeting, compiled
-  replay with changed inputs, receiving-server checks, privacy, and **automated**
-  operator simulations. These tests make no external model requests.
-- `evidence/phase2-fixtures`: selected real fixture executions and development
-  attempts. Failed/withheld attempts are retained, not relabelled as successes.
-  Public evidence is separate from default ignored `artifacts/local` output.
-- `evidence/phase3-live/selected-runs.json`: indexes the successful genuine
-  discovery/replay and retained failed development attempts.
+## Short model-free reviewer demo
 
-## Authorized model discovery
+Each `demo` creates its own isolated sandbox on an ephemeral loopback port and
+fresh browser context, writes a new run directory, and closes both. No server,
+credentials, or model access is needed. Add `--headed` to see Chromium.
 
-The implemented goal is to prepare a savings sub-account and stop at unsubmitted
-review. Its natural-language template, typed input/output contract, and reviewed
-application policy are caller-supplied to `Discovery`; the CLI binds this one
-reviewed task to an isolated local sandbox. This is not arbitrary-site automation.
+```sh
+uv run --offline uicap demo --case happy \
+  --artifact evidence/phase4-adversarial/revised.capability.json \
+  --inputs-file examples/member_b.inputs.json \
+  --evidence-dir artifacts/local/reviewer-happy
 
-Set `OPENAI_API_KEY` privately in your shell and `OPENAI_MODEL` to a currently
-supported Responses API model with structured outputs. Do not paste credentials
-into chat, commit them, or pass them as command-line arguments. Confirm model
-availability and authorize the cost before running:
+uv run --offline uicap demo --case known_interstitial \
+  --artifact evidence/phase4-adversarial/revised.capability.json \
+  --inputs-file examples/member_b.inputs.json \
+  --evidence-dir artifacts/local/reviewer-recovery
+
+uv run --offline uicap demo --case member_not_found \
+  --artifact evidence/phase4-adversarial/revised.capability.json \
+  --evidence-dir artifacts/local/reviewer-not-found
+
+uv run --offline uicap demo --case wrong_member_review \
+  --artifact evidence/phase4-adversarial/revised.capability.json \
+  --inputs-file examples/member_b.inputs.json \
+  --evidence-dir artifacts/local/reviewer-identity-denial
+```
+
+Expected exits: happy and known interstitial **0** (verified success), member
+not found **3** (declared business outcome), wrong-member review **2** (failure).
+Run commands individually if your shell stops on nonzero exits. The not-found
+command deliberately omits `--inputs-file`: the CLI supplies an absent synthetic
+member only in that case. Passing the existing member-B file would not test
+absence. Review success verifies member/product/nickname and `submitted=false`;
+the public CLI projection omits those potentially restricted output values.
+
+Final submission denial is not a CLI scenario. Exercise both the action gate and
+the guarded browser transport, with independent receiving-server/ledger checks:
+
+```sh
+uv run --offline pytest -q \
+  tests/integration/test_browser_replay.py::test_submission_denied_at_action_and_transport_boundaries
+```
+
+The sandbox has a real **Open account** mutation; the denial is not a no-op.
+Tests may access its private oracle counters; replay and discovery cannot.
+The submission manifest also links the fresh denial probe and sanitized counts.
+
+For a separately running installation:
+
+```sh
+# Terminal 1: ordinary browser access to this synthetic UI is NOT guarded.
+uv run --offline uicap sandbox serve --port 8765
+# Terminal 2: replay creates its own guarded browser context.
+uv run --offline uicap replay --origin http://127.0.0.1:8765 \
+  --artifact evidence/phase4-adversarial/revised.capability.json \
+  --inputs-file examples/member_b.inputs.json --headed
+```
+
+## What the evidence proves
+
+- **Authored fixtures:** [packaged fixture data](src/ui_capability/fixtures)
+  carries `test_fixture` / `hand_authored_test` provenance. Local scripted
+  planners are deterministic test actors, not LLM discovery.
+- **Genuine historical discovery:** the [selected live summary](evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/summary.json)
+  records actual model `gpt-4.1-2025-04-14`, nine API calls, eight executed actions,
+  and success in 16.526 seconds. Its [original capability](evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/candidate.capability.json)
+  is `live_discovery` / `observed_live`. The [fresh replay summary](evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/fresh-replay/a535f375c5244e18bf5198efb0026577/summary.json)
+  records a separate browser session, success in 2.104 seconds, and zero provider
+  calls, with changed member/product/nickname. These are single-run observations,
+  not benchmarks. [Selected runs](evidence/phase3-live/selected-runs.json) also
+  retains five unsuccessful development attempts; all six used 29 API calls.
+- **Reviewed checkpoint revision:** the reviewer demos use version 2, not a new
+  model discovery. [Derivation](evidence/phase4-adversarial/derivation.json)
+  connects the unchanged original and revised canonical hashes. It removes 16
+  redundant route predicates while preserving all eight observed actions,
+  semantic checkpoints, typed inputs, identity/output checks and provenance.
+  Policy still checks the actual route before each action. The
+  [adversarial index](evidence/phase4-adversarial/selected-runs.json) retains the
+  original-artifact failure and revised 11-case matrix.
+
+Historical live and manual runs did not record exact source-revision metadata.
+The hardening matrix also lacks exact per-run source diffs; its final source/test
+snapshot is recorded separately. Do not retroactively assign those runs to the
+submission revision. **No new provider run followed hardening**: the changed
+provider/discovery code has local regression coverage, not renewed live evidence.
+
+## Optional authorized discovery
+
+This command can incur charges and send filtered observations to OpenAI. It is
+not needed for setup, demos, or tests. Privately set `OPENAI_API_KEY` and select a
+currently supported structured-output Responses API model in `OPENAI_MODEL`.
+Confirm model availability and authorize cost first; never put credentials in
+arguments, evidence, source control, or chat.
 
 ```sh
 uv run --offline uicap discover \
   --model "$OPENAI_MODEL" --authorize-api \
   --max-calls 12 --max-output-tokens 1200 --call-timeout 30 \
-  --evidence-dir evidence/phase3-live
+  --evidence-dir artifacts/local/authorized-discovery
 ```
 
-`uv --offline` prevents package fetching, **not model API traffic**. `--authorize-api`
-explicitly permits paid requests and sending the filtered observation to OpenAI.
-No model request occurs without that flag. No provider SDK or new dependency is
-required. Missing credentials, refusal, incomplete responses, and transport errors
-fail closed; their raw details are never persisted.
+No provider call occurs without `--authorize-api`. `uv --offline` does **not**
+block these API requests. By default discovery uses synthetic member A, then
+validates the candidate in a fresh browser using different member, product and
+nickname. `--inputs-file` and `--replay-inputs-file` can replace those invocations;
+all three replay inputs must differ. `--headed` displays the browsers.
+There is no automatic HTTP retry; one malformed-decision repair may consume
+another call. These limits are not a dollar-denominated billing cap.
 
-The default invocation discovers with synthetic member A, then closes that browser
-and replays the compiled candidate in a fresh browser with synthetic member B,
-a different product, and a different nickname. Optional `--inputs-file` and
-`--replay-inputs-file` replace those invocations; all three replay inputs must differ.
-`--headed` displays the browsers. Default limits: 20 actions, 180 active seconds,
-12 API attempts, 1,200 output tokens per attempt, and 30 seconds per call.
-There is no automatic HTTP retry; at most one malformed-decision repair consumes
-another call. Token/call limits are not a dollar-denominated billing cap.
+The text-only planner receives approved public UI text, ephemeral observed
+references, the caller's goal/type definitions and value-free completion checks,
+not raw restricted inputs, screenshots, fixture recipes, application source or
+hidden business state. Its strict choice schema is policy-filtered; the session
+independently checks every returned proposal. Goal/output contracts and known
+error/recovery rules are authored knowledge. Compilation only accepts reviewed
+target bindings. Failed, refused or incomplete requests fail closed. Raw prompts,
+responses, keys and rich outputs are not persisted. Successful compilation writes
+`candidate.capability.json`; only successful fresh replay marks it validated.
 
-Each attempt retains redacted events and a summary, including actual API attempt
-counts, validated response/request IDs and token usage when available. It never
-saves raw prompts, model responses, keys, or rich result outputs. Successful
-completion writes `candidate.capability.json`; `summary.json` marks it validated
-only after fresh replay succeeds. The nested `fresh-replay/` directory has separate
-session IDs, captures and a zero-provider-call result. Failures are retained.
+## Terminal takeover and same-session resume
 
-### Verified live example
+The historical [user-guided handoff summary](evidence/phase2-fixtures/manual/54c4cbabdeae477d824e8b2eb5591620/summary.json)
+records success, terminal control transfer, `human_intervened=true`, and zero
+provider calls. An earlier timed-out attempt remains retained. This was a real
+user-guided demonstration, distinct from automated integration-test operators;
+the metadata itself proves ownership transfer, not a person's identity or
+physical activity. It has not been newly repeated for submission packaging.
 
-Selected discovery: `evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/`.
-The actual model was `gpt-4.1-2025-04-14`: nine API calls produced eight browser
-actions and a verified finish. `candidate.capability.json` has `live_discovery` /
-`observed_live` provenance tied to the discovery run ID.
-
-Its `fresh-replay/a535f375c5244e18bf5198efb0026577/` subdirectory records successful
-replay with a new browser session and different member, product and nickname,
-using zero model calls. Both runs verified the unsubmitted-review contract.
-Artifact hashes match across compilation and replay.
-
-Five failed development attempts remain alongside the successful one. They include
-invalid input references, premature completion, a policy denial, and a model-requested
-intervention; none produced a successful capability. The failures drove stricter
-generation schemas and clearer typed-reference/completion semantics, not weaker
-execution checks. All six attempts together used 29 actual API calls.
-
-To replay a saved candidate independently:
+To try it yourself with the reviewed artifact:
 
 ```sh
-# Terminal 1
-uv run --offline uicap sandbox serve --port 8765
-# Terminal 2; CAPABILITY_PATH points to the saved candidate.capability.json
-uv run --offline uicap replay --origin http://127.0.0.1:8765 \
-  --artifact "$CAPABILITY_PATH" --inputs-file examples/member_b.inputs.json
+uv run --offline uicap demo --case session_expired --headed \
+  --artifact evidence/phase4-adversarial/revised.capability.json \
+  --inputs-file examples/member_b.inputs.json \
+  --evidence-dir artifacts/local/reviewer-handoff
 ```
 
-### Discovery boundaries
+1. Wait for **Session expired** in the existing browser and `operator>` in the
+   terminal. Do not create a replacement browser/context.
+2. Type `takeover`; wait for **HUMAN ownership granted**.
+3. In that browser's workspace frame, enter a made-up alias in **Demo operator**
+   and click **Demo sign in**. No real credentials are needed.
+4. Confirm **Prepare sub-account** is visible without changing the member or
+   opening an account. Type `resume` in the terminal.
+5. Resume validates the same context, location, identity, saved step and
+   checkpoint before returning ownership. Invalid resume leaves HUMAN ownership
+   intact; successful continuation ends at unsubmitted review.
 
-- `surfaces/discovery_dom.js` derives visible frame/section/role/label/table-caption
-  targets from rendered elements, then resolves each locator back to the same
-  unique element. Generated IDs, coordinates and ordinal selectors are not saved.
-- `discovery.py` sends only current ephemeral target refs, the goal template,
-  input definitions, approved public UI text, and typed input references.
-  It also exposes public caller-declared enum options, completed input assignments,
-  and value-free UI completion-check results.
-  Raw restricted values, app source, fixture action recipes and hidden state are absent.
-  The planner is text-only; masked workspace screenshots remain local evidence.
-- The provider's strict schema enumerates declared input names and currently
-  policy-authorized action kinds, target references and navigation destinations.
-  Only observed, authorized choices are offered. The adapter checks returned
-  references/action combinations, and the session independently rechecks policy,
-  state freshness and ownership before executing. Validation diagnostics retain
-  only fixed categories, recognized field names and field-presence information,
-  never rejected values, unknown keys or exception messages.
-- `compiler.py` structurally matches DOM-derived targets against reviewed target
-  bindings to restore input references. Unreviewed targets cannot compile. Ordered
-  fixture steps are discarded before discovery; no global transcript substitution
-  is used. Every executed successful action is retained. Fill/select checkpoints
-  preserve the chosen input reference; other actions need an observed semantic change.
-- Goal/output checks and known error/recovery rules remain **authored** caller/profile
-  knowledge, not discoveries inferred from one happy path. Compiled replay retains
-  those recovery rules. Action targeting is observed, but this is not a general
-  compiler for arbitrary unreviewed applications.
-- All execution uses the existing policy/session gate, fresh observations and
-  ownership epochs. Model `finish` requests still require identity, terminal and
-  typed-output verification. Replay's dependency graph excludes discovery/providers.
-- Discovery stops without an artifact on intervention/recovery conditions; it does
-  not implement discovery-time human resume. Existing same-session takeover/resume
-  remains supported during replay. Discovery uses one settled post-action observation
-  and can conservatively reject delayed state changes or no-effect exploration.
+`capture` requests a masked capture; `abort` or terminal EOF stops the run.
+Operator waiting is bounded to 30 minutes. Keep the process alive: durable
+process-crash recovery is unsupported. When an assistant owns the terminal,
+request terminal commands through it; the human performs browser reauthentication.
+Headless intervention cases abort and are not human-handoff demonstrations.
+Discovery-time human resume is not implemented.
 
-Local verification exercised a scripted eight-action browser discovery and fresh
-replay with changed inputs, with zero submissions and zero model requests.
-Its ignored development evidence is under `artifacts/local/phase3-smoke/`.
-It is **not** the genuine live discovery required for the final assignment.
+## Safety, privacy and scope
 
-## Run the complete browser fixture
+Execution goes through one session gate with ownership epochs, fresh observations,
+unique semantic targets, bounded retries/recovery, and identity/terminal checks.
+Artifacts contain data, not executable selectors/code, and cannot expand trusted
+profile/policy authority. Runtime targeting uses visible rendered UI, named
+frames, section/role/label/table-caption locators; it does not call business APIs
+or read hidden state. Unknown native, HTML and ARIA dialogs stop automation.
 
-Each `demo` starts its own isolated sandbox on an ephemeral loopback port, creates
-fresh browser state, executes the full workflow, saves evidence, then closes.
-No separately running server is needed.
+Context-wide request guards plus a mandatory loopback HTTP proxy enforce exact
+method/origin/path allowlists. Submission, CONNECT, websocket upgrades, redirects,
+service workers and unsupported uploads are denied. Response restrictions cannot
+prevent the initial receipt of bytes from an otherwise allowed endpoint.
+The proxy supports only explicit `http://127.0.0.1:PORT` fixture origins, not HTTPS
+tunnels. Ordinary browsers outside the guarded context are not protected.
 
-```sh
-uv run --offline uicap demo --case happy --evidence-dir evidence/phase2-fixtures/member-a
-uv run --offline uicap demo --case happy --inputs-file examples/member_b.inputs.json --evidence-dir evidence/phase2-fixtures/member-b
-uv run --offline uicap demo --case member_not_found --evidence-dir evidence/phase2-fixtures/not-found
-uv run --offline uicap demo --case wrong_member_review --evidence-dir evidence/phase2-fixtures/identity-denial
-```
+Current evidence consists of structural events, redacted summaries, installed
+artifact/profile/policy snapshots and capture decisions. Rich in-memory outputs
+must not be serialized publicly. Current captures mask the **entire page** and
+verify every decoded pixel before persistence, or withhold the image. Fully
+opaque screenshots deliberately lose visual UI detail; structural checkpoints
+carry useful execution evidence. Historical captures retain their original
+workspace-only masks and reviewed shell chrome, not the new capture guarantee.
+No raw traces, videos, DOM dumps or unredacted fallback images are retained.
 
-Exit codes: `0` verified success; `3` declared business outcome; `2` failure or
-aborted intervention. The last two commands deliberately demonstrate non-success.
-Use `--headed` to display Chromium. The full authored path is navigation → search
-→ result selection → member details → preparation → review. It stops at review;
-it never opens an account. The UI has a real, separate **Open account** mutation
-so denial tests are not testing a no-op.
-
-To inspect the standalone UI and then replay against that installation:
-
-```sh
-# Terminal 1: synthetic UI only; ordinary browser access is NOT guarded.
-uv run --offline uicap sandbox serve --port 8765
-# Terminal 2: the runtime creates its own guarded Chromium context.
-uv run --offline uicap replay --origin http://127.0.0.1:8765 --inputs-file examples/member_b.inputs.json --headed
-```
-
-The CLI binds the packaged fixture to the explicitly selected installation
-origin. It does not replace input literals or accept a changed application,
-version, or entry route. `--artifact PATH` may select a compatible authored
-artifact; trusted profile/policy authority still comes from the packaged fixture.
-
-## Actual human takeover and resume
-
-**The user-guided takeover/resume demonstration completed successfully.** Its
-summary is at
-`evidence/phase2-fixtures/manual/54c4cbabdeae477d824e8b2eb5591620/summary.json`:
-`success`, `human_intervened=true`, and zero provider calls. The earlier timed-out
-attempt is retained. Automated tests are separate from this demonstration.
-A `human_intervened` result records ownership transfer, not proof of a person's
-identity or physical activity.
-
-```sh
-uv run --offline uicap demo --case session_expired --headed --evidence-dir evidence/phase2-fixtures/manual
-```
-
-1. Wait for the existing browser to show **Session expired** and the terminal to
-   show `operator>`. Do not open a replacement browser/context.
-2. Type `takeover` in that terminal. Wait for **HUMAN ownership granted**.
-3. In the existing workspace frame, enter a made-up alias such as `demo-operator`
-   in **Demo operator**, then click **Demo sign in**. No real credentials needed.
-4. Confirm **Prepare sub-account** is visible. Do not change the selected member
-   or open an account. Type `resume` in the terminal.
-5. Resume validates the same context, allowed location, identity, saved step, and
-   checkpoint before restoring automation. An invalid resume leaves HUMAN
-   ownership intact. Successful continuation ends at review with `submitted=false`.
-
-`capture` saves a masked capture; `abort` stops the run. EOF also aborts. The
-operator budget is 30 minutes and terminal waiting is bounded. The run must stay
-alive; process-crash recovery is not implemented. If a coding assistant owns the
-terminal process, request takeover/resume through that assistant; only **you**
-perform the browser reauthentication step. That is distinct from an automated
-integration-test actor.
-
-```text
-AUTOMATION -> PAUSING -> AWAITING_OPERATOR -> HUMAN
-HUMAN -> VALIDATING_RESUME -> AUTOMATION
-Any nonterminal ownership state -> ABORTED
-```
-
-## Implemented boundaries
-
-- `contracts.py`, `values.py`: strict tagged values/actions/predicates, typed
-  references, exact minor-unit money, leading-zero identifiers, versioned
-  artifacts/results, and semantic frame-scoped locators. The new table-caption
-  locator supports the legacy adjacent-value layout; arbitrary XPath/CSS/code
-  are not artifact commands. Unresolved secrets fail closed.
-- `policy.py`, `profiles.py`: trusted origin/port, routes, actions, targets,
-  destinations, permissions, literal/effect rules, identity, and terminal checks.
-  Artifacts cannot expand authority, rebind trusted targets, weaken completion,
-  or authorize retries of unknown/irreversible effects.
-- `session.py`, `replay.py`: one executor lock, ownership epochs, freshness and
-  semantic drift checks, exact uniqueness, typed pre/postconditions, guard
-  precedence, bounded recovery/retries/budgets, and validated terminal outputs.
-  Cancellation is not rollback: unsettled actions retain their gate. HUMAN
-  ownership rejects automation, including stale proposals and concurrent resume.
-- `surfaces/playwright.py`: private browser handles, visible rendered UI only,
-  named-frame validation, fixed semantic locators, re-resolution before actions,
-  and navigation events armed before clicks. No sleeps-as-completion, hidden
-  application state, business APIs, or fixture oracle access. Unknown native
-  dialogs are held, never automatically accepted.
-- `transport.py`, `http_proxy.py`: context-wide request guards **plus a mandatory
-  loopback HTTP proxy**. Chromium HTML downloads can bypass Playwright routing;
-  rejecting downloads alone happens too late to prevent server receipt. The
-  proxy independently validates exact method/origin/path before forwarding.
-  Final submission is absent from its allowlist. Redirect responses are rejected
-  without following, websocket routes/upgrades and CONNECT are denied, service
-  workers blocked, and multipart/non-form uploads rejected. Responses must be
-  HTML without attachment/refresh headers. An allowed endpoint must be contacted
-  before response headers can be checked; do not claim those bytes were unfetched.
-- `operator_capture.js`: records only bounded event/control/frame categories while
-  backend ownership is HUMAN. No field values, keystrokes, DOM text, screenshots,
-  URLs, or passwords. Its callbacks cannot grant ownership or resume execution.
-- `sandbox`: server-rendered framed HTML, generated IDs, a table-labelled field,
-  duplicate labels in distinct sections, review fees, synthetic session expiry
-  and cookie rotation, and adverse UI scenarios. Business state/oracle counters
-  are private to the fixture/test harness, never HTTP APIs or replay inputs.
-
-The proxy deliberately supports only an explicit `http://127.0.0.1:PORT` fixture
-origin; opaque HTTPS tunnelling is not permitted. Browser-normalized URL syntax
-cannot be recovered after normalization. These are cooperative browser/HTTP
-boundaries, **not OS egress isolation or hostile multi-user isolation**. Native
-apps, arbitrary remote banking installations, and multi-tenant deployment are
-not implemented.
-
-## Evidence and privacy
-
-A run directory contains structural `events.jsonl`, a redacted `summary.json`,
-and capture decisions/images. Current runs also save the exact installed
-`fixture.artifact.json`, `fixture.profile.json`, and `fixture.policy.json`.
-Installation-specific hashes can differ because ephemeral origin ports differ.
-Checksums identify content, not authenticity or cryptographic signatures.
-
-Audit context includes generated run/session IDs, timestamps, artifact/profile
-hashes, step indices, and checkpoint counts/stages. It excludes raw inputs,
-outputs, exception details, URLs, observation text, and artifact-authored names.
-Authorized in-memory results retain typed outputs; do not serialize those rich
-results directly into public evidence.
-
-Screenshots mask the **entire restricted workspace iframe before image bytes
-are produced**; reviewed static shell/navigation remain visible. Capture is
-withheld for changed/unreviewed shell content, unexpected frames/pages, or native
-dialogs. Reports retain only structural counts and mask rectangles. There are no
-raw traces, videos, DOM dumps, or unredacted fallback screenshots. This sacrifices
-business-screen visual detail rather than claiming selective redaction is safe.
-
-## Assignment reconciliation and phase limits
-
-`ASSIGNMENT.pdf` was available and reviewed for Phase 2; it was not available in
-Phase 1. The original assignment requires real UI operation, exception handling,
-human takeover, and useful execution evidence. Phase 1 supplied only the safe
-fake-surface core, not those browser/operator deliverables. Phase 2 adds those
-mechanisms and richer sanitized failure/checkpoint evidence. The user-guided
-same-session handoff has now been demonstrated as described above.
-
-Phase 3's discovery, compiler and provider adapter are implemented, locally tested,
-and exercised through genuine live discovery followed by fresh model-free replay.
-The selected evidence is documented above. The JSON under
-`src/ui_capability/fixtures` remains explicitly `test_fixture` / `hand_authored_test`;
-scripted compiler verification also uses test-fixture provenance. Only the real
-HTTP adapter's completed, validated response can qualify a successful discovery
-for live provenance. One successful path is not a claim of production readiness
-or complete assignment acceptance; adversarial review remains.
-
-The original planning files and all Phase 1 regression tests are preserved.
-`ASSIGNMENT.pdf` is explicitly ignored and excluded from source packaging, along
-with other PDFs/private local materials. The Git remote is
-`https://github.com/mattmuldoon48/computer-use-automation.git`.
-No fabricated model provenance or final submission report is included.
-Adversarial review and final submission packaging remain later phases.
+This is a cooperative local browser/HTTP boundary, not OS egress isolation,
+hostile multi-user isolation, a production banking integration, native desktop
+support, or a deployed multi-tenant service. DOM revalidation is not atomic
+against hostile page mutation. Caller/profile/schema text must be trusted public
+configuration. No production security or privacy attestation is claimed.
+Assignment PDFs and private local materials are excluded from source packaging;
+original planning documents and historical evidence remain unchanged.

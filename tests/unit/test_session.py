@@ -258,6 +258,45 @@ def test_abort_waits_for_inflight_action_without_cancelling_it() -> None:
     asyncio.run(scenario())
 
 
+def test_abort_supersedes_pause_waiting_for_inflight_action() -> None:
+    async def scenario() -> None:
+        session, surface, cap, _ = setup()
+        started, release = asyncio.Event(), asyncio.Event()
+
+        async def blocked(
+            action: ExecutableAction, target: ObservedTarget | None, value: Scalar | None
+        ) -> None:
+            started.set()
+            await release.wait()
+
+        surface.on_action = blocked
+        executing = asyncio.create_task(
+            session.execute(await proposal(session, cap.steps[0]), cap, INPUTS, {}, PERMISSIONS)
+        )
+        await started.wait()
+        pausing = asyncio.create_task(session.pause("session_expired", cap.steps[0]))
+        await asyncio.sleep(0)
+        assert session.ownership is Ownership.PAUSING
+        aborting = asyncio.create_task(session.abort())
+        await asyncio.sleep(0)
+        assert session.ownership is Ownership.ABORTED
+        assert not pausing.done()
+        assert not aborting.done()
+        release.set()
+        results = await asyncio.gather(executing, pausing, aborting, return_exceptions=True)
+        assert results[0] is None
+        assert isinstance(results[1], RuntimeFault)
+        assert results[1].code is FailureCode.OWNERSHIP_DENIED
+        assert results[2] is None
+        assert session.ownership is Ownership.ABORTED
+        with pytest.raises(RuntimeFault) as takeover:
+            await session.takeover()
+        assert takeover.value.code is FailureCode.OWNERSHIP_DENIED
+        assert len(surface.actions) == 1
+
+    asyncio.run(scenario())
+
+
 def test_cancellation_preserves_gate_until_uncertain_action_settles() -> None:
     async def scenario() -> None:
         cap = artifact()
