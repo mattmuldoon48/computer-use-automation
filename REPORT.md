@@ -6,7 +6,7 @@ real Chromium against a synthetic legacy banking application. The implemented
 goal prepares a savings sub-account and stops at **unsubmitted review**; it does
 not open an account. [README](README.md) provides the shortest demo and exact
 commands; the [evidence index](evidence/README.md) distinguishes current local
-verification, historical genuine runs, simulations and outstanding live evidence.
+verification, historical runs, simulations, and completed live discovery and real-user handoff evidence.
 
 `Discovery(template, profile, session, planner, caller_permissions).run(inputs)`
 accepts a reviewed natural-language goal template, app/version/origin/entry binding,

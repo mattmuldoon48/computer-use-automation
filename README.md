@@ -11,18 +11,19 @@ With the pinned environment and Playwright Chromium already installed:
 
 ```sh
 uv run --no-sync --offline uicap demo --case happy \
-  --artifact evidence/phase4-adversarial/revised.capability.json \
+  --artifact evidence/final-review/live/5af33fc272cc42e49af6012e6a2b0ed9/candidate.capability.json \
   --inputs-file examples/member_b.inputs.json \
   --evidence-dir artifacts/local/reviewer-happy
 ```
 
 Expected exit **0**. Add `--headed` to watch the browser. Each demo starts an
 isolated loopback sandbox and fresh guarded browser, then closes both. The
-artifact above is a reviewed revision of a historical live discovery, not a new
-model run. [REPORT.md](REPORT.md) explains the design and cuts;
+artifact above is the newer successful unassisted live-discovery candidate;
+this command only replays it, with no model calls. [REPORT.md](REPORT.md) explains
+the design and cuts;
 [the evidence index](evidence/README.md) selects discovery/artifact/replay,
-handoff and error records, distinguishing historical runs from current local
-simulations and authorization-gated live evidence.
+handoff and error records, distinguishing historical runs, local simulations,
+and completed authorized live discovery and real-user handoff evidence.
 
 ## Setup and local checks
 
@@ -61,7 +62,7 @@ model calls or real-human evidence.
 
 ## Error, recovery and handoff demos
 
-Use the same reviewed artifact with these cases:
+Use the historical reviewed artifact for these recovery/error examples:
 
 ```sh
 uv run --no-sync --offline uicap demo --case known_interstitial \
