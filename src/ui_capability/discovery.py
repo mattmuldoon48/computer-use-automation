@@ -14,6 +14,7 @@ from .contracts import (
     ActionProposal,
     CapabilityArtifact,
     Click,
+    Diagnostic,
     ExecutableAction,
     Failure,
     FailureCode,
@@ -178,12 +179,20 @@ class _DiscoveryDriver(Replay):
             for name, definition in self.artifact.goal.inputs.items()
         }
         compiler._route(observation)
-        completion_checks = {
-            "identity": self._checks(self.artifact.identity_checks, observation),
-            "terminal": self._checks(
-                self.profile.terminal_checks + self.artifact.final_checks, observation
-            ),
-        }
+        previous_diagnostic = self._diagnostic
+        try:
+            completion_checks = {
+                "identity": self._verify(self.artifact.identity_checks, observation, "identity"),
+                "terminal": self._verify(
+                    self.profile.terminal_checks + self.artifact.final_checks,
+                    observation,
+                    "terminal",
+                ),
+            }
+        finally:
+            # Unmet completion probes are normal during discovery, not a later
+            # provider failure's cause. Raised faults carry their own diagnostic.
+            self._diagnostic = previous_diagnostic
         if all(completion_checks.values()):
             allowed_kinds.add("finish")
         destinations = [
@@ -229,9 +238,17 @@ class _DiscoveryDriver(Replay):
         # Defense in depth for caller-authored goal text, frame names and enum definitions.
         # Never repair a leak with global string substitution: reject it before transport.
         if compiler._sensitive(encoded):
-            raise RuntimeFault(FailureCode.POLICY_DENIED)
+            raise RuntimeFault(
+                FailureCode.POLICY_DENIED,
+                Diagnostic(stage="discovery", expected="valid_contract", observed="denied"),
+            )
         if len(encoded.encode("utf-8")) > 64_000:
-            raise RuntimeFault(FailureCode.BUDGET_EXCEEDED)
+            raise RuntimeFault(
+                FailureCode.BUDGET_EXCEEDED,
+                Diagnostic(
+                    stage="discovery", expected="within_budget", observed="budget_exhausted"
+                ),
+            )
         return request
 
     async def _propose(self, observation: Observation) -> ModelDecision:
@@ -239,16 +256,33 @@ class _DiscoveryDriver(Replay):
         while True:
             count = self.planner.call_count
             if count >= self._max_calls:
-                raise RuntimeFault(FailureCode.BUDGET_EXCEEDED)
+                raise RuntimeFault(
+                    FailureCode.BUDGET_EXCEEDED,
+                    Diagnostic(
+                        stage="discovery", expected="within_budget", observed="budget_exhausted"
+                    ),
+                )
             try:
                 decision = await self.planner.propose(request)
                 decision = ModelDecision.model_validate_json(decision.model_dump_json())
             except (ProviderError, ValidationError) as error:
                 if isinstance(error, ProviderError) and error.code == "budget_exceeded":
-                    raise RuntimeFault(FailureCode.BUDGET_EXCEEDED) from None
+                    raise RuntimeFault(
+                        FailureCode.BUDGET_EXCEEDED,
+                        Diagnostic(
+                            stage="discovery", expected="within_budget", observed="budget_exhausted"
+                        ),
+                    ) from None
                 malformed = isinstance(error, ValidationError) or error.code == "malformed_output"
                 if not malformed or self._repair_used:
-                    raise RuntimeFault(FailureCode.INTERRUPTED) from None
+                    raise RuntimeFault(
+                        FailureCode.INTERRUPTED,
+                        Diagnostic(
+                            stage="discovery",
+                            expected="valid_decision",
+                            observed="invalid_format" if malformed else "unknown",
+                        ),
+                    ) from None
                 self._repair_used = True
                 request = self._request(observation)
                 request["repair"] = (
@@ -256,13 +290,19 @@ class _DiscoveryDriver(Replay):
                 )
                 continue
             if self.planner.call_count != count + 1:
-                raise RuntimeFault(FailureCode.INTERRUPTED)
+                raise RuntimeFault(
+                    FailureCode.INTERRUPTED,
+                    Diagnostic(stage="discovery", expected="valid_decision", observed="mismatch"),
+                )
             if (
                 decision.observation_id != observation.observation_id
                 or decision.ownership_epoch != observation.ownership_epoch
                 or decision.ownership_epoch != self.session.epoch
             ):
-                raise RuntimeFault(FailureCode.STALE_OBSERVATION)
+                raise RuntimeFault(
+                    FailureCode.STALE_OBSERVATION,
+                    Diagnostic(stage="discovery", expected="fresh_observation", observed="stale"),
+                )
             return decision
 
     def _action(self, decision: ModelDecision, observation: Observation) -> ExecutableAction:
@@ -318,12 +358,19 @@ class _DiscoveryDriver(Replay):
                     self._preflight(inputs)
                     assert self._compiler is not None
                     observed = await self._observe()
-                    if not self._checks(self.artifact.preconditions, observed):
+                    if not self._verify(self.artifact.preconditions, observed, "initial"):
                         raise RuntimeFault(FailureCode.PRECONDITION_FAILED)
                     while True:
                         decision = await self._propose(observed)
                         if decision.kind == "intervene":
-                            raise RuntimeFault(FailureCode.INTERRUPTED)
+                            raise RuntimeFault(
+                                FailureCode.INTERRUPTED,
+                                Diagnostic(
+                                    stage="discovery",
+                                    expected="known_state",
+                                    observed="interrupted",
+                                ),
+                            )
                         if decision.kind == "finish":
                             # A finish proposal is only a request for independent verification.
                             observed = await self._observe()
@@ -361,11 +408,17 @@ class _DiscoveryDriver(Replay):
                             self._inputs,
                             self._locals,
                             self.permissions,
+                            purpose="discovery",
+                            step_index=self._index,
                         )
                         after = await self._observe()
                         self._compiler.record(action, observed, after)
                         self._index += 1
-                        self.session.evidence.emit("action_verified")
+                        self.session.evidence.emit(
+                            "action_verified",
+                            action_index=self.session.action_count - 1,
+                            step_index=self._index - 1,
+                        )
                         observed = after
             except _Stop as stop:
                 result = (
@@ -374,7 +427,7 @@ class _DiscoveryDriver(Replay):
                     else stop.result
                 )
             except RuntimeFault as fault:
-                result = self._failure(fault.code)
+                result = self._failure(fault.code, fault.diagnostic)
             except TimeoutError:
                 result = self._failure(FailureCode.BUDGET_EXCEEDED)
             except asyncio.CancelledError:

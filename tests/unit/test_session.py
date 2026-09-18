@@ -1,7 +1,9 @@
 """Fake-surface safety regressions; these do not demonstrate live human handoff."""
 
 import asyncio
+import json
 from io import StringIO
+from pathlib import Path
 
 import pytest
 
@@ -414,7 +416,7 @@ def test_resume_requires_safe_precondition_or_verified_postcondition(
 
 
 @pytest.mark.parametrize("invalid", ["identity", "context", "origin", "route", "checkpoint"])
-def test_invalid_resume_preserves_human_ownership(invalid: str) -> None:
+def test_invalid_resume_preserves_human_ownership(invalid: str, tmp_path: Path) -> None:
     async def scenario() -> None:
         cap = artifact()
         observed = observation(cap, INPUTS, wrong_member=invalid == "identity")
@@ -443,7 +445,18 @@ def test_invalid_resume_preserves_human_ownership(invalid: str) -> None:
             FailureCode.INCOMPATIBLE if invalid == "context" else FailureCode.INVALID_RESUME
         )
         assert session.ownership is Ownership.HUMAN
+        assert caught.value.diagnostic is not None
+        assert caught.value.diagnostic.observed in {"mismatch", "denied", "unknown"}
         assert surface.actions == []
+        capture = await session.capture_safe(tmp_path / "resume.png")
+        structure = capture["structure"]
+        if invalid == "context":
+            assert structure["state"] == "unavailable"
+        else:
+            assert structure["target_details_state"] == "current"
+            if invalid == "checkpoint":
+                target = structure["targets"][sorted(cap.targets).index("nickname_field")]
+                assert target["state"] == "missing" and target["match_count"] == 0
 
     asyncio.run(scenario())
 
@@ -651,3 +664,122 @@ def test_scalar_predicates_do_not_coerce_boolean_integer_or_identifier() -> None
             {},
         )
     assert caught.value.code is FailureCode.INVALID_ARGUMENT
+
+
+def test_authorized_action_evidence_explains_purpose_without_execution_values() -> None:
+    async def scenario() -> None:
+        session, surface, cap, audit = setup()
+        await session.execute(
+            await proposal(session, cap.steps[0]),
+            cap,
+            INPUTS,
+            {},
+            PERMISSIONS,
+            purpose="recovery",
+            step_index=0,
+            guard_index=2,
+        )
+        events = [json.loads(line) for line in audit.getvalue().splitlines()]
+        intent = next(event for event in events if event["event"] == "action_intent")
+        assert intent["purpose"] == "recovery"
+        assert intent["action_kind"] == "fill" and intent["effect"] == "SAFE_OVERWRITE"
+        assert intent["action_index"] == 0 and intent["step_index"] == 0
+        assert intent["guard_index"] == 2
+        assert intent["target_index"] == sorted(cap.targets).index("nickname_field")
+        assert surface.actions[0][2] == INPUTS["nickname"]
+        assert INPUTS["nickname"] not in audit.getvalue()
+        assert "nickname_field" not in audit.getvalue()
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("rejection", ["missing", "ambiguous", "control", "role", "policy"])
+def test_rejected_action_exposes_safe_observed_reason_not_authorization(
+    rejection: str,
+) -> None:
+    async def scenario() -> None:
+        cap = artifact()
+        original = observation(cap, INPUTS)
+        field = next(target for target in original.targets if target.ref == "nickname_field")
+        canary = "PRIVATE-ROLE-CONTROL-VALUE"
+        if rejection == "missing":
+            targets = tuple(target for target in original.targets if target != field)
+        elif rejection == "ambiguous":
+            targets = (*original.targets, field.model_copy(update={"ref": canary}))
+        else:
+            replacement = field.model_copy(
+                update={
+                    **({rejection: canary} if rejection in {"role", "control"} else {}),
+                    "text": canary,
+                    "value": canary,
+                }
+            )
+            targets = tuple(
+                replacement if target == field else target for target in original.targets
+            )
+        observed = original.model_copy(update={"targets": targets})
+        session, surface, _, audit = setup(cap, [observed])
+        with pytest.raises(RuntimeFault) as caught:
+            await session.execute(
+                await proposal(session, cap.steps[0]),
+                cap,
+                INPUTS,
+                {},
+                frozenset() if rejection == "policy" else PERMISSIONS,
+                purpose="replay",
+                step_index=0,
+            )
+        diagnostic = caught.value.diagnostic
+        assert diagnostic is not None
+        assert diagnostic.target_index == sorted(cap.targets).index("nickname_field")
+        if rejection in {"missing", "ambiguous"}:
+            assert diagnostic.expected == "unique_target"
+            assert diagnostic.observed == rejection
+            assert diagnostic.match_count == (0 if rejection == "missing" else 2)
+        elif rejection in {"control", "role"}:
+            assert diagnostic.expected == "supported_control"
+            assert diagnostic.observed == "mismatch"
+        else:
+            assert diagnostic.expected == "authorized_action"
+            assert diagnostic.observed == "denied"
+        events = [json.loads(line) for line in audit.getvalue().splitlines()]
+        assert all(event["event"] != "action_intent" for event in events)
+        rejected = next(event for event in events if event["event"] == "action_rejected")
+        assert "effect" not in rejected and "action_index" not in rejected
+        assert rejected["purpose"] == "replay"
+        assert rejected["diagnostic"]["observed"] == diagnostic.observed
+        assert canary not in audit.getvalue() + str(caught.value)
+        assert surface.actions == []
+
+    asyncio.run(scenario())
+
+
+def test_stale_revalidation_capture_describes_actual_last_observation(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        cap = artifact()
+        original = observation(cap, INPUTS)
+        changed = original.model_copy(
+            update={
+                "targets": tuple(
+                    target for target in original.targets if target.ref != "nickname_field"
+                ),
+            }
+        )
+        session, surface, _, audit = setup(cap, [original, changed])
+        with pytest.raises(RuntimeFault) as caught:
+            await session.execute(
+                await proposal(session, cap.steps[0]), cap, INPUTS, {}, PERMISSIONS
+            )
+        assert caught.value.code is FailureCode.STALE_OBSERVATION
+        assert caught.value.diagnostic.expected == "fresh_observation"
+        assert caught.value.diagnostic.observed == "stale"
+        capture = await session.capture_safe(tmp_path / "capture.png")
+        structure = capture["structure"]
+        field = structure["targets"][sorted(cap.targets).index("nickname_field")]
+        assert structure["target_details_state"] == "current"
+        assert field["state"] == "missing" and field["match_count"] == 0
+        assert surface.actions == []
+        events = [json.loads(line) for line in audit.getvalue().splitlines()]
+        assert all("step_index" not in event for event in events)
+
+    asyncio.run(scenario())

@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "source_commit": "9496484a4e4c1e5e96c7fd7fe5519022f0ac06fa",
+  "collection": "Retained observations from the preceding read-only audit of the anonymous public checkout, before this closure. These are not rerun results from the patched source.",
+  "observations": [
+    {
+      "fault": "malformed_fee",
+      "result_fields": [
+        "kind",
+        "code",
+        "metadata"
+      ],
+      "code": "EXTRACTION_FAILED",
+      "failing_step": null,
+      "step_index": null,
+      "executed_actions": 8,
+      "action_event_fields_excluding_run_metadata": [
+        "epoch",
+        "event"
+      ],
+      "final_checkpoints": [
+        {
+          "event": "checkpoint",
+          "step_index": 8,
+          "stage": "identity",
+          "expected_predicates": 1,
+          "matched_predicates": 1
+        },
+        {
+          "event": "checkpoint",
+          "step_index": 8,
+          "stage": "terminal",
+          "expected_predicates": 6,
+          "matched_predicates": 6
+        }
+      ],
+      "capture_fully_opaque": true,
+      "structural_capture": {
+        "state": "observed",
+        "target_count": 9,
+        "dialog": "none",
+        "controls": {
+          "input": 0,
+          "select": 0,
+          "button": 1,
+          "link": 1,
+          "text": 0
+        }
+      },
+      "provider_attempts": 0,
+      "submit_requests": 0
+    },
+    {
+      "fault": "missing_fee_row",
+      "result_fields": [
+        "kind",
+        "code",
+        "metadata"
+      ],
+      "code": "EXTRACTION_FAILED",
+      "failing_step": null,
+      "step_index": null,
+      "executed_actions": 8,
+      "action_event_fields_excluding_run_metadata": [
+        "epoch",
+        "event"
+      ],
+      "final_checkpoints": [
+        {
+          "event": "checkpoint",
+          "step_index": 8,
+          "stage": "identity",
+          "expected_predicates": 1,
+          "matched_predicates": 1
+        },
+        {
+          "event": "checkpoint",
+          "step_index": 8,
+          "stage": "terminal",
+          "expected_predicates": 6,
+          "matched_predicates": 6
+        }
+      ],
+      "capture_fully_opaque": true,
+      "structural_capture": {
+        "state": "observed",
+        "target_count": 8,
+        "dialog": "none",
+        "controls": {
+          "input": 0,
+          "select": 0,
+          "button": 1,
+          "link": 1,
+          "text": 0
+        }
+      },
+      "provider_attempts": 0,
+      "submit_requests": 0
+    }
+  ]
+}

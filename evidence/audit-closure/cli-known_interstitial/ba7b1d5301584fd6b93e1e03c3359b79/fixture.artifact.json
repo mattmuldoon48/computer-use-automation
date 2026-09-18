@@ -1,0 +1,887 @@
+{
+  "schema_version": 1,
+  "capability_id": "prepare_subaccount_review",
+  "capability_version": 2,
+  "goal": {
+    "goal_template": "Prepare {product_code} for member {member_id} with nickname {nickname}. Stop at unsubmitted review; do not open the account.",
+    "inputs": {
+      "member_id": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 16,
+        "values": []
+      },
+      "product_code": {
+        "type": "enum",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": [
+          "SAVINGS_BASIC",
+          "SAVINGS_PLUS"
+        ]
+      },
+      "nickname": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 32,
+        "values": []
+      }
+    },
+    "outputs": {
+      "member_id": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 16,
+        "values": []
+      },
+      "product_code": {
+        "type": "enum",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": [
+          "SAVINGS_BASIC",
+          "SAVINGS_PLUS"
+        ]
+      },
+      "nickname": {
+        "type": "string",
+        "classification": "restricted",
+        "min_length": 1,
+        "max_length": 32,
+        "values": []
+      },
+      "monthly_fee_minor": {
+        "type": "integer",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": []
+      },
+      "currency": {
+        "type": "enum",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": [
+          "USD"
+        ]
+      },
+      "submitted": {
+        "type": "boolean",
+        "classification": "public",
+        "min_length": 1,
+        "max_length": 128,
+        "values": []
+      }
+    },
+    "binding": {
+      "origin": "http://127.0.0.1:64434",
+      "entry_route": "/",
+      "app": "member_ops",
+      "version": "v1",
+      "locale": "en_US"
+    },
+    "terminal_intent": "unsubmitted_review",
+    "budgets": {
+      "max_actions": 20,
+      "active_seconds": 180,
+      "operator_seconds": 1800
+    },
+    "policy_ref": "member_ops_prepare"
+  },
+  "surface_requirements": [
+    "web",
+    "frames",
+    "visible_text",
+    "form_controls"
+  ],
+  "targets": {
+    "search_navigation": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "navigation"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "link",
+        "name": {
+          "kind": "literal",
+          "value": "Member search"
+        }
+      },
+      "expected_matches": 1
+    },
+    "search_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Member search"
+        }
+      },
+      "expected_matches": 1
+    },
+    "details_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Member details"
+        }
+      },
+      "expected_matches": 1
+    },
+    "prepare_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Prepare sub-account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "review_heading": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Review sub-account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "search_button": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Search"
+        }
+      },
+      "expected_matches": 1
+    },
+    "member_result": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "link",
+        "name": {
+          "kind": "input_ref",
+          "name": "member_id"
+        }
+      },
+      "expected_matches": 1
+    },
+    "prepare_link": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "link",
+        "name": {
+          "kind": "literal",
+          "value": "Prepare sub-account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "review_button": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": {
+        "kind": "literal",
+        "value": "Account preparation"
+      },
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Review"
+        }
+      },
+      "expected_matches": 1
+    },
+    "submit_button": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Open account"
+        }
+      },
+      "expected_matches": 1
+    },
+    "dismiss": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "button",
+        "name": {
+          "kind": "literal",
+          "value": "Dismiss notice"
+        }
+      },
+      "expected_matches": 1
+    },
+    "member_search_field": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_control",
+        "label": {
+          "kind": "literal",
+          "value": "Member number"
+        },
+        "control": "input"
+      },
+      "expected_matches": 1
+    },
+    "product_field": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": {
+        "kind": "literal",
+        "value": "Account preparation"
+      },
+      "locator": {
+        "kind": "label",
+        "label": {
+          "kind": "literal",
+          "value": "Product"
+        }
+      },
+      "expected_matches": 1
+    },
+    "nickname_field": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": {
+        "kind": "literal",
+        "value": "Account preparation"
+      },
+      "locator": {
+        "kind": "label",
+        "label": {
+          "kind": "literal",
+          "value": "Nickname"
+        }
+      },
+      "expected_matches": 1
+    },
+    "member_id": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Member number"
+        }
+      },
+      "expected_matches": 1
+    },
+    "product_code": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Product code"
+        }
+      },
+      "expected_matches": 1
+    },
+    "nickname": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Nickname"
+        }
+      },
+      "expected_matches": 1
+    },
+    "monthly_fee_minor": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Monthly fee"
+        }
+      },
+      "expected_matches": 1
+    },
+    "currency": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Currency"
+        }
+      },
+      "expected_matches": 1
+    },
+    "submitted": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "table_label_value",
+        "label": {
+          "kind": "literal",
+          "value": "Submitted"
+        }
+      },
+      "expected_matches": 1
+    },
+    "not_found": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Member not found"
+        }
+      },
+      "expected_matches": 1
+    },
+    "ineligible": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Product unavailable"
+        }
+      },
+      "expected_matches": 1
+    },
+    "validation": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Business validation rejected"
+        }
+      },
+      "expected_matches": 1
+    },
+    "permission": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Permission denied"
+        }
+      },
+      "expected_matches": 1
+    },
+    "expired": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Session expired"
+        }
+      },
+      "expected_matches": 1
+    },
+    "notice": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Service notice"
+        }
+      },
+      "expected_matches": 1
+    },
+    "unknown": {
+      "frame": {
+        "kind": "named_frame",
+        "name": "workspace"
+      },
+      "section": null,
+      "locator": {
+        "kind": "role",
+        "role": "heading",
+        "name": {
+          "kind": "literal",
+          "value": "Unexpected confirmation"
+        }
+      },
+      "expected_matches": 1
+    }
+  },
+  "steps": [
+    {
+      "id": "discovered_1",
+      "action": {
+        "kind": "click",
+        "target": "search_navigation"
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "search_navigation"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "visible",
+          "target": "search_heading"
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "discovered_2",
+      "action": {
+        "kind": "fill",
+        "target": "member_search_field",
+        "value": {
+          "kind": "input_ref",
+          "name": "member_id"
+        }
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "member_search_field"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "value_equals",
+          "target": "member_search_field",
+          "value": {
+            "kind": "input_ref",
+            "name": "member_id"
+          }
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "discovered_3",
+      "action": {
+        "kind": "click",
+        "target": "search_button"
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "search_button"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "visible",
+          "target": "member_result"
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "discovered_4",
+      "action": {
+        "kind": "click",
+        "target": "member_result"
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "member_result"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "visible",
+          "target": "details_heading"
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "discovered_5",
+      "action": {
+        "kind": "click",
+        "target": "prepare_link"
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "prepare_link"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "visible",
+          "target": "prepare_heading"
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "discovered_6",
+      "action": {
+        "kind": "fill",
+        "target": "nickname_field",
+        "value": {
+          "kind": "input_ref",
+          "name": "nickname"
+        }
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "nickname_field"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "value_equals",
+          "target": "nickname_field",
+          "value": {
+            "kind": "input_ref",
+            "name": "nickname"
+          }
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "discovered_7",
+      "action": {
+        "kind": "select",
+        "target": "product_field",
+        "value": {
+          "kind": "input_ref",
+          "name": "product_code"
+        }
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "product_field"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "value_equals",
+          "target": "product_field",
+          "value": {
+            "kind": "input_ref",
+            "name": "product_code"
+          }
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    },
+    {
+      "id": "discovered_8",
+      "action": {
+        "kind": "click",
+        "target": "review_button"
+      },
+      "preconditions": [
+        {
+          "kind": "visible",
+          "target": "review_button"
+        }
+      ],
+      "postconditions": [
+        {
+          "kind": "visible",
+          "target": "currency"
+        }
+      ],
+      "retry": {
+        "max_retries": 0,
+        "settle_observations": 2,
+        "interval_ms": 10
+      }
+    }
+  ],
+  "preconditions": [
+    {
+      "kind": "visible",
+      "target": "search_navigation"
+    }
+  ],
+  "identity_checks": [
+    {
+      "kind": "text_equals",
+      "target": "member_id",
+      "value": {
+        "kind": "input_ref",
+        "name": "member_id"
+      }
+    }
+  ],
+  "final_checks": [
+    {
+      "kind": "visible",
+      "target": "review_heading"
+    },
+    {
+      "kind": "text_equals",
+      "target": "member_id",
+      "value": {
+        "kind": "input_ref",
+        "name": "member_id"
+      }
+    },
+    {
+      "kind": "text_equals",
+      "target": "submitted",
+      "value": {
+        "kind": "literal",
+        "value": "false"
+      }
+    }
+  ],
+  "extractions": {
+    "member_id": {
+      "target": "member_id",
+      "source": "text",
+      "parser": "string"
+    },
+    "product_code": {
+      "target": "product_code",
+      "source": "text",
+      "parser": "string"
+    },
+    "nickname": {
+      "target": "nickname",
+      "source": "text",
+      "parser": "string"
+    },
+    "monthly_fee_minor": {
+      "target": "monthly_fee_minor",
+      "source": "text",
+      "parser": "money_minor"
+    },
+    "currency": {
+      "target": "currency",
+      "source": "text",
+      "parser": "string"
+    },
+    "submitted": {
+      "target": "submitted",
+      "source": "text",
+      "parser": "boolean"
+    }
+  },
+  "output_matches": [
+    {
+      "output": "member_id",
+      "expected": {
+        "kind": "input_ref",
+        "name": "member_id"
+      }
+    },
+    {
+      "output": "product_code",
+      "expected": {
+        "kind": "input_ref",
+        "name": "product_code"
+      }
+    },
+    {
+      "output": "nickname",
+      "expected": {
+        "kind": "input_ref",
+        "name": "nickname"
+      }
+    },
+    {
+      "output": "submitted",
+      "expected": {
+        "kind": "literal",
+        "value": false
+      }
+    }
+  ],
+  "business_outcomes": [
+    {
+      "code": "member_not_found",
+      "details": {}
+    },
+    {
+      "code": "product_ineligible",
+      "details": {}
+    },
+    {
+      "code": "validation_rejected",
+      "details": {}
+    }
+  ],
+  "recovery_rules": [
+    "dismiss_notice"
+  ],
+  "required_permissions": [
+    "prepare"
+  ],
+  "redaction": [
+    "member_id",
+    "nickname"
+  ],
+  "provenance": {
+    "kind": "live_discovery",
+    "action_source": "observed_live",
+    "contract_source": "caller",
+    "detector_source": "authored_profile",
+    "discovery_run_id": "4da0cb8a238642019e1a1bd9b584fbf8"
+  }
+}

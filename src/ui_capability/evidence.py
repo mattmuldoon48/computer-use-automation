@@ -1,23 +1,33 @@
-"""Persist only structural audit facts, never execution values or diagnostics."""
+"""Persist value-free structural audit facts and fixed-vocabulary diagnostics."""
 
 import hashlib
 import json
+from copy import deepcopy
 from datetime import UTC, datetime
-from typing import Literal, TextIO
+from typing import Literal, TextIO, get_args
 from uuid import UUID
 
 from .contracts import (
+    ActionPurpose,
     BusinessOutcome,
+    CapabilityArtifact,
     Contract,
+    Diagnostic,
+    DiagnosticExpected,
+    DiagnosticObserved,
+    DiagnosticStage,
     Failure,
     FailureCode,
     Intervention,
     Observation,
     Ownership,
+    Scalar,
     Success,
     TerminalResult,
 )
 from .errors import RuntimeFault
+from .policy import Effect
+from .values import matches
 
 Event = Literal[
     "action_intent",
@@ -43,6 +53,46 @@ _EVENTS = frozenset(
         "transport_denied",
     }
 )
+_CONTROLS = ("input", "textarea", "select", "button", "link", "text", "other")
+_MAX_SNAPSHOT_TARGETS = 100
+_DIAGNOSTIC_ENUMS = {
+    "stage": frozenset(get_args(DiagnosticStage)),
+    "expected": frozenset(get_args(DiagnosticExpected)),
+    "observed": frozenset(get_args(DiagnosticObserved)),
+}
+_DIAGNOSTIC_COUNTS = (
+    "target_index",
+    "output_index",
+    "guard_index",
+    "match_count",
+    "expected_count",
+)
+
+
+def diagnostic_projection(value: object) -> dict[str, object] | None:
+    """Validate fields before serialization, including models forged without validation."""
+    if type(value) is not Diagnostic:
+        return None
+    fields = vars(value)
+    if fields.keys() - Diagnostic.model_fields.keys() or value.__pydantic_extra__:
+        return None
+    projection: dict[str, object] = {}
+    for name, allowed in _DIAGNOSTIC_ENUMS.items():
+        field = fields.get(name)
+        if type(field) is not str or field not in allowed:
+            return None
+        projection[name] = field
+    for name in _DIAGNOSTIC_COUNTS:
+        field = fields.get(name)
+        if field is not None:
+            if type(field) is not int or field < 0:
+                return None
+            projection[name] = field
+    path = fields.get("predicate_path")
+    if type(path) is not tuple or any(type(index) is not int or index < 0 for index in path):
+        return None
+    projection["predicate_path"] = list(path)
+    return projection
 
 
 def contract_hash(contract: Contract) -> str:
@@ -55,6 +105,8 @@ class EvidenceSink:
     def __init__(self, stream: TextIO) -> None:
         self._stream = stream
         self._context: dict[str, object] = {}
+        self._snapshot_id: str | None = None
+        self._snapshot: dict[str, object] | None = None
 
     def start(
         self,
@@ -88,26 +140,101 @@ class EvidenceSink:
             return
         self._write({"event": "human_activity", "kind": kind, "control": control, "frame": frame})
 
-    def checkpoint(self, step_index: int, stage: str, expected: int, matched: int) -> None:
-        if stage not in {"preconditions", "postconditions", "identity", "terminal", "resume"}:
+    def checkpoint(
+        self,
+        step_index: int,
+        stage: str,
+        expected: int,
+        matched: int,
+        *,
+        details: tuple[Diagnostic, ...] = (),
+    ) -> None:
+        if type(stage) is not str or stage not in _DIAGNOSTIC_ENUMS["stage"]:
             raise RuntimeFault(FailureCode.INVALID_ARGUMENT)
         if any(type(value) is not int or value < 0 for value in (step_index, expected, matched)):
             raise RuntimeFault(FailureCode.INVALID_ARGUMENT)
-        self._write(
-            {
-                "event": "checkpoint",
-                "step_index": step_index,
-                "stage": stage,
-                "expected_predicates": expected,
-                "matched_predicates": matched,
-            }
-        )
+        projection: dict[str, object] = {
+            "event": "checkpoint",
+            "step_index": step_index,
+            "stage": stage,
+            "expected_predicates": expected,
+            "matched_predicates": matched,
+        }
+        if type(details) is tuple:
+            projection["details"] = [
+                safe for detail in details if (safe := diagnostic_projection(detail)) is not None
+            ]
+        self._write(projection)
+
+    def observation(
+        self,
+        observation: Observation,
+        artifact: CapabilityArtifact,
+        inputs: dict[str, Scalar],
+        locals_: dict[str, Scalar],
+        *,
+        step_index: int | None,
+        stage: DiagnosticStage = "observation",
+    ) -> None:
+        if step_index is not None and (type(step_index) is not int or step_index < 0):
+            raise RuntimeFault(FailureCode.INVALID_ARGUMENT)
+        if type(stage) is not str or stage not in _DIAGNOSTIC_ENUMS["stage"]:
+            raise RuntimeFault(FailureCode.INVALID_ARGUMENT)
+        records: list[dict[str, object]] = []
+        names = sorted(artifact.targets)
+        for index, name in enumerate(names[:_MAX_SNAPSHOT_TARGETS]):
+            record: dict[str, object] = {"target_index": index}
+            try:
+                found = matches(artifact.targets[name], observation, inputs, locals_)
+            except RuntimeFault:
+                record["state"] = "unavailable"
+                records.append(record)
+                continue
+            count = len(found)
+            record.update(
+                match_count=count,
+                state="missing" if count == 0 else "unique" if count == 1 else "ambiguous",
+                controls={
+                    kind: sum(
+                        (target.control if target.control in _CONTROLS else "other") == kind
+                        for target in found
+                    )
+                    for kind in _CONTROLS
+                },
+                value_types={
+                    kind: sum(type(target.value) is value_type for target in found)
+                    for kind, value_type in (("string", str), ("integer", int), ("boolean", bool))
+                },
+                text_present=any(
+                    type(target.text) is str and bool(target.text) for target in found
+                ),
+                value_present=any(
+                    type(target.value) in (int, bool)
+                    or (type(target.value) is str and bool(target.value))
+                    for target in found
+                ),
+                derived_present=any(target.derived is True for target in found),
+            )
+            records.append(record)
+        self._snapshot_id = observation.observation_id
+        self._snapshot = {
+            "targets": records,
+            "omitted_targets": max(0, len(names) - _MAX_SNAPSHOT_TARGETS),
+        }
+        projection = {
+            "event": "observation",
+            "stage": stage,
+            **self.structure(observation),
+        }
+        if step_index is not None:
+            projection["step_index"] = step_index
+        self._write(projection)
 
     def structure(self, observation: Observation | None) -> dict[str, object]:
         if observation is None:
             return {"state": "unavailable"}
         # No text, form values, destinations, query parameters, refs, or target names.
-        return {
+        projection: dict[str, object] = {
             "state": "observed",
             "target_count": len(observation.targets),
             "dialog": "unknown" if observation.dialog == "unknown" else "none",
@@ -116,6 +243,14 @@ class EvidenceSink:
                 for kind in ("input", "select", "button", "link", "text")
             },
         }
+        if self._snapshot_id == observation.observation_id and self._snapshot is not None:
+            projection["target_details_state"] = "current"
+            projection.update(deepcopy(self._snapshot))
+        else:
+            projection["target_details_state"] = (
+                "unavailable" if self._snapshot is None else "stale"
+            )
+        return projection
 
     def _write(self, projection: dict[str, object]) -> None:
         if self._context:
@@ -138,6 +273,23 @@ class EvidenceSink:
             projection["ownership"] = ownership.value
         if type(epoch) is int and epoch >= 0:
             projection["epoch"] = epoch
+        for name in ("step_index", "action_index", "target_index", "guard_index", "count"):
+            value = fields.get(name)
+            if type(value) is int and value >= 0:
+                projection[name] = value
+        for name, allowed in (
+            ("purpose", get_args(ActionPurpose)),
+            ("action_kind", ("click", "fill", "select", "navigate", "wait")),
+        ):
+            value = fields.get(name)
+            if type(value) is str and value in allowed:
+                projection[name] = value
+        effect = fields.get("effect")
+        if type(effect) is Effect:
+            projection["effect"] = effect.value
+        diagnostic = diagnostic_projection(fields.get("diagnostic"))
+        if diagnostic is not None:
+            projection["diagnostic"] = diagnostic
         self._write(projection)
 
     def result(self, result: TerminalResult | Intervention) -> None:
@@ -151,6 +303,9 @@ class EvidenceSink:
             projection = {"event": "result", "kind": "failure"}
             if type(result.code) is FailureCode:
                 projection["code"] = result.code.value
+            diagnostic = diagnostic_projection(result.diagnostic)
+            if diagnostic is not None:
+                projection["diagnostic"] = diagnostic
         elif type(result) is Intervention:
             projection = {"event": "intervention", "state": "awaiting_operator"}
         else:

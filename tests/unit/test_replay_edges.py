@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 import pytest
 
@@ -55,6 +56,18 @@ def test_known_recovery_returns_to_verified_checkpoint_and_completes():
         ("fill", "nickname_field"),
         ("click", "review_button"),
     ]
+    events = list(map(json.loads, r.audit.getvalue().splitlines()))
+    intents = [event for event in events if event["event"] == "action_intent"]
+    assert [
+        (event["action_index"], event["step_index"], event["purpose"]) for event in intents
+    ] == [(0, 0, "recovery"), (1, 0, "replay"), (2, 1, "replay")]
+    recovery = next(event for event in events if event["event"] == "recovery")
+    assert recovery["action_index"] == 0
+    assert recovery["guard_index"] == 0
+    verified = [event for event in events if event["event"] == "action_verified"]
+    assert [
+        (event["action_index"], event["step_index"], event["purpose"]) for event in verified
+    ] == [(0, 0, "recovery"), (1, 0, "replay"), (2, 1, "replay")]
 
 
 def test_unknown_dialog_pauses_without_accepting_or_clicking():
@@ -96,6 +109,8 @@ def test_operator_deadline_expires_without_resuming(monkeypatch):
         monkeypatch.setattr(module.time, "monotonic", lambda: now + 301)
         result = await r.replay.resume()
         assert result.code == FailureCode.BUDGET_EXCEEDED
+        assert result.diagnostic.stage == "resume"
+        assert result.diagnostic.observed == "budget_exhausted"
         assert r.session.ownership == Ownership.ABORTED
         assert not r.surface.actions
 
@@ -122,6 +137,11 @@ def test_artifact_cannot_weaken_trusted_terminal_business_condition():
     result = asyncio.run(r.replay.run(dict(INPUTS)))
     assert result.code == FailureCode.POSTCONDITION_FAILED
     assert result.kind == "failure"
+    assert result.metadata.step_index == len(cap.steps)
+    assert result.metadata.failing_step is None
+    assert result.diagnostic.stage == "terminal"
+    assert result.diagnostic.predicate_path == (0,)
+    assert result.diagnostic.target_index == sorted(cap.targets).index("review")
 
 
 def test_artifact_cannot_rebind_trusted_review_target():
@@ -188,3 +208,89 @@ def test_resume_does_not_repeat_preview_already_completed_by_operator(clear_form
         )
 
     asyncio.run(scenario())
+
+
+def test_failed_settling_checkpoint_does_not_mask_next_observation_error():
+    r = rig(update=False)
+    original = r.surface.observe
+
+    async def fail_after_first_settling_observation(run_id, session_id, epoch):
+        observed = await original(run_id, session_id, epoch)
+        if r.surface.actions:
+            r.surface.observe_error = RuntimeError("PRIVATE_ADAPTER_ERROR")
+        return observed
+
+    r.surface.observe = fail_after_first_settling_observation
+    result = asyncio.run(r.replay.run(dict(INPUTS)))
+    assert result.code == FailureCode.INTERRUPTED
+    assert result.diagnostic.stage == "observation"
+    assert result.diagnostic.observed == "interrupted"
+    assert result.diagnostic.predicate_path == ()
+    assert result.diagnostic.target_index is None
+    assert len(r.surface.actions) == 1
+    events = list(map(json.loads, r.audit.getvalue().splitlines()))
+    assert any(
+        event["event"] == "checkpoint"
+        and event["stage"] == "postconditions"
+        and event["matched_predicates"] == 0
+        for event in events
+    )
+    assert "PRIVATE_ADAPTER_ERROR" not in r.audit.getvalue()
+
+
+def test_session_control_diagnostic_overrides_replay_authorization_context():
+    r = rig()
+    before = observation(r.cap, INPUTS)
+    r.surface.observations[:] = [
+        before.model_copy(
+            update={
+                "targets": tuple(
+                    target.model_copy(update={"control": "select"})
+                    if target.ref == "nickname_field"
+                    else target
+                    for target in before.targets
+                )
+            }
+        )
+    ]
+    result = asyncio.run(r.replay.run(dict(INPUTS)))
+    assert result.code == FailureCode.TARGET_NOT_FOUND
+    assert result.diagnostic.stage == "action"
+    assert result.diagnostic.expected == "supported_control"
+    assert result.diagnostic.observed == "mismatch"
+    assert result.diagnostic.target_index == sorted(r.cap.targets).index("nickname_field")
+    assert result.diagnostic.match_count == 1
+    assert not r.surface.actions
+
+
+def test_terminal_diagnostic_indexes_artifact_checks_after_trusted_profile():
+    r = rig()
+    original = r.surface.on_action
+
+    async def unexpectedly_submitted(action, target, value):
+        await original(action, target, value)
+        if action.kind == "click":
+            current = r.surface.observations[0]
+            r.surface.observations[:] = [
+                current.model_copy(
+                    update={
+                        "targets": tuple(
+                            item.model_copy(update={"value": True})
+                            if item.ref == "submitted"
+                            else item
+                            for item in current.targets
+                        )
+                    }
+                )
+            ]
+
+    r.surface.on_action = unexpectedly_submitted
+    result = asyncio.run(r.replay.run(dict(INPUTS)))
+    assert result.code == FailureCode.POSTCONDITION_FAILED
+    assert result.metadata.step_index == len(r.cap.steps)
+    assert result.metadata.failing_step is None
+    assert result.diagnostic.stage == "terminal"
+    assert result.diagnostic.predicate_path == (len(r.replay.profile.terminal_checks) + 2,)
+    assert result.diagnostic.expected == "value_equals"
+    assert result.diagnostic.observed == "mismatch"
+    assert result.diagnostic.target_index == sorted(r.cap.targets).index("submitted")

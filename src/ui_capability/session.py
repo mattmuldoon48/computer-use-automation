@@ -7,8 +7,13 @@ from uuid import uuid4
 
 from .contracts import (
     ActionProposal,
+    ActionPurpose,
     CapabilityArtifact,
     Click,
+    Diagnostic,
+    DiagnosticExpected,
+    DiagnosticObserved,
+    DiagnosticStage,
     ExecutableAction,
     FailureCode,
     Fill,
@@ -26,13 +31,35 @@ from .contracts import (
     Wait,
 )
 from .errors import RuntimeFault
-from .evidence import EvidenceSink
+from .evidence import EvidenceSink, diagnostic_projection
 from .policy import Effect, Policy
 from .surfaces.base import CaptureSurface, Surface
 from .values import evaluate_all, matches, resolve
 
 _SAFE_EFFECTS = frozenset({Effect.READ, Effect.SAFE_OVERWRITE})
 _REASONS = frozenset({"session_expired", "unknown_dialog", "unsupported_state"})
+
+
+def _fault_diagnostic(code: FailureCode, stage: DiagnosticStage) -> Diagnostic:
+    expected: DiagnosticExpected = "known_state"
+    observed: DiagnosticObserved = "unknown"
+    if code in {FailureCode.INVALID_ARGUMENT, FailureCode.INVALID_ARTIFACT}:
+        expected, observed = "valid_contract", "invalid_format"
+    elif code is FailureCode.INCOMPATIBLE:
+        expected, observed = "compatible_surface", "mismatch"
+    elif code is FailureCode.STALE_OBSERVATION:
+        expected, observed = "fresh_observation", "stale"
+    elif code in {
+        FailureCode.POLICY_DENIED,
+        FailureCode.PERMISSION_DENIED,
+        FailureCode.OWNERSHIP_DENIED,
+    }:
+        expected, observed = "authorized_action", "denied"
+    elif code is FailureCode.BUDGET_EXCEEDED:
+        expected, observed = "within_budget", "budget_exhausted"
+    elif code is FailureCode.INTERRUPTED:
+        observed = "interrupted"
+    return Diagnostic(stage=stage, expected=expected, observed=observed)
 
 
 def _same_state(previous: Observation, current: Observation) -> bool:
@@ -200,9 +227,29 @@ class Session:
             raise RuntimeFault(FailureCode.INVALID_ARTIFACT)
         found = matches(spec, observation, inputs, locals_)
         if len(found) > 1:
-            raise RuntimeFault(FailureCode.AMBIGUOUS_TARGET)
+            raise RuntimeFault(
+                FailureCode.AMBIGUOUS_TARGET,
+                Diagnostic(
+                    stage="action",
+                    expected="unique_target",
+                    observed="ambiguous",
+                    target_index=sorted(artifact.targets).index(action.target),
+                    match_count=len(found),
+                    expected_count=1,
+                ),
+            )
         if not found:
-            raise RuntimeFault(FailureCode.TARGET_NOT_FOUND)
+            raise RuntimeFault(
+                FailureCode.TARGET_NOT_FOUND,
+                Diagnostic(
+                    stage="action",
+                    expected="unique_target",
+                    observed="missing",
+                    target_index=sorted(artifact.targets).index(action.target),
+                    match_count=0,
+                    expected_count=1,
+                ),
+            )
         target = found[0]
         locator = spec.locator
         if (
@@ -212,7 +259,17 @@ class Session:
             or (isinstance(action, Select) and target.control != "select")
             or (isinstance(action, Click) and target.control not in {"button", "link"})
         ):
-            raise RuntimeFault(FailureCode.TARGET_NOT_FOUND)
+            raise RuntimeFault(
+                FailureCode.TARGET_NOT_FOUND,
+                Diagnostic(
+                    stage="action",
+                    expected="supported_control",
+                    observed="mismatch",
+                    target_index=sorted(artifact.targets).index(action.target),
+                    match_count=1,
+                    expected_count=1,
+                ),
+            )
         return spec, target
 
     def _authorization(
@@ -261,10 +318,24 @@ class Session:
         inputs: dict[str, Scalar],
         locals_: dict[str, Scalar],
         caller_permissions: frozenset[str],
+        *,
+        purpose: ActionPurpose = "direct",
+        step_index: int | None = None,
+        guard_index: int | None = None,
     ) -> None:
         effect: Effect | None = None
         performed = False
         release_lock = False
+        trace: dict[str, object] = {
+            "purpose": purpose,
+            "step_index": step_index,
+            "guard_index": guard_index,
+        }
+        action = proposal.action
+        if isinstance(action, (Click, Fill, Select, Navigate, Wait)):
+            trace["action_kind"] = action.kind
+        if isinstance(action, (Click, Fill, Select)) and action.target in artifact.targets:
+            trace["target_index"] = sorted(artifact.targets).index(action.target)
         try:
             self._automation()
             self._compatible(artifact, inputs)
@@ -290,13 +361,16 @@ class Session:
                     raise RuntimeFault(FailureCode.BUDGET_EXCEEDED)
                 self._observation = None
                 fresh = await self._read()
+                self.__evidence.observation(fresh, artifact, inputs, locals_, step_index=step_index)
                 self._automation()
                 if not _same_state(cached, fresh):
                     raise RuntimeFault(FailureCode.STALE_OBSERVATION)
                 effect, target, value = self._authorization(
                     action, artifact, fresh, inputs, locals_, caller_permissions
                 )
-                self.__evidence.emit("action_intent", epoch=self._epoch)
+                trace["action_index"] = self._action_count
+                trace["effect"] = effect
+                self.__evidence.emit("action_intent", epoch=self._epoch, **trace)
                 self._action_count += 1
                 performed = True
                 task = asyncio.create_task(self.__surface.perform(action, target, value))
@@ -323,19 +397,43 @@ class Session:
                 if performed and effect not in _SAFE_EFFECTS
                 else FailureCode.BUDGET_EXCEEDED
             )
-            self.__evidence.emit("action_rejected", code=code, epoch=self._epoch)
-            raise RuntimeFault(code) from None
+            diagnostic = _fault_diagnostic(code, "action")
+            self.__evidence.emit(
+                "action_rejected", code=code, epoch=self._epoch, diagnostic=diagnostic, **trace
+            )
+            raise RuntimeFault(code, diagnostic) from None
         except asyncio.CancelledError:
             code = (
                 FailureCode.UNKNOWN_ACTION_OUTCOME
                 if performed and effect not in _SAFE_EFFECTS
                 else FailureCode.INTERRUPTED
             )
-            self.__evidence.emit("action_rejected", code=code, epoch=self._epoch)
-            raise RuntimeFault(code) from None
+            diagnostic = _fault_diagnostic(code, "action")
+            self.__evidence.emit(
+                "action_rejected", code=code, epoch=self._epoch, diagnostic=diagnostic, **trace
+            )
+            raise RuntimeFault(code, diagnostic) from None
         except RuntimeFault as fault:
-            self.__evidence.emit("action_rejected", code=fault.code, epoch=self._epoch)
-            raise
+            diagnostic = (
+                fault.diagnostic
+                if isinstance(fault.diagnostic, Diagnostic)
+                and diagnostic_projection(fault.diagnostic) is not None
+                else _fault_diagnostic(fault.code, "action")
+            )
+            indexes = {}
+            for name in ("target_index", "guard_index"):
+                index = trace.get(name)
+                if type(index) is int and index >= 0:
+                    indexes[name] = index
+            diagnostic = diagnostic.model_copy(update=indexes)
+            self.__evidence.emit(
+                "action_rejected",
+                code=fault.code,
+                epoch=self._epoch,
+                diagnostic=diagnostic,
+                **trace,
+            )
+            raise RuntimeFault(fault.code, diagnostic) from None
         finally:
             if release_lock:
                 self._lock.release()
@@ -372,18 +470,32 @@ class Session:
         step: Step,
     ) -> Literal["retry", "advance"]:
         if self.ownership != Ownership.HUMAN:
-            raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
+            raise RuntimeFault(
+                FailureCode.OWNERSHIP_DENIED,
+                _fault_diagnostic(FailureCode.OWNERSHIP_DENIED, "resume"),
+            )
         self._transition(Ownership.VALIDATING_RESUME)
         try:
             async with asyncio.timeout(artifact.goal.budgets.active_seconds), self._lock:
                 if self._ownership != Ownership.VALIDATING_RESUME:
                     raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
                 if self._paused_step != step or step not in artifact.steps:
-                    raise RuntimeFault(FailureCode.INVALID_RESUME)
+                    raise RuntimeFault(
+                        FailureCode.INVALID_RESUME,
+                        Diagnostic(stage="resume", expected="checkpoint", observed="mismatch"),
+                    )
                 self._compatible(artifact, inputs)
                 if not set(artifact.required_permissions).issubset(caller_permissions):
                     raise RuntimeFault(FailureCode.PERMISSION_DENIED)
                 observed = await self._read()
+                self.__evidence.observation(
+                    observed,
+                    artifact,
+                    inputs,
+                    {},
+                    step_index=artifact.steps.index(step),
+                    stage="resume",
+                )
                 if (
                     observed.origin != artifact.goal.binding.origin
                     or observed.dialog != "none"
@@ -394,9 +506,16 @@ class Session:
                         and rule.effect not in {Effect.UNKNOWN, Effect.IRREVERSIBLE}
                         for rule in self.__policy.rules
                     )
-                    or not evaluate_all(artifact.identity_checks, observed, artifact, inputs, {})
                 ):
-                    raise RuntimeFault(FailureCode.INVALID_RESUME)
+                    raise RuntimeFault(
+                        FailureCode.INVALID_RESUME,
+                        Diagnostic(stage="resume", expected="known_state", observed="mismatch"),
+                    )
+                if not evaluate_all(artifact.identity_checks, observed, artifact, inputs, {}):
+                    raise RuntimeFault(
+                        FailureCode.INVALID_RESUME,
+                        Diagnostic(stage="identity", expected="checkpoint", observed="mismatch"),
+                    )
                 result: Literal["retry", "advance"]
                 if evaluate_all(step.postconditions, observed, artifact, inputs, {}):
                     result = "advance"
@@ -405,17 +524,38 @@ class Session:
                         step.action, artifact, observed, inputs, {}, caller_permissions
                     )
                     if effect not in _SAFE_EFFECTS:
-                        raise RuntimeFault(FailureCode.INVALID_RESUME)
+                        raise RuntimeFault(
+                            FailureCode.INVALID_RESUME,
+                            Diagnostic(
+                                stage="resume", expected="authorized_action", observed="denied"
+                            ),
+                        )
                     result = "retry"
                 else:
-                    raise RuntimeFault(FailureCode.INVALID_RESUME)
+                    raise RuntimeFault(
+                        FailureCode.INVALID_RESUME,
+                        Diagnostic(stage="resume", expected="checkpoint", observed="mismatch"),
+                    )
                 if self._ownership != Ownership.VALIDATING_RESUME:
                     raise RuntimeFault(FailureCode.OWNERSHIP_DENIED)
                 self._paused_step = None
                 self._transition(Ownership.AUTOMATION)
                 return result
         except TimeoutError:
-            raise RuntimeFault(FailureCode.BUDGET_EXCEEDED) from None
+            raise RuntimeFault(
+                FailureCode.BUDGET_EXCEEDED,
+                _fault_diagnostic(FailureCode.BUDGET_EXCEEDED, "resume"),
+            ) from None
+        except RuntimeFault as fault:
+            diagnostic = (
+                fault.diagnostic
+                if isinstance(fault.diagnostic, Diagnostic)
+                and diagnostic_projection(fault.diagnostic) is not None
+                else _fault_diagnostic(fault.code, "resume")
+            )
+            if diagnostic.stage == "action":
+                diagnostic = diagnostic.model_copy(update={"stage": "resume"})
+            raise RuntimeFault(fault.code, diagnostic) from None
         finally:
             if self._ownership == Ownership.VALIDATING_RESUME:
                 self._transition(Ownership.HUMAN)

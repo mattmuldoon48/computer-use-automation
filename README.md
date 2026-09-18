@@ -7,11 +7,15 @@ server-rendered legacy banking UI. It prepares a savings sub-account and stops
 at **unsubmitted review**; it does not open an account.
 
 Start with [REPORT.md](REPORT.md) for architecture and cuts, the
-[submission manifest](evidence/phase5-submission/manifest.json) for revision and
-evidence provenance, and [submission verification](evidence/phase5-submission/verification.json)
-for the recorded reviewer runs and checkout checks. These records distinguish
-fresh local verification from retained historical evidence. This is a local
-submission snapshot, not a claim that the pending changes are published remotely.
+[audit-closure verification](evidence/audit-closure/verification.json) for checks,
+and [checksums](evidence/audit-closure/checksums.json) for the current file inventory.
+Verification records predate commit and publication: their pending status describes
+the collection time, not the current repository. [Publication preparation](evidence/audit-closure/publication-preparation.json)
+identifies the subsequent documentation-only changes. The historical
+[Phase 5 manifest](evidence/phase5-submission/manifest.json),
+[verification](evidence/phase5-submission/verification.json) and
+[checksums](evidence/phase5-submission/checksums.json) describe the snapshot retained
+at **9496484**. They remain immutable historical records.
 
 ## Setup and checks
 
@@ -41,7 +45,7 @@ machine is not claimed as verified. Offline verification uses existing caches.
 Tests start isolated loopback servers and make no external model requests.
 The historical [hardening verification](evidence/phase4-adversarial/verification.json)
 recorded **221 passing tests**, Ruff, mypy, lock and build checks; use the
-submission verification above for fresh results rather than treating that
+audit-closure verification above for current results rather than treating that
 historical count as a new run.
 
 ## Short model-free reviewer demo
@@ -89,9 +93,10 @@ uv run --offline pytest -q \
 
 The sandbox has a real **Open account** mutation; the denial is not a no-op.
 Tests may access its private oracle counters; replay and discovery cannot.
-The submission manifest also links the fresh denial probe and sanitized counts.
+The historical Phase 5 manifest links its retained denial probe and sanitized counts.
 
-For a separately running installation:
+For a separately running **compatible demo installation**, use existing-origin
+replay (no model calls). This is not discovery against an arbitrary URL:
 
 ```sh
 # Terminal 1: ordinary browser access to this synthetic UI is NOT guarded.
@@ -132,18 +137,76 @@ provider/discovery code has local regression coverage, not renewed live evidence
 
 ## Optional authorized discovery
 
+The natural-language goal lives in `CapabilityArtifact.goal.goal_template`; the
+[authored demo template](src/ui_capability/fixtures/member_ops.artifact.json) says
+to prepare `{product_code}` for `{member_id}` with `{nickname}`, stopping at
+unsubmitted review. Typed input values are supplied separately. The Python API is
+`Discovery(template, profile, session, planner, caller_permissions).run(inputs)`:
+callers supply a reviewed typed capability template, trusted profile and
+policy-bound live session, not just free-form prose and a URL. The target app,
+version, exact origin and entry route live in `goal.binding`. The planner sees
+the goal template and typed references rather than interpolated private values.
+
+The CLI intentionally supplies that banking template/profile/policy and starts
+its own isolated loopback sandbox. It has no `--goal`, `--target`, `--origin` or
+arbitrary-site discovery option. `Policy._validate_terminal` also enforces this
+demo's member/product/nickname and unsubmitted-review contract; changing prose
+alone does not define a supported new workflow.
+
 This command can incur charges and send filtered observations to OpenAI. It is
 not needed for setup, demos, or tests. Privately set `OPENAI_API_KEY` and select a
 currently supported structured-output Responses API model in `OPENAI_MODEL`.
 Confirm model availability and authorize cost first; never put credentials in
 arguments, evidence, source control, or chat.
 
+The following shell block authorizes **one** discovery invocation and, only on
+exit 0, separately replays the candidate from that exact invocation. It selects
+the unique `Redacted discovery evidence: ` stdout line, never the newest run
+directory. The discovery command already performs its own changed-input fresh
+replay; the final `demo` is an additional, independent model-free replay:
+
 ```sh
-uv run --offline uicap discover \
+unset discovery_run
+if discovery_stdout=$(uv run --offline uicap discover \
   --model "$OPENAI_MODEL" --authorize-api \
   --max-calls 12 --max-output-tokens 1200 --call-timeout 30 \
-  --evidence-dir artifacts/local/authorized-discovery
+  --evidence-dir artifacts/local/authorized-discovery); then
+  printf '%s\n' "$discovery_stdout"
+  discovery_run=$(printf '%s\n' "$discovery_stdout" | uv run --offline python -c '
+import sys
+prefix = "Redacted discovery evidence: "
+paths = [line.removeprefix(prefix) for line in sys.stdin.read().splitlines()
+         if line.startswith(prefix)]
+if len(paths) != 1 or not paths[0]:
+    raise SystemExit("Expected one discovery evidence directory")
+print(paths[0])
+') &&
+  uv run --offline uicap demo --case happy \
+    --artifact "$discovery_run/candidate.capability.json" \
+    --inputs-file examples/member_b.inputs.json \
+    --evidence-dir artifacts/local/authorized-candidate-replay
+else
+  printf '%s\n' "$discovery_stdout" >&2
+  printf '%s\n' 'Discovery or its fresh replay failed; do not select another candidate.' >&2
+fi
 ```
+
+Keep `discovery_run` in that shell to replay the same candidate against the
+separately running compatible sandbox shown earlier:
+
+```sh
+uv run --offline uicap replay --origin http://127.0.0.1:8765 \
+  --artifact "${discovery_run:?Complete the successful discovery block first}/candidate.capability.json" \
+  --inputs-file examples/member_b.inputs.json \
+  --evidence-dir artifacts/local/authorized-existing-origin-replay
+```
+
+Discovery's ephemeral server closes when its command ends. `demo` and `replay`
+explicitly rebind only the compatible artifact's installation origin, together
+with profile/policy origins; application/version/entry compatibility is checked.
+Installed artifact hashes consequently differ across ports. `replay --origin`
+does not discover a new target or grant access to an unrelated application.
+These are optional reviewer instructions, **not a newly executed paid run**.
 
 No provider call occurs without `--authorize-api`. `uv --offline` does **not**
 block these API requests. By default discovery uses synthetic member A, then
@@ -215,14 +278,29 @@ prevent the initial receipt of bytes from an otherwise allowed endpoint.
 The proxy supports only explicit `http://127.0.0.1:PORT` fixture origins, not HTTPS
 tunnels. Ordinary browsers outside the guarded context are not protected.
 
-Current evidence consists of structural events, redacted summaries, installed
-artifact/profile/policy snapshots and capture decisions. Rich in-memory outputs
-must not be serialized publicly. Current captures mask the **entire page** and
-verify every decoded pixel before persistence, or withhold the image. Fully
-opaque screenshots deliberately lose visual UI detail; structural checkpoints
-carry useful execution evidence. Historical captures retain their original
-workspace-only masks and reviewed shell chrome, not the new capture guarantee.
-No raw traces, videos, DOM dumps or unredacted fallback images are retained.
+Current evidence consists of bounded structural events, redacted summaries,
+installed artifact/goal/profile/policy snapshots and capture decisions. Action
+intent/execution/rejection records use fixed action-kind, purpose and effect
+codes with numeric action/step/target/guard indexes: enough to reconstruct what
+was attempted and why, without storing model explanations. Failure diagnostics
+carry fixed stage/expected/observed categories, counts and predicate positions.
+Target/output indexes are zero-based positions in **sorted artifact key lists**;
+guard indexes follow profile tuple order. Predicate paths follow checkpoint
+tuple positions (profile terminal checks precede artifact final checks).
+The approved snapshots supply the mapping; diagnostic records contain no raw
+runtime values, target/output names, UI text, URLs or exception messages.
+
+A semantic failure snapshot includes at most 100 sorted targets (with an omitted
+count), their missing/unique/ambiguous state or explicit unavailability, match
+counts, fixed control/value-type counts and presence flags. Stale observations
+do not reuse cached target details. This exposes structural mismatch without
+field contents or locators. Rich in-memory outputs must not be serialized
+publicly. Current captures mask the **entire page** and verify every decoded pixel before
+persistence, or withhold the image. Opaque screenshots deliberately lose visual
+detail; the structural sidecar provides the useful failure signal. Historical
+captures retain their original workspace-only masks and reviewed shell chrome,
+not the new capture guarantee. No raw traces, videos, DOM dumps or unredacted
+fallback images are retained.
 
 This is a cooperative local browser/HTTP boundary, not OS egress isolation,
 hostile multi-user isolation, a production banking integration, native desktop

@@ -9,7 +9,7 @@ from importlib.metadata import version
 from pathlib import Path
 from uuid import UUID, uuid4
 
-from .cli import result_projection, run_browser
+from .cli import result_projection, run_browser, write_failure_snapshot
 from .contracts import Scalar, Success
 from .demo import load_demo
 from .discovery import Discovery, live_planner
@@ -79,6 +79,7 @@ async def discover_browser(
             )
             outcome = await discovery.run(values)
             capture = await session.capture_safe(run_dir / "terminal.png")
+            write_failure_snapshot(run_dir, outcome.result, capture)
             summary: dict[str, object] = {
                 "schema_version": 1,
                 "run_type": "live_discovery" if live else "discovery_simulation",

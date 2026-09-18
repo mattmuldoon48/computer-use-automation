@@ -407,10 +407,86 @@ class BusinessOutcome(Contract):
     metadata: Metadata
 
 
+DiagnosticStage = Literal[
+    "preflight",
+    "observation",
+    "initial",
+    "preconditions",
+    "action",
+    "postconditions",
+    "guard",
+    "identity",
+    "terminal",
+    "extraction",
+    "output_match",
+    "recovery",
+    "resume",
+    "discovery",
+]
+DiagnosticExpected = Literal[
+    "valid_contract",
+    "compatible_surface",
+    "authorized_action",
+    "fresh_observation",
+    "unique_target",
+    "supported_control",
+    "visible",
+    "count_equals",
+    "text_equals",
+    "value_equals",
+    "route_matches",
+    "all",
+    "string",
+    "boolean",
+    "money_minor",
+    "declared_output_type",
+    "output_match",
+    "known_state",
+    "within_budget",
+    "checkpoint",
+    "valid_decision",
+]
+DiagnosticObserved = Literal[
+    "not_evaluated",
+    "matched",
+    "missing",
+    "ambiguous",
+    "mismatch",
+    "invalid_format",
+    "invalid_type",
+    "denied",
+    "stale",
+    "interrupted",
+    "budget_exhausted",
+    "unknown",
+]
+ActionPurpose = Literal["direct", "replay", "recovery", "discovery"]
+
+
+class Diagnostic(Contract):
+    """Value-free context; indexes address sorted artifact keys, never UI text.
+
+    Predicate paths address tuple positions within the named checkpoint stage.
+    Guard indexes address the profile's ordered guards. An index at len(steps)
+    in result metadata denotes final verification, not another browser action.
+    """
+
+    stage: DiagnosticStage
+    expected: DiagnosticExpected
+    observed: DiagnosticObserved
+    target_index: int | None = Field(default=None, ge=0)
+    output_index: int | None = Field(default=None, ge=0)
+    predicate_path: tuple[Annotated[int, Field(ge=0)], ...] = ()
+    guard_index: int | None = Field(default=None, ge=0)
+    match_count: int | None = Field(default=None, ge=0)
+    expected_count: int | None = Field(default=None, ge=0)
+
+
 class Failure(Contract):
     kind: Literal["failure"] = "failure"
     code: FailureCode
     metadata: Metadata
+    diagnostic: Diagnostic | None = None
 
 
 TerminalResult = Annotated[Success | BusinessOutcome | Failure, Field(discriminator="kind")]

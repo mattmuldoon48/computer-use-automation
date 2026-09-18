@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "source_snapshot": "evidence/audit-closure/source-snapshot.json",
+  "runs": [
+    {
+      "case": "happy",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "happy",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--evidence-dir",
+        "evidence/audit-closure/cli-happy",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit_code": 0,
+      "run_dir": "evidence/audit-closure/cli-happy/a9e809645fdf4f86b321e64d9b0fce7e",
+      "result": {
+        "kind": "success",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "action_count": 8,
+      "provider_call_events": 0,
+      "elapsed_seconds": 2.444
+    },
+    {
+      "case": "known_interstitial",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "known_interstitial",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--evidence-dir",
+        "evidence/audit-closure/cli-known_interstitial",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit_code": 0,
+      "run_dir": "evidence/audit-closure/cli-known_interstitial/ba7b1d5301584fd6b93e1e03c3359b79",
+      "result": {
+        "kind": "success",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "action_count": 9,
+      "provider_call_events": 0,
+      "elapsed_seconds": 2.564
+    },
+    {
+      "case": "member_not_found",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "member_not_found",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--evidence-dir",
+        "evidence/audit-closure/cli-member_not_found"
+      ],
+      "exit_code": 3,
+      "run_dir": "evidence/audit-closure/cli-member_not_found/db86528e8e5b40a889f5a583d99176a5",
+      "result": {
+        "kind": "business_outcome",
+        "step_index": 2,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "member_not_found"
+      },
+      "action_count": 3,
+      "provider_call_events": 0,
+      "elapsed_seconds": 1.316
+    },
+    {
+      "case": "wrong_member_review",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "wrong_member_review",
+        "--artifact",
+        "evidence/phase4-adversarial/revised.capability.json",
+        "--evidence-dir",
+        "evidence/audit-closure/cli-wrong_member_review",
+        "--inputs-file",
+        "examples/member_b.inputs.json"
+      ],
+      "exit_code": 2,
+      "run_dir": "evidence/audit-closure/cli-wrong_member_review/da1f338a4d084baa978f1787e695aeb9",
+      "result": {
+        "kind": "failure",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "IDENTITY_MISMATCH",
+        "diagnostic": {
+          "stage": "identity",
+          "expected": "text_equals",
+          "observed": "mismatch",
+          "target_index": 5,
+          "match_count": 1,
+          "expected_count": 1,
+          "predicate_path": [
+            0
+          ]
+        }
+      },
+      "action_count": 8,
+      "provider_call_events": 0,
+      "elapsed_seconds": 2.602
+    },
+    {
+      "case": "malformed_fee",
+      "exit_code": 2,
+      "run_dir": "evidence/audit-closure/malformed_fee/d4835fe3b6bb42ab9b8fbc40957f1ea5",
+      "result": {
+        "kind": "failure",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "EXTRACTION_FAILED",
+        "diagnostic": {
+          "stage": "extraction",
+          "expected": "money_minor",
+          "observed": "invalid_format",
+          "target_index": 8,
+          "output_index": 2,
+          "match_count": 1,
+          "expected_count": 1,
+          "predicate_path": []
+        }
+      },
+      "action_count": 8,
+      "elapsed_seconds": 2.985,
+      "oracle": {
+        "scope": "External test-only receiving-server oracle; never available to Replay/Surface",
+        "submit_requests": 0,
+        "ledger_entries": 0,
+        "provider_tripwire_calls": 0,
+        "opaque_pixels_verified": true,
+        "private_value_scan": "passed"
+      }
+    },
+    {
+      "case": "missing_fee_row",
+      "exit_code": 2,
+      "run_dir": "evidence/audit-closure/missing_fee_row/56c23a8815f54ffea71ff4969a8c3e28",
+      "result": {
+        "kind": "failure",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0,
+        "code": "EXTRACTION_FAILED",
+        "diagnostic": {
+          "stage": "extraction",
+          "expected": "unique_target",
+          "observed": "missing",
+          "target_index": 8,
+          "output_index": 2,
+          "match_count": 0,
+          "expected_count": 1,
+          "predicate_path": []
+        }
+      },
+      "action_count": 8,
+      "elapsed_seconds": 2.32,
+      "oracle": {
+        "scope": "External test-only receiving-server oracle; never available to Replay/Surface",
+        "submit_requests": 0,
+        "ledger_entries": 0,
+        "provider_tripwire_calls": 0,
+        "opaque_pixels_verified": true,
+        "private_value_scan": "passed"
+      }
+    },
+    {
+      "case": "readme-selected-candidate",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "demo",
+        "--case",
+        "happy",
+        "--artifact",
+        "evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/candidate.capability.json",
+        "--inputs-file",
+        "examples/member_b.inputs.json",
+        "--evidence-dir",
+        "evidence/audit-closure/readme-selected-candidate"
+      ],
+      "exit_code": 0,
+      "run_dir": "evidence/audit-closure/readme-selected-candidate/a3eb202757bb49288e45664db758599b",
+      "result": {
+        "kind": "success",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "action_count": 8,
+      "elapsed_seconds": 2.973
+    },
+    {
+      "case": "readme-existing-origin",
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "uicap",
+        "replay",
+        "--origin",
+        "http://127.0.0.1:8765",
+        "--artifact",
+        "evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/candidate.capability.json",
+        "--inputs-file",
+        "examples/member_b.inputs.json",
+        "--evidence-dir",
+        "evidence/audit-closure/readme-existing-origin"
+      ],
+      "exit_code": 0,
+      "run_dir": "evidence/audit-closure/readme-existing-origin/264ee4c332cc4400acd2f07bc5c1c9b6",
+      "result": {
+        "kind": "success",
+        "step_index": 8,
+        "human_intervened": false,
+        "provider_call_count": 0
+      },
+      "action_count": 8,
+      "elapsed_seconds": 2.109
+    }
+  ],
+  "readme_parser_checks": [
+    {
+      "case": "one_retained_run",
+      "exit_code": 0
+    },
+    {
+      "case": "missing_run",
+      "exit_code": 1
+    },
+    {
+      "case": "ambiguous_runs",
+      "exit_code": 1
+    }
+  ],
+  "readme_discovery_limit": "The exact README parser was fed the retained successful discovery directory. Both documented independent replay forms used its original candidate with changed inputs. No paid discovery command was executed.",
+  "fee_probe_method": "External ASGI middleware replaced only the rendered Monthly fee value with a private non-money marker, or removed that table row. The production CLI run_browser path executed against real Chromium. No runtime or artifact predicates were changed. Probe scripts were temporary; equivalent two-artifact regression cases are retained in tests/integration/test_browser_replay.py."
+}

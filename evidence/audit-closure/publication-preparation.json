@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "prepared_at_utc": "2026-09-18T03:59:52Z",
+  "base_commit": "9496484a4e4c1e5e96c7fd7fe5519022f0ac06fa",
+  "purpose": "Publication preparation after the recorded local audit. No runtime, tests, fixtures or configuration changed after the 253-test verification. Commit identity and public availability must be checked against Git history, not inferred from this pre-commit record.",
+  "verification": {
+    "path": "evidence/audit-closure/verification.json",
+    "sha256": "96b48f29bb334d9ac2fe9b67ee88fd940714430eea30f2c37f33182e6570d191"
+  },
+  "tested_source_snapshot": {
+    "path": "evidence/audit-closure/source-snapshot.json",
+    "sha256": "3ea86f65acab7de81eb01753f2cc11c03bb3a7c1647f238f3f9eb1a7d9f0d338"
+  },
+  "unchanged_tested_non_document_inputs": 55,
+  "documentation_changes": [
+    {
+      "path": "README.md",
+      "tested_sha256": "6f5cb45fe1f11a90fe56a1a9e0e6b4ede34df4403b93035f2c88617e9aa65004",
+      "publication_sha256": "c418de33947b3f4a12deb435dcb2db4c3793834c9cf93b5e33be1d1414551b64",
+      "change": "Describe verification/publication status at its collection time instead of presenting pending status as current."
+    },
+    {
+      "path": "REPORT.md",
+      "tested_sha256": "030718cd31de6e88c8f530d18bc220de98e516a996ab6d2e821f87fb5ecbeb46",
+      "publication_sha256": "27571357e69ee54b66ebbbc8c890a377242e560655f7ba2f4c2cf65d82339746",
+      "change": "Describe verification/publication status at its collection time instead of presenting pending status as current."
+    }
+  ],
+  "evidence_changes": "Added this preparation record and refreshed the current checksum index. All previously recorded audit results, source snapshots and run evidence remain byte-identical.",
+  "email_status_at_preparation": "Not sent; submit from the application email address."
+}

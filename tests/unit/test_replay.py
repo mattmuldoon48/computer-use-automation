@@ -1,11 +1,13 @@
 import asyncio
 import builtins
+import json
 
 import pytest
 
 from tests.support import BINDING, INPUTS, artifact, observation, rig
 from ui_capability.contracts import (
     Budgets,
+    Conjunction,
     CountEquals,
     FailureCode,
     Fill,
@@ -106,6 +108,12 @@ def test_wrong_member_review_cannot_return_success():
     result = execute(r)
     assert result.code == FailureCode.IDENTITY_MISMATCH
     assert result.kind == "failure"
+    assert result.metadata.step_index == len(r.cap.steps)
+    assert result.metadata.failing_step is None
+    assert result.diagnostic.stage == "identity"
+    assert result.diagnostic.predicate_path == (0,)
+    assert result.diagnostic.observed == "mismatch"
+    assert result.diagnostic.target_index == sorted(r.cap.targets).index("member_id")
 
 
 def test_ambiguous_target_has_zero_actions():
@@ -127,6 +135,12 @@ def test_safe_retry_is_bounded_but_unknown_preview_is_not_repeated():
     result = execute(r)
     assert result.code == FailureCode.POSTCONDITION_FAILED
     assert len(r.surface.actions) == 3
+    retries = [
+        event
+        for event in map(json.loads, r.audit.getvalue().splitlines())
+        if event["event"] == "retry"
+    ]
+    assert [(event["action_index"], event["step_index"]) for event in retries] == [(0, 0), (1, 0)]
     unsafe = rig()
     original = unsafe.surface.on_action
 
@@ -137,6 +151,9 @@ def test_safe_retry_is_bounded_but_unknown_preview_is_not_repeated():
     unsafe.surface.on_action = only_fill
     result = execute(unsafe)
     assert result.code == FailureCode.UNKNOWN_ACTION_OUTCOME
+    assert result.diagnostic.stage == "postconditions"
+    assert result.diagnostic.observed == "missing"
+    assert result.diagnostic.predicate_path == (0,)
     assert [a.kind for a, _, _ in unsafe.surface.actions] == ["fill", "click"]
 
 
@@ -185,7 +202,12 @@ def test_permission_guard_wins_over_business_or_success():
     r.surface.observations[:] = [
         observation(r.cap, INPUTS, review=True, extra=("not_found", "permission"))
     ]
-    assert execute(r).code == FailureCode.PERMISSION_DENIED
+    result = execute(r)
+    assert result.code == FailureCode.PERMISSION_DENIED
+    assert result.diagnostic.stage == "guard"
+    assert result.diagnostic.guard_index == 1
+    assert result.diagnostic.observed == "matched"
+    assert result.diagnostic.target_index == sorted(r.cap.targets).index("permission")
     assert not r.surface.actions
 
 
@@ -220,7 +242,11 @@ def test_known_recovery_is_allowlisted_bounded_and_rechecks_identity():
         wrong.surface.observations[:] = [observation(cap, INPUTS, wrong_member=True)]
 
     wrong.surface.on_action = wrong_identity
-    assert execute(wrong).code == FailureCode.IDENTITY_MISMATCH
+    result = execute(wrong)
+    assert result.code == FailureCode.IDENTITY_MISMATCH
+    assert result.diagnostic.stage == "identity"
+    assert result.diagnostic.guard_index == 0
+    assert result.diagnostic.predicate_path == (0,)
     assert len(wrong.surface.actions) == 1
 
 
@@ -288,3 +314,133 @@ def test_money_uses_exact_minor_units(text, expected):
 def test_money_rejects_ambiguous_or_malformed_display(text):
     with pytest.raises(RuntimeFault):
         money_minor(text, "en_US")
+
+
+@pytest.mark.parametrize(
+    "case,expected,observed,count",
+    [
+        ("missing", "unique_target", "missing", 0),
+        ("duplicate", "unique_target", "ambiguous", 2),
+        ("malformed", "money_minor", "invalid_format", 1),
+    ],
+)
+def test_fee_extraction_diagnostics_distinguish_target_and_parser_failures(
+    case, expected, observed, count
+):
+    r = rig()
+    original = r.surface.on_action
+    canary = "PRIVATE_MALFORMED_FEE"
+
+    async def changed_fee(action, target, value):
+        await original(action, target, value)
+        if action.kind != "click":
+            return
+        current = r.surface.observations[0]
+        fee = next(item for item in current.targets if item.ref == "monthly_fee_minor")
+        targets = tuple(item for item in current.targets if item is not fee)
+        if case == "duplicate":
+            targets += (fee, fee)
+        elif case == "malformed":
+            targets += (fee.model_copy(update={"text": canary}),)
+        r.surface.observations[:] = [current.model_copy(update={"targets": targets})]
+
+    r.surface.on_action = changed_fee
+    result = execute(r)
+    assert result.code == FailureCode.EXTRACTION_FAILED
+    assert result.metadata.step_index == len(r.cap.steps)
+    assert result.metadata.failing_step is None
+    diagnostic = result.diagnostic
+    assert diagnostic.stage == "extraction"
+    assert diagnostic.expected == expected
+    assert diagnostic.observed == observed
+    assert diagnostic.match_count == count
+    assert diagnostic.expected_count == 1
+    assert diagnostic.target_index == sorted(r.cap.targets).index("monthly_fee_minor")
+    assert diagnostic.output_index == sorted(r.cap.goal.outputs).index("monthly_fee_minor")
+    assert canary not in r.audit.getvalue()
+    assert "monthly_fee_minor" not in r.audit.getvalue()
+
+
+@pytest.mark.parametrize("stage", ["initial", "guard"])
+def test_false_nested_predicate_cannot_hide_later_ambiguity(stage):
+    cap = artifact()
+    conditions = Conjunction(
+        conditions=(
+            Visible(target="review"),
+            Conjunction(conditions=(Visible(target="member_id"),)),
+        )
+    )
+    if stage == "initial":
+        cap = cap.model_copy(update={"preconditions": (conditions,)})
+        r = rig(cap=cap)
+    else:
+        profile = Profile(
+            profile_id="member_ops",
+            binding=BINDING,
+            targets=cap.targets,
+            terminal_checks=(Visible(target="review"),),
+            guards=(
+                Guard(
+                    id="denied",
+                    kind="failure",
+                    when=conditions,
+                    failure_code=FailureCode.PERMISSION_DENIED,
+                ),
+            ),
+        )
+        r = rig(cap=cap, profile=profile)
+    before = observation(cap, INPUTS)
+    member = next(target for target in before.targets if target.ref == "member_id")
+    r.surface.observations[:] = [before.model_copy(update={"targets": (*before.targets, member)})]
+    result = execute(r)
+    assert result.code == FailureCode.AMBIGUOUS_TARGET
+    assert result.diagnostic.stage == stage
+    assert result.diagnostic.observed == "ambiguous"
+    assert result.diagnostic.predicate_path == (0, 1, 0)
+    assert result.diagnostic.match_count == 2
+    assert result.diagnostic.target_index == sorted(cap.targets).index("member_id")
+    assert result.diagnostic.guard_index == (0 if stage == "guard" else None)
+    assert not r.surface.actions
+    checkpoint = next(
+        event
+        for event in map(json.loads, r.audit.getvalue().splitlines())
+        if event["event"] == "checkpoint" and event["stage"] == stage
+    )
+    assert [(item["predicate_path"], item["observed"]) for item in checkpoint["details"]] == [
+        ([0, 0], "missing"),
+        ([0, 1, 0], "ambiguous"),
+    ]
+
+
+def test_output_match_failure_identifies_output_without_disclosing_values():
+    r = rig()
+    original = r.surface.on_action
+    canary = "OTHER_PRIVATE_NICKNAME"
+
+    async def wrong_nickname(action, target, value):
+        await original(action, target, value)
+        if action.kind == "click":
+            current = r.surface.observations[0]
+            r.surface.observations[:] = [
+                current.model_copy(
+                    update={
+                        "targets": tuple(
+                            item.model_copy(update={"text": canary})
+                            if item.ref == "nickname"
+                            else item
+                            for item in current.targets
+                        )
+                    }
+                )
+            ]
+
+    r.surface.on_action = wrong_nickname
+    result = execute(r)
+    assert result.code == FailureCode.IDENTITY_MISMATCH
+    assert result.metadata.step_index == len(r.cap.steps)
+    assert result.diagnostic.stage == "output_match"
+    assert result.diagnostic.observed == "mismatch"
+    assert result.diagnostic.output_index == sorted(r.cap.goal.outputs).index("nickname")
+    assert result.diagnostic.target_index == sorted(r.cap.targets).index("nickname")
+    assert result.diagnostic.predicate_path == (2,)
+    assert canary not in r.audit.getvalue()

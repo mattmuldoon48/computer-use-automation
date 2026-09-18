@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "publication_status": "Local pending closure on public baseline 9496484; no commit, push or email performed. Not claimed present on GitHub.",
+  "source_snapshot": "evidence/audit-closure/source-snapshot.json",
+  "environment": {
+    "method": "Local fresh clone of the public baseline plus the exact pending tracked patch; all 57 source/configuration/document input hashes matched before tests. Separate virtual environment, locked offline cache sync; OPENAI_API_KEY and OPENAI_MODEL removed from subprocess environment. This is not an empty-cache network installation.",
+    "runtime": {
+      "python": "3.12.13",
+      "playwright": "1.58.0",
+      "chromium": "145.0.7632.6"
+    }
+  },
+  "checks": [
+    {
+      "command": [
+        "uv",
+        "sync",
+        "--locked",
+        "--offline"
+      ],
+      "exit_code": 0,
+      "output": "Using CPython 3.12.13\nCreating virtual environment at: <temporary-verification>/venv\nResolved 32 packages in 4ms\n   Building ui-capability-runtime @ file://<fresh-checkout>\n      Built ui-capability-runtime @ file://<fresh-checkout>\nPrepared 1 package in 237ms\nInstalled 31 packages in 80ms\n + annotated-doc==0.0.5\n + annotated-types==0.8.0\n + anyio==4.15.1\n + click==8.5.0\n + fastapi==0.128.0\n + greenlet==3.5.6\n + h11==0.16.0\n + idna==3.20\n + iniconfig==2.3.0\n + jinja2==3.1.6\n + librt==0.15.0\n + markupsafe==3.0.3\n + mypy==1.19.1\n + mypy-extensions==1.1.0\n + packaging==26.3\n + pathspec==1.1.1\n + pillow==12.1.0\n + playwright==1.58.0\n + pluggy==1.6.0\n + pydantic==2.12.5\n + pydantic-core==2.41.5\n + pyee==13.0.1\n + pygments==2.21.0\n + pytest==9.0.3\n + python-multipart==0.0.22\n + ruff==0.15.14\n + starlette==0.50.0\n + typing-extensions==4.16.0\n + typing-inspection==0.4.4\n + ui-capability-runtime==0.1.0 (from file://<fresh-checkout>)\n + uvicorn==0.40.0\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output": "........................................................................ [ 28%]\n........................................................................ [ 56%]\n........................................................................ [ 85%]\n.....................................                                    [100%]\n253 passed in 153.66s (0:02:33)\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "mypy",
+        "src",
+        "sandbox"
+      ],
+      "exit_code": 0,
+      "output": "Success: no issues found in 25 source files\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "ruff",
+        "format",
+        "--check",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "40 files already formatted\n"
+    },
+    {
+      "command": [
+        "uv",
+        "lock",
+        "--check",
+        "--offline"
+      ],
+      "exit_code": 0,
+      "output": "Resolved 32 packages in 3ms\n"
+    },
+    {
+      "command": [
+        "uv",
+        "build",
+        "--offline"
+      ],
+      "exit_code": 0,
+      "output": "Building source distribution...\nBuilding wheel from source distribution...\nSuccessfully built dist/ui_capability_runtime-0.1.0.tar.gz\nSuccessfully built dist/ui_capability_runtime-0.1.0-py3-none-any.whl\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "--offline",
+        "pytest",
+        "-q",
+        "tests/integration/test_browser_replay.py::test_submission_denied_at_action_and_transport_boundaries"
+      ],
+      "exit_code": 0,
+      "output": "..                                                                       [100%]\n2 passed in 6.98s\n"
+    }
+  ],
+  "baseline_failures": "evidence/audit-closure/baseline-diagnostics.json",
+  "retained_runs": "evidence/audit-closure/selected-runs.json",
+  "privacy": {
+    "runs": 8,
+    "text_files_scanned": 45,
+    "fully_opaque_pngs": 8,
+    "private_canary_and_quoted_member_values": "absent",
+    "new_provider_calls": 0,
+    "new_human_handoffs": 0,
+    "default_and_changed_nicknames": "absent as quoted values"
+  },
+  "historical_evidence": {
+    "unchanged_files": 232,
+    "inventory": "evidence/phase5-submission/checksums.json",
+    "scope": "Historical evidence bytes match the original Phase 5 inventory; its own checksum file matches the cloned baseline. The old inventory remains an inventory of commit 9496484, not of changed source/docs."
+  },
+  "documentation": {
+    "required_report_headings": [
+      "Architecture",
+      "Artifact schema",
+      "Determinism & error handling",
+      "Heterogeneity & multi-tenant",
+      "Escalation & handoff",
+      "Safety",
+      "Cuts"
+    ],
+    "report_words": 1471,
+    "local_markdown_link_occurrences": 29,
+    "readme_discovery_parser": "Exact parser tested with one retained discovery path, no path, and ambiguous paths. Both documented replay forms passed using that original candidate. No new paid discovery invocation."
+  },
+  "archives": [
+    {
+      "filename": "ui_capability_runtime-0.1.0.tar.gz",
+      "sha256": "c773c2a83e49c1afbccb659a2e813fb46e0fc74495de88ebd2b331f3dab7e4fe",
+      "file_count": 60,
+      "browser_helpers_present": [
+        "ui_capability/surfaces/discovery_dom.js",
+        "ui_capability/surfaces/operator_capture.js"
+      ],
+      "private_and_evidence_files_excluded": true,
+      "retention": "temporary build output; not committed"
+    },
+    {
+      "filename": "ui_capability_runtime-0.1.0-py3-none-any.whl",
+      "sha256": "1eeee6c19df8734840af5eeeccc5108167f97f3f946e73e8123bef329d579e58",
+      "file_count": 38,
+      "browser_helpers_present": [
+        "ui_capability/surfaces/discovery_dom.js",
+        "ui_capability/surfaces/operator_capture.js"
+      ],
+      "private_and_evidence_files_excluded": true,
+      "retention": "temporary build output; not committed"
+    }
+  ],
+  "limits": [
+    "No new live-model discovery or real-human handoff; historical evidence retains its original source-revision limitations.",
+    "CLI discovery and terminal policy remain intentionally scoped to the reviewed banking demo, not arbitrary goals or sites.",
+    "Screenshots are fully opaque #202020; semantic failure snapshots describe the last observed state, not an atomic live-UI attestation.",
+    "Only cached offline setup was verified; clean-machine online installation was not attempted."
+  ],
+  "public_inventory": {
+    "credential_prefix_scan": {
+      "scope": "OpenAI-style and GitHub-style credential-prefix patterns across inventoried public bytes; not proof against every possible secret.",
+      "matches": 1,
+      "reviewed_synthetic_fixture": "tests/unit/test_provider.py:18, existing never-persist credential sentinel",
+      "unexplained_matches": 0
+    },
+    "private_path_exclusions": "No PDF/email files, environment files, virtual environment, local artifacts or build outputs in the public inventory."
+  },
+  "verification_started_at_utc": "2026-09-18T03:34:26Z",
+  "verification_completed_at_utc": "2026-09-18T03:49:15Z"
+}

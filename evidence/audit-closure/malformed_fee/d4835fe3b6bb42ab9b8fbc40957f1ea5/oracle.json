@@ -1,0 +1,8 @@
+{
+  "scope": "External test-only receiving-server oracle; never available to Replay/Surface",
+  "submit_requests": 0,
+  "ledger_entries": 0,
+  "provider_tripwire_calls": 0,
+  "opaque_pixels_verified": true,
+  "private_value_scan": "passed"
+}

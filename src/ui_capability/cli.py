@@ -15,6 +15,7 @@ from pydantic import ValidationError
 
 from .contracts import (
     BusinessOutcome,
+    Diagnostic,
     Failure,
     FailureCode,
     Intervention,
@@ -25,7 +26,7 @@ from .contracts import (
 )
 from .demo import load_demo
 from .errors import RuntimeFault
-from .evidence import EvidenceSink
+from .evidence import EvidenceSink, diagnostic_projection
 from .replay import Replay
 from .session import Session
 from .surfaces.playwright import PlaywrightSurface
@@ -57,6 +58,8 @@ def result_projection(result: TerminalResult | Intervention) -> dict[str, object
     }
     if isinstance(result, Failure):
         projection["code"] = result.code.value
+        if (diagnostic := diagnostic_projection(result.diagnostic)) is not None:
+            projection["diagnostic"] = diagnostic
     elif isinstance(result, BusinessOutcome):
         projection["code"] = (
             result.code
@@ -66,6 +69,24 @@ def result_projection(result: TerminalResult | Intervention) -> dict[str, object
     elif isinstance(result, Intervention):
         projection["reason"] = result.reason
     return projection
+
+
+def write_failure_snapshot(
+    directory: Path,
+    result: TerminalResult | Intervention,
+    capture: dict[str, object],
+) -> None:
+    """Retain useful semantic state without text, values, or unmasked pixels."""
+    if not isinstance(result, Failure):
+        return
+    snapshot = {
+        "schema_version": 1,
+        "kind": "semantic_failure_snapshot",
+        "observation_scope": "last_observed_state_not_a_live_attestation",
+        "result": result_projection(result),
+        "structure": capture.get("structure", {"state": "unavailable"}),
+    }
+    (directory / "failure.snapshot.json").write_text(json.dumps(snapshot, indent=2) + "\n")
 
 
 async def run_browser(
@@ -179,6 +200,7 @@ async def run_browser(
                                 {
                                     "resume_rejected": fault.code.value,
                                     "ownership": session.ownership.value,
+                                    "diagnostic": diagnostic_projection(fault.diagnostic),
                                 }
                             ),
                             flush=True,
@@ -191,9 +213,13 @@ async def run_browser(
                     metadata=result.metadata.model_copy(
                         update={"human_intervened": session.human_intervened}
                     ),
+                    diagnostic=Diagnostic(
+                        stage="resume", expected="checkpoint", observed="interrupted"
+                    ),
                 )
                 sink.result(result)
             capture = await session.capture_safe(run_dir / "terminal.png")
+            write_failure_snapshot(run_dir, result, capture)
             summary = {
                 "schema_version": 1,
                 "run_type": "discovered_capability_replay"

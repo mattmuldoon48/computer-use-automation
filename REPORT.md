@@ -5,9 +5,12 @@ model-free execution. Python 3.12, strict Pydantic contracts and Playwright driv
 real Chromium against a synthetic, server-rendered banking application. The
 implemented task prepares a savings sub-account and stops at unsubmitted review;
 it does not open an account. [README](README.md) provides cached setup, reviewer
-commands and terminal handoff instructions. The [submission manifest](evidence/phase5-submission/manifest.json)
-and [verification record](evidence/phase5-submission/verification.json) identify
-the public snapshot and fresh local evidence, not remote publication.
+commands and terminal handoff instructions. [Audit-closure verification](evidence/audit-closure/verification.json)
+records checks collected before commit and publication; its pending status is
+historical. [Publication preparation](evidence/audit-closure/publication-preparation.json)
+identifies later documentation-only changes, and [checksums](evidence/audit-closure/checksums.json)
+cover the current file inventory. The [Phase 5 manifest](evidence/phase5-submission/manifest.json)
+and its verification/checksums retain the historical snapshot at **9496484**.
 
 `discovery.py` offers an explicitly authorized text-only planner policy-filtered
 observations and typed references. `compiler.py` records executed actions with
@@ -18,6 +21,15 @@ without importing discovery/providers. Both paths use `session.py` for ownership
 freshness, action authorization and execution. The Playwright surface uses visible
 UI only; sandbox business-state oracle access belongs exclusively to external
 tests/probes.
+
+Natural-language intent is `CapabilityArtifact.goal.goal_template`; typed inputs
+are separate, and `goal.binding` names app/version/exact origin/entry route.
+`Discovery(template, profile, session, planner, caller_permissions).run(inputs)`
+accepts reviewed contracts and a policy-bound session, not arbitrary prose/URLs.
+The CLI supplies the banking template and an isolated sandbox; it has no generic
+goal/target discovery flags. `Policy._validate_terminal` is demo-specific.
+Existing-origin `replay --origin` explicitly rebinds a compatible demo artifact,
+not a new application's workflow. These limits keep authority reviewable.
 
 The [genuine historical discovery summary](evidence/phase3-live/fff6f1953ef04b81bfc567ce9c486628/summary.json)
 records `gpt-4.1-2025-04-14`, validated response/request metadata, nine provider
@@ -69,31 +81,56 @@ reviewed recovery and retry rules do not authorize repetition of unknown or
 irreversible effects. Cancellation is not rollback; unsettled actions retain
 their gate. Unknown dialogs and browser interruption fail closed.
 
-The retained adversarial matrix covers eleven CLI cases and preserves the original
-route-checkpoint failure. Historical hardening verification recorded 221 passing
-tests. Local tests include scripted discovery, transport denial, concurrency and
-crash cases; they are not paid provider runs. No new provider run followed
-hardening, so changed discovery/provider behavior has local regression evidence,
-not renewed live validation.
+Failures include the step and bounded diagnostic stage/expected/observed
+categories, counts and predicate positions rather than raw exception text.
+Action intent, execution and rejection records combine fixed kind/purpose/effect
+codes with numeric indexes, explaining replay, recovery or discovery intent
+without retaining model reasoning. Target/output indexes address sorted artifact
+keys; guard indexes address profile tuple positions. Nested predicate paths index
+checkpoint tuples; profile terminal predicates precede artifact final checks.
+
+The retained eleven-case adversarial matrix includes the original route failure.
+Historical hardening recorded 221 passing tests; current local verification is
+linked above, not a new live-model claim. No new provider run followed hardening.
 
 ## Heterogeneity & multi-tenant
 
-The sandbox exercises named frames, generated element IDs, table-labelled legacy
-controls, duplicate labels in separate sections, slow rendering and session
-expiry. Semantic scopes avoid saved coordinates, ordinal selectors and generated
-IDs. These demonstrate variation within one reviewed web application, not
-arbitrary-site portability. New compiler output requires reviewed target bindings
-and caller-supplied goal/output contracts and recovery knowledge.
+The implemented sandbox exercises named frames, generated IDs, table-labelled
+controls, scoped duplicate labels, slowness and expiry. Semantic scopes avoid
+saved coordinates and generated-ID dependencies. This is one reviewed legacy web
+application, not arbitrary-site portability. Each demo isolates the application
+and browser context; origin rebinding preserves app/version/entry compatibility.
+Locale is `en_US`; desktop and multi-tenant deployment are not implemented.
 
-Each demo creates an isolated application and fresh browser context. Installation
-binding changes only the explicit origin; application, version and entry-route
-compatibility remain checked. Ephemeral ports therefore change installed hashes.
-Separate sessions and exact origins are useful boundaries, but no tenant
-provisioning, cross-tenant authorization service, native desktop adapter or
-production deployment is implemented. Locale is restricted to `en_US`.
+**Future design, not implemented:** following the existing
+[design seam](INTERFACE_AI_DESIGN.md#12-heterogeneity-and-tenant-reuse), keep
+observe, resolve target, perform typed action, evaluate bounded predicate, safe
+capture and handoff hooks behind the surface adapter. Flow/control logic must
+not depend on Playwright `Page`, CSS or cookies. Browser targets remain
+frame-aware semantic/relational bindings; a desktop adapter needs a distinct
+target family using OS accessibility or reviewed visual anchors. Declare surface
+requirements and reject unsupported families before execution rather than
+pretending a browser locator translates to desktop.
+
+Separate a **base capability** (steps, typed I/O, invariants, outcomes), **product
+profile** (error predicates, effects, version compatibility, target conventions),
+and versioned **tenant binding** (origin, entry route, frame labels, locale,
+narrowly reviewed label overrides). **Runtime policy** remains the authority
+ceiling: overrides cannot widen permissions, effects or allowed destinations.
+Resolve and hash the base/profile/binding separately and retain the installed
+snapshot, so institutions can share logic without hiding specializations.
+Check declared product versions and required target structure at installation
+and runtime checkpoints. Unknown versions, missing/ambiguous targets or
+incompatible structure invalidate execution; require reviewed rebinding and
+revalidation, never silent model “healing.” This is a compatibility design, not
+evidence of cross-tenant reuse.
 
 ## Escalation & handoff
 
+Reviewed intervention guards (such as expiry) and unknown dialogs route a
+session/step/reason-bearing request to the terminal operator; installed contracts
+and the safe structural snapshot provide goal/state context. Ordinary hard
+failures stop rather than implicitly granting human or model authority.
 Replay transitions from AUTOMATION through PAUSING and AWAITING_OPERATOR to HUMAN.
 The terminal's `takeover` transfers control; the operator fixes the existing
 browser and requests `resume`. Resume validates that same context, allowed
@@ -120,23 +157,39 @@ are denied. Response-header checks occur only after contacting an allowed
 endpoint. The proxy supports explicit loopback HTTP, not opaque HTTPS tunnels;
 ordinary unguarded browsers are outside this boundary.
 
-Provider requests exclude raw restricted inputs, screenshots and hidden state.
-Evidence excludes raw prompts/responses, keys, rich outputs and exception details.
-Current screenshots mask the entire page and verify opaque pixels before writing,
-or are withheld. This deliberately sacrifices visual usefulness; structural
-checkpoints/events provide execution detail. Historical workspace-masked captures
-retain their original, narrower guarantee. Trusted configuration must contain
-public text. These controls are not OS egress isolation, atomic protection from
-hostile DOM mutation, or a production security/privacy attestation.
+Provider requests exclude restricted values, screenshots and hidden state.
+Persisted diagnostics contain only fixed categories, indexes, counts and flags:
+no runtime values/names, UI text, URLs, exception messages or model explanations.
+Approved goal/artifact/profile snapshots supply the index mapping. A bounded
+semantic failure snapshot records up to 100 sorted targets' match counts,
+missing/unique/ambiguous or unavailable state, control/value-type counts and
+presence flags, plus an omitted count. Stale observations do not reuse target
+details. Reviewers can locate a mismatch without field contents or locators.
+Screenshots remain entirely opaque with decoded-pixel verification, or are
+withheld; the structural sidecar supplies the useful richer failure signal.
+Historical captures retain their original workspace-only guarantee. Raw model
+transcripts, keys, traces and rich output values are not public evidence.
+Configuration must be trusted public text. This is neither OS egress isolation
+nor atomic protection against hostile DOM mutation or a production attestation.
 
 ## Cuts
 
-Scope favors one bounded end-to-end workflow over arbitrary applications,
-unreviewed compilation, model-driven recovery or irreversible submission.
-There is no discovery-time resume, persistent workflow service, desktop support
-or multi-tenant deployment. API access requires explicit authorization and may
-cost money; call/token limits are not a billing cap. Historical run revision gaps
-cannot be repaired retroactively, and hardening's CLI matrix lacks exact per-run
-source diffs. Fresh local snapshot verification is documented separately from
-those runs. No new paid discovery, real-human handoff, commit, push, publication
-or email is claimed by submission packaging.
+The deliberate cut is one bounded, prepare-only workflow: no arbitrary-site
+compilation, irreversible submission, model-driven recovery, discovery-time
+resume, durable workflow service, desktop implementation or tenant platform.
+These avoid unreviewable authority and infrastructure before the core is proven.
+Next priorities, in order:
+
+1. Exercise the documented base/profile/binding design on a second synthetic
+   product skin, including deliberate version/label drift, to test reuse and
+   fail-closed invalidation before claiming it across institutions.
+2. Extend same-session ownership/checkpoint handoff to discovery, with reviewed
+   continuation rules, to close the current stop-on-intervention asymmetry.
+3. Prototype one desktop accessibility target family and its safe capture/
+   ownership boundary, rejecting unsupported semantics before broadening scope.
+
+Historical revision gaps and missing per-run hardening diffs cannot be repaired
+retroactively. Optional API discovery requires explicit cost authorization;
+call/token limits are not a billing cap. No new paid-model run or real-human
+handoff was performed for this closure. Verification records predate publication;
+email submission is a separate step.

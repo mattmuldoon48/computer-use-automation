@@ -2,10 +2,13 @@
 
 import asyncio
 import json
+import re
 from io import StringIO
 from pathlib import Path
 
 import pytest
+from fastapi import Request
+from fastapi.responses import Response
 from PIL import Image
 from playwright.async_api import Page, async_playwright
 
@@ -140,6 +143,92 @@ def test_real_ui_exception_states_do_not_become_success(artifact_path, case, inp
             assert app.state.oracle.ledger == []
             if case == "duplicate_target":
                 assert app.state.oracle.request_counts[("POST", "/workspace/review")] == 0
+        finally:
+            await surface.close()
+
+    with running_app(app) as origin:
+        asyncio.run(scenario(origin))
+
+
+@pytest.mark.parametrize(
+    "fault,expected,observed,match_count",
+    [
+        ("malformed_fee", "money_minor", "invalid_format", 1),
+        ("missing_fee_row", "unique_target", "missing", 0),
+    ],
+)
+def test_fee_failures_explain_field_and_condition_without_values(
+    artifact_path, tmp_path, fault, expected, observed, match_count
+):
+    app = create_app()
+    private_fee = "PRIVATE_FEE_VALUE_CANARY"
+    values = {**VALUES, "nickname": "PRIVATE_DIAGNOSTIC_NICKNAME"}
+
+    @app.middleware("http")
+    async def inject_fee_fault(request: Request, call_next):
+        response = await call_next(request)
+        if request.url.path != "/workspace/review":
+            return response
+        # Fault injection belongs to the external harness, not the runtime actor.
+        body = b"".join([chunk async for chunk in response.body_iterator])
+        replacement = (
+            (lambda match: match[1] + private_fee.encode() + match[2])
+            if fault == "malformed_fee"
+            else b""
+        )
+        body, replacements = re.subn(
+            rb"(<tr><th>Monthly fee</th><td>).*?(</td></tr>)", replacement, body
+        )
+        assert replacements == 1
+        headers = dict(response.headers)
+        headers.pop("content-length", None)
+        return Response(body, status_code=response.status_code, headers=headers)
+
+    async def scenario(origin):
+        bundle, audit, surface, session, replay = await launch(
+            origin, values, artifact_path=artifact_path
+        )
+        try:
+            result = await replay.run(values)
+            assert isinstance(result, Failure)
+            assert result.code is FailureCode.EXTRACTION_FAILED
+            assert result.metadata.step_index == len(bundle.artifact.steps)
+            diagnostic = result.diagnostic
+            assert diagnostic is not None
+            assert (diagnostic.stage, diagnostic.expected, diagnostic.observed) == (
+                "extraction",
+                expected,
+                observed,
+            )
+            fee_target = sorted(bundle.artifact.targets).index("monthly_fee_minor")
+            assert diagnostic.target_index == fee_target
+            assert diagnostic.output_index == sorted(bundle.artifact.goal.outputs).index(
+                "monthly_fee_minor"
+            )
+            capture = await session.capture_safe(tmp_path / "failure.png")
+            fee_state = next(
+                target
+                for target in capture["structure"]["targets"]
+                if target["target_index"] == fee_target
+            )
+            assert fee_state["match_count"] == match_count
+            events = [json.loads(line) for line in audit.getvalue().splitlines()]
+            failure_event = next(event for event in events if event["event"] == "result")
+            assert failure_event["step_index"] == len(bundle.artifact.steps)
+            assert failure_event["diagnostic"]["expected"] == expected
+            assert failure_event["diagnostic"]["observed"] == observed
+            assert failure_event["diagnostic"]["output_index"] == diagnostic.output_index
+            persisted = audit.getvalue() + json.dumps(capture) + diagnostic.model_dump_json()
+            for private in (private_fee, values["nickname"]):
+                assert private not in persisted
+            assert json.dumps(values["member_id"]) not in persisted
+            intents = [event for event in events if event["event"] == "action_intent"]
+            assert [event["action_kind"] for event in intents] == [
+                step.action.kind for step in bundle.artifact.steps
+            ]
+            assert all(event["purpose"] == "replay" for event in intents)
+            assert app.state.oracle.submit_requests == 0
+            assert app.state.oracle.ledger == []
         finally:
             await surface.close()
 
